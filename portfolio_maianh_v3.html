@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nguyễn Hoàng Mai Anh — Alex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Recursive:wght@300..900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --alex-amber:         #E8930A;
+  --alex-amber-golden:  #F2B705;
+  --alex-amber-light:   #FEF3E2;
+  --alex-amber-100:     #FDDBA0;
+  --alex-amber-dark:    #C4720A;
+  --alex-amber-900:     #7A4200;
+  --alex-navy:          #0C1E35;
+  --alex-navy-mid:      #1A3A5C;
+  --alex-navy-300:      #3A6080;
+  --alex-navy-light:    #EBF0F6;
+  --alex-navy-deep:     #060F1C;
+  --alex-teal:          #2AABBB;
+  --alex-teal-light:    #E1F5F7;
+  --alex-teal-600:      #1A8A99;
+  --alex-warm-white:    #F5F1EF;
+  --alex-white:         #FFFFFF;
+  --alex-font:          'Lexend Deca', sans-serif;
+  --alex-font-stat:     'Recursive', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--alex-font);
+  background: var(--alex-navy);
+  color: var(--alex-white);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── VIEWPORT STACK ─── */
+.view {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  transition: transform 0.42s cubic-bezier(.77,0,.18,1), opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+.view.hidden-right  { transform: translateX(100%); opacity: 0; pointer-events: none; }
+.view.hidden-left   { transform: translateX(-6%);  opacity: 0; pointer-events: none; }
+.view.active        { transform: translateX(0);    opacity: 1; pointer-events: all; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--alex-navy-deep); }
+::-webkit-scrollbar-thumb { background: var(--alex-navy-mid); border-radius: 2px; }
+
+/* ─── NAV ─── */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(12,30,53,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-logo {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--alex-white);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--alex-amber); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.nav-link {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  transition: color 0.15s;
+  cursor: pointer;
+}
+.nav-link:hover { color: var(--alex-amber); }
+
+/* ─── BACK BUTTON ─── */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  border: none;
+  transition: color 0.15s;
+}
+.back-btn:hover { color: var(--alex-amber); }
+.back-btn svg { transition: transform 0.15s; }
+.back-btn:hover svg { transform: translateX(-3px); }
+
+/* ─── CONTAINER ─── */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+.container-wide {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+/* ══════════════════════════════════════
+   HOME PAGE
+══════════════════════════════════════ */
+#view-home { background: var(--alex-navy); }
+
+/* HERO */
+.hero {
+  min-height: calc(100vh - 52px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(232,147,10,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(42,171,187,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--alex-teal);
+  margin-bottom: 1.5rem;
+}
+.hero-headline {
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--alex-white);
+  margin-bottom: 1.75rem;
+  max-width: 720px;
+}
+.hero-headline .amber { color: var(--alex-amber); }
+.hero-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.75;
+  max-width: 520px;
+  margin-bottom: 2.5rem;
+}
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 3.5rem;
+}
+.hero-pill {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(42,171,187,0.4);
+  color: var(--alex-teal);
+  background: rgba(42,171,187,0.07);
+}
+
+/* STATS ROW */
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 4rem;
+}
+.stat-block { display: flex; flex-direction: column; }
+.stat-num {
+  font-family: var(--alex-font-stat);
+  font-weight: 900;
+  font-variation-settings: 'slnt' -15;
+  font-size: 2.4rem;
+  color: var(--alex-amber-golden);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-lbl {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.4);
+}
+
+/* SERVICE CARDS */
+.services-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 1.25rem;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.svc-card {
+  background: var(--alex-navy-mid);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 2rem 1.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.svc-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(232,147,10,0.06), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: inherit;
+}
+.svc-card:hover {
+  border-color: rgba(232,147,10,0.35);
+  background: #1e3d66;
+  transform: translateY(-3px);
+}
+.svc-card:hover::before { opacity: 1; }
+.svc-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 1.25rem;
+}
+.svc-card-icon.lod { background: rgba(232,147,10,0.15); }
+.svc-card-icon.coa { background: rgba(42,171,187,0.15); }
+.svc-card-icon.wks { background: rgba(242,183,5,0.15); }
+
+.svc-card-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.svc-card-tag.lod { color: var(--alex-amber); }
+.svc-card-tag.coa { color: var(--alex-teal); }
+.svc-card-tag.wks { color: var(--alex-amber-golden); }
+
+.svc-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--alex-white);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.svc-card-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+}
+.svc-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--alex-amber);
+  transition: gap 0.15s;
+}
+.svc-card:hover .svc-card-cta { gap: 10px; }
+
+/* HOME FOOTER */
+.home-footer {
+  padding: 3rem 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.home-footer-left {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.3);
+}
+.home-footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+.home-footer-link {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.home-footer-link:hover { color: var(--alex-amber); }
+
+/* ══════════════════════════════════════
+   INNER PAGE SHELL (LOD / COACHING / WKS)
+══════════════════════════════════════ */
+.inner-page { background: var(--alex-warm-white); min-height: 100vh; }
+
+/* Page Hero Band */
+.page-band {
+  background: var(--alex-navy);
+  padding: 3.5rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.page-band::after {
+  content: '';
+  position: absolute;
+  top: -100px; right: -80px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,147,10,0.13) 0%, transparent 65%);
+  pointer-events: none;
+}
+.page-band-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.page-band-tag {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(42,171,187,0.45);
+  color: var(--alex-teal);
+}
+.page-headline {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--alex-white);
+  margin-bottom: 1.25rem;
+  max-width: 680px;
+}
+.page-headline .amber { color: var(--alex-amber); }
+.page-desc {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.75;
+  max-width: 560px;
+}
+
+/* Inner page body */
+.page-body {
+  background: var(--alex-warm-white);
+  padding: 4rem 0 5rem;
+}
+
+/* Section label (inside light page) */
+.body-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--alex-amber-dark);
+  margin-bottom: 0.5rem;
+}
+.body-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--alex-navy);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+.body-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--alex-navy-300);
+  line-height: 1.75;
+  max-width: 560px;
+  margin-bottom: 2.5rem;
+}
+
+/* ══════════════════════════════════════
+   L&OD PAGE
+══════════════════════════════════════ */
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 3rem;
+}
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: var(--alex-navy-light);
+  color: var(--alex-navy);
+  border: 1px solid rgba(12,30,53,0.12);
+}
+
+/* Project cards */
+.proj-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 3rem;
+}
+.proj-card {
+  background: var(--alex-white);
+  border: 1px solid rgba(12,30,53,0.09);
+  border-radius: 12px;
+  padding: 1.75rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.proj-card:hover {
+  border-color: rgba(232,147,10,0.35);
+  box-shadow: 0 4px 20px rgba(232,147,10,0.08);
+}
+.proj-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.proj-org {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--alex-amber-light);
+  color: var(--alex-amber-900);
+}
+.proj-type {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--alex-teal-600);
+  letter-spacing: 0.03em;
+}
+.proj-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--alex-navy);
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+}
+.proj-body {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--alex-navy-300);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.proj-outcome {
+  font-size: 12px;
+  color: var(--alex-navy-300);
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(12,30,53,0.07);
+  line-height: 1.6;
+}
+.proj-outcome strong {
+  color: var(--alex-navy);
+  font-weight: 600;
+}
+
+/* CTA strip */
+.cta-strip {
+  background: var(--alex-navy);
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cta-strip-text {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+}
+.cta-strip-text strong {
+  color: var(--alex-white);
+  font-weight: 600;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--alex-font);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 24px;
+  border-radius: 8px;
+  background: var(--alex-amber-golden);
+  color: var(--alex-navy);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-cta:hover { background: #d4a003; }
+.btn-cta:active { transform: scale(0.98); }
+
+/* ══════════════════════════════════════
+   COACHING PAGE
+══════════════════════════════════════ */
+.coaching-page .page-body { background: var(--alex-navy); padding: 4rem 0 5rem; }
+.coaching-page .body-eyebrow { color: var(--alex-teal); }
+.coaching-page .body-title { color: var(--alex-white); }
+.coaching-page .body-sub { color: rgba(255,255,255,0.45); }
+
+/* When coaching */
+.when-block {
+  background: var(--alex-navy-mid);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  margin-bottom: 3rem;
+}
+.when-block-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--alex-teal);
+  margin-bottom: 1.25rem;
+}
+.when-items { display: flex; flex-direction: column; gap: 0.85rem; }
+.when-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+.when-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--alex-amber);
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+
+/* Packages */
+.pkg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 3rem;
+}
+.pkg-card {
+  background: var(--alex-navy-mid);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 2rem 1.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.pkg-card.featured {
+  border-color: rgba(232,147,10,0.4);
+  background: linear-gradient(135deg, rgba(232,147,10,0.07), rgba(26,58,92,0.8));
+}
+.pkg-badge {
+  position: absolute;
+  top: -1px; right: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--alex-amber);
+  color: var(--alex-navy);
+  padding: 3px 10px;
+  border-radius: 0 0 8px 8px;
+}
+.pkg-number {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--alex-teal);
+  margin-bottom: 0.5rem;
+}
+.pkg-name {
+  font-family: var(--alex-font);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--alex-amber);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.pkg-dur {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 1.25rem;
+}
+.pkg-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin-bottom: 1.25rem;
+}
+.pkg-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+.pkg-fits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pkg-fit-item {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.pkg-fit-item::before {
+  content: '→';
+  color: var(--alex-amber);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+/* Coaching credentials */
+.cred-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+.cred-row-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: var(--alex-navy-mid);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.cred-row-item:last-child { border-bottom: none; }
+.cred-year {
+  font-family: var(--alex-font-stat);
+  font-weight: 700;
+  font-variation-settings: 'slnt' -15;
+  font-size: 1.1rem;
+  color: var(--alex-amber-golden);
+  min-width: 44px;
+  flex-shrink: 0;
+}
+.cred-content {}
+.cred-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--alex-white);
+  margin-bottom: 3px;
+}
+.cred-detail-text {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+}
+
+.coaching-cta-strip {
+  background: linear-gradient(135deg, rgba(232,147,10,0.12), rgba(26,58,92,0.9));
+  border: 1px solid rgba(232,147,10,0.25);
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.coaching-cta-text {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+}
+.coaching-cta-text strong { color: var(--alex-white); font-weight: 600; }
+
+/* ══════════════════════════════════════
+   WORKSHOP PAGE
+══════════════════════════════════════ */
+.wks-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 3rem;
+}
+.wks-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: var(--alex-amber-light);
+  color: var(--alex-amber-900);
+}
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 3rem;
+}
+.session-card {
+  background: var(--alex-white);
+  border: 1px solid rgba(12,30,53,0.09);
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.session-card:hover {
+  border-color: rgba(232,147,10,0.3);
+  box-shadow: 0 4px 20px rgba(232,147,10,0.07);
+}
+.session-num {
+  font-family: var(--alex-font-stat);
+  font-weight: 900;
+  font-variation-settings: 'slnt' -15;
+  font-size: 2rem;
+  color: var(--alex-amber-golden);
+  min-width: 44px;
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.session-content {}
+.session-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--alex-navy);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.session-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--alex-navy-300);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.session-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.session-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--alex-navy-light);
+  color: var(--alex-navy);
+}
+
+/* ══════════════════════════════════════
+   INNER PAGE FOOTER / CONTACT
+══════════════════════════════════════ */
+.inner-footer {
+  background: var(--alex-navy-deep);
+  padding: 4rem 0 3rem;
+}
+.inner-footer-headline {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--alex-white);
+  margin-bottom: 0.5rem;
+}
+.inner-footer-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 2.5rem;
+}
+.contact-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.contact-item:hover {
+  background: rgba(232,147,10,0.1);
+  border-color: rgba(232,147,10,0.25);
+  color: var(--alex-amber);
+}
+.inner-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.footer-sig {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+}
+.footer-sig span { color: var(--alex-amber); }
+.footer-handle {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 720px) {
+  .container, .container-wide { padding: 0 1.25rem; }
+  .top-nav { padding: 0 1.25rem; }
+  .services-grid { grid-template-columns: 1fr; gap: 10px; }
+  .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+  .proj-grid { grid-template-columns: 1fr; }
+  .pkg-grid { grid-template-columns: 1fr; }
+  .cta-strip { flex-direction: column; align-items: flex-start; }
+  .coaching-cta-strip { flex-direction: column; align-items: flex-start; }
+  .home-footer { flex-direction: column; align-items: flex-start; }
+  .page-band { padding: 2.5rem 0 3rem; }
+  .hero { padding: 3.5rem 0 3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .view, * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+  VIEW: HOME
+══════════════════════════ -->
+<div id="view-home" class="view active">
+
+  <nav class="top-nav">
+    <a class="nav-logo" onclick="goHome()">Alex <span>·</span> Mai Anh</a>
+    <div class="nav-right">
+      <a class="nav-link" href="mailto:alex.nhma@gmail.com">Liên hệ</a>
+      <a class="nav-link" href="https://linkedin.com/in/nhmaianh" target="_blank">LinkedIn</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">L&OD Lead · ICF Certified Coach · Workshop Facilitator</p>
+      <h1 class="hero-headline">
+        Tôi giúp tổ chức<br>
+        xây <span class="amber">năng lực thật</span>.<br>
+        Tôi giúp người<br>
+        tìm <span class="amber">hướng đi rõ</span>.
+      </h1>
+      <p class="hero-sub">
+        10+ năm trong L&OD và Talent Development — từ tech startup đến doanh nghiệp 3.500 nhân sự. Hiện là L&OD Team Lead tại Coteccons và coach cá nhân theo chuẩn ICF.
+      </p>
+      <div class="hero-pills">
+        <span class="hero-pill">ICF ACC · 2024</span>
+        <span class="hero-pill">APTD · ATD 2025</span>
+        <span class="hero-pill">L&OD Team Lead · Coteccons</span>
+        <span class="hero-pill">Master's HRM · UEH</span>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-block">
+          <span class="stat-num">10+</span>
+          <span class="stat-lbl">năm trong L&OD</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">100+</span>
+          <span class="stat-lbl">coaching sessions</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">3,500</span>
+          <span class="stat-lbl">nhân sự được phục vụ</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">100+</span>
+          <span class="stat-lbl">workshops delivered</span>
+        </div>
+      </div>
+
+      <p class="services-label">Ba cách tôi có thể đồng hành với bạn</p>
+      <div class="services-grid">
+        <div class="svc-card" onclick="goTo('lod')">
+          <div class="svc-card-icon lod">🏗</div>
+          <p class="svc-card-tag lod">Cho tổ chức</p>
+          <p class="svc-card-name">L&OD / Talent Development</p>
+          <p class="svc-card-desc">Xây hệ thống năng lực, competency framework, và culture từ gốc rễ. Đầu ra là hệ thống vận hành bền vững.</p>
+          <span class="svc-card-cta">Xem chi tiết →</span>
+        </div>
+        <div class="svc-card" onclick="goTo('coaching')">
+          <div class="svc-card-icon coa">🧭</div>
+          <p class="svc-card-tag coa">Cho cá nhân</p>
+          <p class="svc-card-name">1:1 Coaching</p>
+          <p class="svc-card-desc">Tìm rõ ràng cho quyết định khó. Từ phát triển sự nghiệp đến nhất quán nội tâm — theo chuẩn ICF ACC.</p>
+          <span class="svc-card-cta">Xem gói coaching →</span>
+        </div>
+        <div class="svc-card" onclick="goTo('workshop')">
+          <div class="svc-card-icon wks">🎤</div>
+          <p class="svc-card-tag wks">Cho team & cộng đồng</p>
+          <p class="svc-card-name">Workshop & Sharing</p>
+          <p class="svc-card-desc">Workshop về workplace skills từ người trong nghề — không lý thuyết, mỗi buổi có framework áp dụng ngay.</p>
+          <span class="svc-card-cta">Xem chủ đề →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="home-footer">
+      <span class="home-footer-left">Ho Chi Minh City · Vietnam</span>
+      <div class="home-footer-links">
+        <a class="home-footer-link" href="https://linkedin.com/in/nhmaianh" target="_blank">LinkedIn</a>
+        <a class="home-footer-link" href="https://instagram.com/bibothegeek" target="_blank">@bibothegeek</a>
+        <a class="home-footer-link" href="mailto:alex.nhma@gmail.com">alex.nhma@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════
+  VIEW: L&OD
+══════════════════════════ -->
+<div id="view-lod" class="view hidden-right inner-page">
+
+  <nav class="top-nav">
+    <button class="back-btn" onclick="goHome()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Trang chủ
+    </button>
+    <div class="nav-right">
+      <span class="nav-link" style="color:rgba(255,255,255,0.2);">L&OD / Talent Development</span>
+    </div>
+  </nav>
+
+  <div class="page-band">
+    <div class="container">
+      <div class="page-band-nav">
+        <span class="page-band-tag">L&OD / Talent Development</span>
+      </div>
+      <h1 class="page-headline">
+        Xây hệ thống năng lực.<br>
+        Không chỉ <span class="amber">chạy chương trình</span>.
+      </h1>
+      <p class="page-desc">
+        Tôi làm việc với tổ chức ở cấp độ thiết kế — từ competency framework, capability program, đến culture và onboarding system. Đầu ra là hệ thống có thể vận hành bền vững, không phụ thuộc vào một cá nhân.
+      </p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+
+      <p class="body-eyebrow">Năng lực cốt lõi</p>
+      <h2 class="body-title">Tôi làm được gì cho tổ chức</h2>
+      <div class="chips-wrap">
+        <span class="chip">Competency Framework</span>
+        <span class="chip">Capability Program Design</span>
+        <span class="chip">Leadership Development</span>
+        <span class="chip">Onboarding System</span>
+        <span class="chip">Culture & Org Development</span>
+        <span class="chip">Agile L&D Management</span>
+        <span class="chip">9-Box Talent Review</span>
+        <span class="chip">Workday HR Data</span>
+        <span class="chip">Great Place To Work®</span>
+      </div>
+
+      <p class="body-eyebrow">Dự án nổi bật</p>
+      <h2 class="body-title">Những gì đã được xây</h2>
+      <p class="body-sub">Không phải slide đẹp — là hệ thống đang chạy thật, trong tổ chức thật.</p>
+
+      <div class="proj-grid">
+        <div class="proj-card">
+          <div class="proj-meta">
+            <span class="proj-org">Coteccons · 2025</span>
+            <span class="proj-type">Program Design</span>
+          </div>
+          <p class="proj-title">Young Talent Program — management trainee đầu tiên ngành xây dựng Việt Nam</p>
+          <p class="proj-body">Thiết kế end-to-end: profile ứng viên, quy trình tuyển chọn, toàn bộ curriculum phát triển cho cohort đầu tiên của Coteccons (~3,500 nhân sự, 6 BU).</p>
+          <p class="proj-outcome"><strong>Kết quả:</strong> Launched thành công, trở thành benchmark cho các BU trong tập đoàn.</p>
+        </div>
+        <div class="proj-card">
+          <div class="proj-meta">
+            <span class="proj-org">GEEK Up · 2020–2024</span>
+            <span class="proj-type">Capability System</span>
+          </div>
+          <p class="proj-title">Non-Expertise Competency Framework — 13 competencies toàn công ty</p>
+          <p class="proj-body">Thiết kế hệ thống năng lực cho môi trường tech flat. Quản lý rollout toàn công ty theo Agile — Scrum sprints, Jira backlog, iterative review với sponsors.</p>
+          <p class="proj-outcome"><strong>Kết quả:</strong> Adopted toàn bộ các phòng ban. Trở thành nền tảng cho performance review và career path.</p>
+        </div>
+        <div class="proj-card">
+          <div class="proj-meta">
+            <span class="proj-org">GEEK Up · 2020–2024</span>
+            <span class="proj-type">Onboarding</span>
+          </div>
+          <p class="proj-title">End-to-end Onboarding Program — cho môi trường tech fast-moving</p>
+          <p class="proj-body">Xây toàn bộ chương trình hội nhập 2 tháng theo từng cohort — structured check-ins, progress monitoring, và đảm bảo cultural alignment từ ngày đầu tiên.</p>
+          <p class="proj-outcome"><strong>Kết quả:</strong> Standardized onboarding toàn tổ chức flat. Mỗi new member có lộ trình rõ từ ngày 1.</p>
+        </div>
+        <div class="proj-card">
+          <div class="proj-meta">
+            <span class="proj-org">Coteccons · 2025–2026</span>
+            <span class="proj-type">Culture & Certification</span>
+          </div>
+          <p class="proj-title">Great Place To Work® — quy trình certification đầu tiên tại Coteccons</p>
+          <p class="proj-body">Dẫn dắt toàn bộ quá trình: survey deployment, culture audit, cross-functional action planning cho tổ chức ~3,500 người.</p>
+          <p class="proj-outcome"><strong>Kết quả:</strong> Hoàn thành certification process. Đặt nền tảng cho chiến lược employer branding dài hạn.</p>
+        </div>
+      </div>
+
+      <div class="cta-strip">
+        <div class="cta-strip-text">
+          <strong>Trao đổi về nhu cầu L&OD</strong> của tổ chức bạn — discovery call miễn phí.
+        </div>
+        <a href="https://linkedin.com/in/nhmaianh" target="_blank" class="btn-cta">Kết nối trên LinkedIn →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="inner-footer">
+    <div class="container">
+      <p class="inner-footer-headline">Làm việc cùng nhau?</p>
+      <p class="inner-footer-sub">Trao đổi qua kênh phù hợp nhất với bạn.</p>
+      <div class="contact-row">
+        <a href="https://linkedin.com/in/nhmaianh" target="_blank" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+        <a href="mailto:alex.nhma@gmail.com" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          alex.nhma@gmail.com
+        </a>
+        <a href="tel:+84938791209" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14h0v2.92z"/></svg>
+          0938 79 1209
+        </a>
+      </div>
+      <div class="inner-footer-bottom">
+        <span class="footer-sig">Alex <span>·</span> Nguyễn Hoàng Mai Anh</span>
+        <span class="footer-handle">@bibothegeek</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ══════════════════════════
+  VIEW: COACHING
+══════════════════════════ -->
+<div id="view-coaching" class="view hidden-right inner-page coaching-page">
+
+  <nav class="top-nav">
+    <button class="back-btn" onclick="goHome()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Trang chủ
+    </button>
+    <div class="nav-right">
+      <span class="nav-link" style="color:rgba(255,255,255,0.2);">1:1 Coaching · Bí Bo</span>
+    </div>
+  </nav>
+
+  <div class="page-band">
+    <div class="container">
+      <div class="page-band-nav">
+        <span class="page-band-tag">1:1 Coaching</span>
+      </div>
+      <h1 class="page-headline">
+        Rõ ràng hơn về bản thân.<br>
+        Tự tin hơn với <span class="amber">lựa chọn</span>.
+      </h1>
+      <p class="page-desc">
+        Tôi tin rằng mỗi người đều có câu trả lời của riêng mình. Công việc của tôi là tạo không gian để bạn tự tìm ra nó — không phải đưa ra lời khuyên thay bạn.
+      </p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+
+      <p class="body-eyebrow">Khi nào cần coaching?</p>
+      <h2 class="body-title">Coaching không phải mentoring hay training</h2>
+      <p class="body-sub">Nếu bạn nhận ra mình đang ở đây — coaching có thể là thứ bạn cần.</p>
+
+      <div class="when-block">
+        <p class="when-block-title">Bạn cần coaching khi...</p>
+        <div class="when-items">
+          <div class="when-item">
+            <span class="when-dot"></span>
+            Bạn đã có đủ kỹ năng, kiến thức — nhưng vẫn có gì đó cản trở hành động
+          </div>
+          <div class="when-item">
+            <span class="when-dot"></span>
+            Giữa việc <em>biết</em> và việc <em>làm</em> cách xa nhau quá
+          </div>
+          <div class="when-item">
+            <span class="when-dot"></span>
+            Nghe lời khuyên rất hay của người đi trước, nhưng cảm giác đó không phải thứ mình muốn làm
+          </div>
+          <div class="when-item">
+            <span class="when-dot"></span>
+            Bạn muốn phát triển sự nghiệp hoặc tìm lại nhất quán nội tâm — với một người đồng hành thật sự
+          </div>
+        </div>
+      </div>
+
+      <p class="body-eyebrow">Gói coaching</p>
+      <h2 class="body-title">Ba lộ trình — như ba cự ly chạy bộ</h2>
+      <p class="body-sub">Mỗi lộ trình phục vụ một nhu cầu khác nhau. Chọn theo mức độ cam kết và chiều sâu bạn muốn đi.</p>
+
+      <div class="pkg-grid">
+        <div class="pkg-card">
+          <p class="pkg-number">Lựa chọn #1</p>
+          <p class="pkg-name">Sprint</p>
+          <p class="pkg-dur">1 buổi · Tập trung cao độ</p>
+          <div class="pkg-divider"></div>
+          <p class="pkg-desc">Như cuộc chạy nước rút — phù hợp khi bạn cần sự rõ ràng ngay lập tức. Một buổi để khám phá và tìm hướng đi.</p>
+          <div class="pkg-fits">
+            <span class="pkg-fit-item">Ra quyết định quan trọng</span>
+            <span class="pkg-fit-item">Giải quyết mâu thuẫn cụ thể</span>
+            <span class="pkg-fit-item">Thử coaching lần đầu</span>
+          </div>
+        </div>
+        <div class="pkg-card featured">
+          <span class="pkg-badge">Phổ biến nhất</span>
+          <p class="pkg-number">Lựa chọn #2</p>
+          <p class="pkg-name">Half-marathon</p>
+          <p class="pkg-dur">6 tuần · Đi sâu vào nội tâm</p>
+          <div class="pkg-divider"></div>
+          <p class="pkg-desc">Cự ly được yêu thích nhất. Trong 6 tuần, bạn có cơ hội đi sâu vào những chủ đề đòi hỏi thời gian để suy ngẫm.</p>
+          <div class="pkg-fits">
+            <span class="pkg-fit-item">Nâng cao hiệu suất cá nhân</span>
+            <span class="pkg-fit-item">Cân bằng work-life</span>
+            <span class="pkg-fit-item">Áp lực đồng trang lứa</span>
+          </div>
+        </div>
+        <div class="pkg-card">
+          <p class="pkg-number">Lựa chọn #3</p>
+          <p class="pkg-name">Marathon</p>
+          <p class="pkg-dur">13 tuần · Thay đổi bền vững</p>
+          <div class="pkg-divider"></div>
+          <p class="pkg-desc">Đòi hỏi chiến lược và cam kết lớn. Dành cho những ai thực sự muốn tạo ra thay đổi tích cực lâu dài.</p>
+          <div class="pkg-fits">
+            <span class="pkg-fit-item">Thay đổi hành vi bền vững</span>
+            <span class="pkg-fit-item">Phát triển leadership cá nhân</span>
+            <span class="pkg-fit-item">Định hướng nghề nghiệp lớn</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-eyebrow">Chứng chỉ & Đào tạo</p>
+      <h2 class="body-title">Nền tảng coaching của tôi</h2>
+
+      <div class="cred-timeline">
+        <div class="cred-row-item">
+          <span class="cred-year">2020</span>
+          <div class="cred-content">
+            <p class="cred-title">Đào tạo coaching chuyên sâu</p>
+            <p class="cred-detail-text">Được đào tạo bởi các Certified Coach tiên phong của Việt Nam — nền tảng Thông minh Cảm xúc (LCV)</p>
+          </div>
+        </div>
+        <div class="cred-row-item">
+          <span class="cred-year">2024</span>
+          <div class="cred-content">
+            <p class="cred-title">Associate Certified Coach (ACC)</p>
+            <p class="cred-detail-text">Liên đoàn Coaching Thế giới (ICF) · 100+ coaching sessions với các bạn trẻ và quản lý cấp trung</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="coaching-cta-strip">
+        <div class="coaching-cta-text">
+          <strong>Discovery call 30 phút · Miễn phí · Online</strong><br>
+          Trao đổi để tìm gói phù hợp nhất với bạn.
+        </div>
+        <a href="mailto:alex.nhma@gmail.com" class="btn-cta">Đặt lịch discovery call →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="inner-footer">
+    <div class="container">
+      <p class="inner-footer-headline">Bắt đầu từ một cuộc trò chuyện</p>
+      <p class="inner-footer-sub">Liên hệ qua kênh nào cũng được nhé.</p>
+      <div class="contact-row">
+        <a href="mailto:alex.nhma@gmail.com" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          alex.nhma@gmail.com
+        </a>
+        <a href="https://instagram.com/bibothegeek" target="_blank" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+          @bibothegeek
+        </a>
+        <a href="https://facebook.com/nguyenhoangmaianh" target="_blank" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          /nguyenhoangmaianh
+        </a>
+      </div>
+      <div class="inner-footer-bottom">
+        <span class="footer-sig">Bí Bo <span>·</span> @bibothegeek</span>
+        <span class="footer-handle">Peace with you, have a nice day!</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ══════════════════════════
+  VIEW: WORKSHOP
+══════════════════════════ -->
+<div id="view-workshop" class="view hidden-right inner-page">
+
+  <nav class="top-nav">
+    <button class="back-btn" onclick="goHome()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Trang chủ
+    </button>
+    <div class="nav-right">
+      <span class="nav-link" style="color:rgba(255,255,255,0.2);">Workshop & Sharing</span>
+    </div>
+  </nav>
+
+  <div class="page-band">
+    <div class="container">
+      <div class="page-band-nav">
+        <span class="page-band-tag">Workshop & Sharing</span>
+      </div>
+      <h1 class="page-headline">
+        Nội dung thực tế.<br>
+        Từ người <span class="amber">trong nghề</span>.
+      </h1>
+      <p class="page-desc">
+        Tôi thiết kế và deliver workshop về workplace skills và human development — từ nội bộ doanh nghiệp đến cộng đồng chuyên môn. Không lý thuyết suông: mỗi buổi đều có framework áp dụng ngay.
+      </p>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+
+      <p class="body-eyebrow">Chủ đề</p>
+      <h2 class="body-title">Những gì tôi thiết kế & deliver</h2>
+      <div class="wks-chips">
+        <span class="wks-chip">Emotional Intelligence</span>
+        <span class="wks-chip">Employee Autonomy</span>
+        <span class="wks-chip">Feedback Culture</span>
+        <span class="wks-chip">Communication</span>
+        <span class="wks-chip">Growth Mindset</span>
+        <span class="wks-chip">EQ at Work</span>
+        <span class="wks-chip">Social-Emotional Learning</span>
+      </div>
+
+      <p class="body-eyebrow">Track record</p>
+      <h2 class="body-title">Những buổi đã làm</h2>
+      <p class="body-sub">Mỗi workshop đều được thiết kế riêng theo context — không phải nội dung đóng gói sẵn.</p>
+
+      <div class="sessions-list">
+        <div class="session-card">
+          <span class="session-num">01</span>
+          <div class="session-content">
+            <p class="session-title">100+ mini-workshops tại GEEK Up</p>
+            <p class="session-desc">Thiết kế và deliver trực tiếp các workshop về workplace skills cho toàn bộ nhân sự qua nhiều năm liên tục — communication, EQ, feedback culture, growth mindset. Tự thiết kế curriculum, slide và facilitation guide cho từng buổi.</p>
+            <div class="session-tags">
+              <span class="session-tag">Internal</span>
+              <span class="session-tag">100+ sessions</span>
+              <span class="session-tag">Workplace Skills</span>
+            </div>
+          </div>
+        </div>
+        <div class="session-card">
+          <span class="session-num">02</span>
+          <div class="session-content">
+            <p class="session-title">Speaker về Emotional Intelligence · MindYourMind</p>
+            <p class="session-desc">Chia sẻ về trí tuệ cảm xúc trong bối cảnh career và môi trường làm việc — cách nhận diện, phát triển và ứng dụng EI để làm việc hiệu quả hơn.</p>
+            <div class="session-tags">
+              <span class="session-tag">Community Talk</span>
+              <span class="session-tag">Emotional Intelligence</span>
+            </div>
+          </div>
+        </div>
+        <div class="session-card">
+          <span class="session-num">03</span>
+          <div class="session-content">
+            <p class="session-title">Speaker về Employee Autonomy · CLB HuReA — Đại học Kinh tế</p>
+            <p class="session-desc">Chia sẻ về quyền tự chủ của nhân viên trong tổ chức — cách tổ chức và cá nhân cùng xây dựng môi trường làm việc có ý nghĩa và động lực bền vững.</p>
+            <div class="session-tags">
+              <span class="session-tag">University</span>
+              <span class="session-tag">Employee Autonomy</span>
+              <span class="session-tag">HR Community</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-strip">
+        <div class="cta-strip-text">
+          <strong>Workshop có thể customize</strong> — từ 60 phút đến half-day · Online hoặc in-person.
+        </div>
+        <a href="mailto:alex.nhma@gmail.com" class="btn-cta">Trao đổi về workshop →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="inner-footer">
+    <div class="container">
+      <p class="inner-footer-headline">Đặt workshop cho team của bạn</p>
+      <p class="inner-footer-sub">Trao đổi về nhu cầu và tôi sẽ design một buổi phù hợp nhất.</p>
+      <div class="contact-row">
+        <a href="mailto:alex.nhma@gmail.com" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          alex.nhma@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/nhmaianh" target="_blank" class="contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <div class="inner-footer-bottom">
+        <span class="footer-sig">Alex <span>·</span> Nguyễn Hoàng Mai Anh</span>
+        <span class="footer-handle">Ho Chi Minh City</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const views = {
+    home:     document.getElementById('view-home'),
+    lod:      document.getElementById('view-lod'),
+    coaching: document.getElementById('view-coaching'),
+    workshop: document.getElementById('view-workshop'),
+  };
+
+  let current = 'home';
+
+  function goTo(target) {
+    if (target === current) return;
+    const from = views[current];
+    const to   = views[target];
+
+    // Slide current out to left
+    from.classList.remove('active');
+    from.classList.add('hidden-left');
+
+    // Slide target in from right
+    to.classList.remove('hidden-right', 'hidden-left');
+    to.classList.add('active');
+    to.scrollTop = 0;
+
+    // After transition, fully hide old
+    from.addEventListener('transitionend', () => {
+      from.classList.add('hidden-right');
+      from.classList.remove('hidden-left');
+    }, { once: true });
+
+    current = target;
+    window.location.hash = target === 'home' ? '' : target;
+  }
+
+  function goHome() {
+    if (current === 'home') return;
+    const from = views[current];
+    const to   = views['home'];
+
+    from.classList.remove('active');
+    from.classList.add('hidden-right');
+
+    to.classList.remove('hidden-left', 'hidden-right');
+    to.classList.add('active');
+    to.scrollTop = 0;
+
+    current = 'home';
+    window.location.hash = '';
+  }
+
+  // Handle hash on load
+  const hash = window.location.hash.replace('#', '');
+  if (hash && views[hash]) {
+    goTo(hash);
+  }
+</script>
+</body>
+</html>
