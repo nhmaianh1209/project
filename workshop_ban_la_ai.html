@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workshop: Bạn là ai nếu ngày mai mất job?</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Recursive:wght@300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --alex-amber:        #E8930A;
+    --alex-amber-golden: #F2B705;
+    --alex-amber-light:  #FEF3E2;
+    --alex-amber-100:    #FDDBA0;
+    --alex-navy:         #0C1E35;
+    --alex-navy-mid:     #1A3A5C;
+    --alex-navy-300:     #3A6080;
+    --alex-navy-light:   #EBF0F6;
+    --alex-teal:         #2AABBB;
+    --alex-teal-light:   #E1F5F7;
+    --alex-warm-white:   #F5F1EF;
+    --alex-white:        #FFFFFF;
+    --alex-font:         'Lexend Deca', 'Lexend', sans-serif;
+    --alex-font-stat:    'Recursive', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--alex-font);
+    background: var(--alex-warm-white);
+    color: var(--alex-navy);
+    line-height: 1.65;
+  }
+
+  /* ─── HERO ─────────────────────────────────────────── */
+  .hero {
+    background: var(--alex-navy);
+    padding: 60px 48px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,147,10,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--alex-teal);
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 800;
+    color: var(--alex-amber);
+    line-height: 1.15;
+    max-width: 680px;
+    margin-bottom: 16px;
+  }
+  .hero-desc {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.62);
+    max-width: 560px;
+    margin-bottom: 32px;
+  }
+
+  /* Meta pills */
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1.5px solid var(--alex-teal);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--alex-teal);
+    white-space: nowrap;
+  }
+  .meta-pill .pill-icon { font-size: 13px; opacity: 0.85; }
+
+  /* Version tag */
+  .version-note {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.28);
+    letter-spacing: 0.08em;
+  }
+
+  /* ─── MAIN LAYOUT ───────────────────────────────────── */
+  /* Sidebar width is controlled by --sb-w; JS toggles .sidebar-collapsed */
+  :root { --sb-w: 220px; --sb-collapsed: 52px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sb-w) 1fr;
+    min-height: calc(100vh - 180px);
+    transition: grid-template-columns 0.28s cubic-bezier(.4,0,.2,1);
+  }
+  .layout.sidebar-collapsed {
+    grid-template-columns: var(--sb-collapsed) 1fr;
+  }
+
+  /* ─── SIDEBAR ───────────────────────────────────────── */
+  .sidebar {
+    background: var(--alex-navy);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;           /* clips label text when collapsed */
+    overflow-y: auto;
+    flex-shrink: 0;
+    width: var(--sb-w);
+    min-width: var(--sb-collapsed);
+    transition: width 0.28s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .layout.sidebar-collapsed .sidebar {
+    width: var(--sb-collapsed);
+    overflow-y: auto;
+  }
+
+  /* Toggle button at top of sidebar */
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .sidebar-toggle-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--alex-teal);
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.18s;
+  }
+  .layout.sidebar-collapsed .sidebar-toggle-label { opacity: 0; }
+  .sidebar-toggle-icon {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    transition: transform 0.28s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .layout.sidebar-collapsed .sidebar-toggle-icon { transform: rotate(180deg); }
+
+  /* Nav items */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+    min-height: 40px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); }
+  .nav-item.active {
+    background: rgba(232,147,10,0.12);
+    border-left-color: var(--alex-amber);
+  }
+
+  /* Collapsed state: num always visible, text fades */
+  .nav-num-col {
+    width: var(--sb-collapsed);
+    min-width: var(--sb-collapsed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-num {
+    font-family: var(--alex-font-stat);
+    font-weight: 900;
+    font-variation-settings: 'slnt' -15;
+    font-size: 12px;
+    color: var(--alex-amber-golden);
+    line-height: 1;
+  }
+  .nav-item.active .nav-num { color: var(--alex-amber); }
+
+  .nav-text-col {
+    flex: 1;
+    padding: 9px 12px 9px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.18s;
+    white-space: nowrap;
+  }
+  .layout.sidebar-collapsed .nav-text-col { opacity: 0; pointer-events: none; }
+
+  .nav-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.3;
+    white-space: normal;       /* allow wrap when expanded */
+  }
+  .nav-duration {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.38);
+  }
+
+  /* Group separators */
+  .nav-sep {
+    padding: 8px 0 3px var(--sb-collapsed);
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.20);
+    margin-top: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  /* In collapsed state, sep shows as a thin divider line */
+  .layout.sidebar-collapsed .nav-sep {
+    padding: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 8px 10px;
+    font-size: 0;
+  }
+
+  /* ─── CONTENT AREA ──────────────────────────────────── */
+  .content {
+    padding: 40px 48px;
+    overflow-y: auto;
+  }
+
+  /* ─── SECTION PANELS ────────────────────────────────── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .panel-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(12,30,53,0.10);
+  }
+  .panel-num {
+    font-family: var(--alex-font-stat);
+    font-weight: 900;
+    font-variation-settings: 'slnt' -15;
+    font-size: 48px;
+    color: var(--alex-amber-golden);
+    line-height: 1;
+    min-width: 60px;
+  }
+  .panel-meta { flex: 1; }
+  .panel-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--alex-teal);
+    margin-bottom: 4px;
+  }
+  .panel-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--alex-navy);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .panel-duration-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--alex-amber);
+    color: var(--alex-navy);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 12px;
+  }
+
+  /* Content blocks */
+  .block { margin-bottom: 28px; }
+  .block-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--alex-teal);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .block-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--alex-teal);
+    opacity: 0.2;
+  }
+  .block-content {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--alex-navy);
+    line-height: 1.7;
+  }
+
+  /* Steps */
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--alex-white);
+    border-radius: 10px;
+    padding: 16px;
+    border-left: 3px solid var(--alex-amber);
+    box-shadow: 0 1px 4px rgba(12,30,53,0.06);
+  }
+  .step-num {
+    font-family: var(--alex-font-stat);
+    font-weight: 900;
+    font-variation-settings: 'slnt' -15;
+    font-size: 18px;
+    color: var(--alex-amber-golden);
+    min-width: 28px;
+    line-height: 1.2;
+  }
+  .step-body { flex: 1; }
+  .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--alex-navy);
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--alex-navy-300);
+    line-height: 1.65;
+  }
+  .step-time {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--alex-teal);
+    white-space: nowrap;
+  }
+
+  /* Prompt box */
+  .prompt-box {
+    background: var(--alex-navy);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--alex-amber);
+    margin: 10px 0;
+  }
+  .prompt-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--alex-teal);
+    margin-bottom: 8px;
+  }
+  .prompt-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.80);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* Tips two-col */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .tips-col { background: var(--alex-white); border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(12,30,53,0.06); }
+  .tips-col-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tips-col.good .tips-col-header { color: #1a8a99; }
+  .tips-col.bad .tips-col-header { color: #c0392b; }
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--alex-navy);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .tip-dot { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Materials checklist */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--alex-white);
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(12,30,53,0.05);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    user-select: none;
+  }
+  .check-item.checked { opacity: 0.5; }
+  .check-item.checked .check-label { text-decoration: line-through; }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid var(--alex-teal);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--alex-teal);
+    transition: all 0.15s;
+  }
+  .check-item.checked .check-box {
+    background: var(--alex-teal);
+    color: white;
+  }
+  .check-label { font-size: 13px; color: var(--alex-navy); font-weight: 400; flex: 1; }
+  .check-note { font-size: 11px; color: var(--alex-navy-300); }
+
+  /* Quote cards */
+  .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .quote-card {
+    background: var(--alex-navy);
+    border-radius: 10px;
+    padding: 18px;
+    border-left: 3px solid var(--alex-teal);
+  }
+  .quote-group-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--alex-teal);
+    margin-bottom: 10px;
+  }
+  .quote-q {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+    margin-bottom: 6px;
+    padding-left: 10px;
+    border-left: 2px solid rgba(242,183,5,0.3);
+  }
+
+  /* Overview flow table */
+  .flow-table { width: 100%; border-collapse: collapse; }
+  .flow-table th {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--alex-teal);
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--alex-navy);
+    border-bottom: 2px solid var(--alex-amber);
+  }
+  .flow-row {
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid rgba(12,30,53,0.08);
+  }
+  .flow-row:hover { background: var(--alex-amber-light); }
+  .flow-row td {
+    padding: 12px 14px;
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .flow-row .f-num {
+    font-family: var(--alex-font-stat);
+    font-weight: 900;
+    font-variation-settings: 'slnt' -15;
+    font-size: 16px;
+    color: var(--alex-amber-golden);
+    width: 36px;
+  }
+  .flow-row .f-name { font-weight: 600; color: var(--alex-navy); }
+  .flow-row .f-dur {
+    color: var(--alex-amber);
+    font-weight: 600;
+    white-space: nowrap;
+    width: 90px;
+  }
+  .flow-row .f-goal { color: var(--alex-navy-300); font-size: 12px; line-height: 1.5; }
+  .flow-row .f-arrow { color: var(--alex-teal); text-align: right; font-size: 14px; width: 28px; }
+
+  /* Total bar */
+  .total-bar {
+    background: var(--alex-amber);
+    padding: 14px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0 0 10px 10px;
+  }
+  .total-label { font-size: 12px; font-weight: 600; color: var(--alex-navy); }
+  .total-val {
+    font-family: var(--alex-font-stat);
+    font-weight: 900;
+    font-variation-settings: 'slnt' -15;
+    font-size: 20px;
+    color: var(--alex-navy);
+  }
+
+  /* Version note */
+  .compact-note {
+    background: rgba(42,171,187,0.10);
+    border: 1px solid rgba(42,171,187,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--alex-navy-300);
+    margin-bottom: 20px;
+  }
+  .compact-note strong { color: var(--alex-teal); }
+
+  /* Inline tag */
+  .tag {
+    display: inline-block;
+    background: var(--alex-amber-light);
+    color: var(--alex-navy);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    margin: 2px 2px 2px 0;
+  }
+  .tag.teal {
+    background: var(--alex-teal-light);
+    color: var(--alex-navy-mid);
+  }
+
+  /* Nav prev/next */
+  .nav-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(12,30,53,0.10);
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--alex-navy);
+    color: rgba(255,255,255,0.75);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: var(--alex-font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nav-btn:hover { background: var(--alex-navy-mid); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-btn.primary {
+    background: var(--alex-amber);
+    color: var(--alex-navy);
+    font-weight: 600;
+  }
+  .nav-btn.primary:hover { background: var(--alex-amber-golden); }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+  /* Tooltip on collapsed sidebar items */
+  .nav-item { position: relative; }
+  .nav-tooltip {
+    position: absolute;
+    left: calc(var(--sb-collapsed) + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--alex-navy-mid);
+    color: rgba(255,255,255,0.88);
+    font-size: 11.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 5px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 100;
+    border: 1px solid rgba(255,255,255,0.10);
+    transition: opacity 0.15s;
+  }
+  .layout.sidebar-collapsed .nav-item:hover .nav-tooltip { opacity: 1; }
+
+  @media (max-width: 768px) {
+    :root { --sb-w: 200px; }
+    .layout { grid-template-columns: var(--sb-collapsed) 1fr; }
+    .layout .sidebar { width: var(--sb-collapsed); }
+    /* Tapping toggle button expands as overlay on mobile */
+    .layout.sidebar-open { grid-template-columns: var(--sb-w) 1fr; }
+    .layout.sidebar-open .sidebar { width: var(--sb-w); }
+    .hero { padding: 32px 20px 28px; }
+    .content { padding: 24px 18px; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .quote-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="version-note">Workshop Template v1.0</div>
+  <div class="hero-eyebrow">Workshop Design · @nhmaianh</div>
+  <h1 class="hero-title">Bạn là ai nếu ngày mai mất job?</h1>
+  <p class="hero-desc">Workshop khám phá bản sắc cá nhân — giúp người tham gia nhận ra mức độ đồng nhất bản thân với công việc và bắt đầu xây dựng một bản sắc rộng hơn, dày hơn, và bền hơn.</p>
+  <div class="meta-row">
+    <span class="meta-pill"><span class="pill-icon">🎯</span> Workshop</span>
+    <span class="meta-pill"><span class="pill-icon">👥</span> 6–8 người</span>
+    <span class="meta-pill"><span class="pill-icon">🏠</span> In-person · Vòng tròn</span>
+    <span class="meta-pill"><span class="pill-icon">⏱</span> 2.5 – 3 giờ</span>
+  </div>
+</section>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()" title="Thu/mở menu">
+      <span class="sidebar-toggle-label">Flow Workshop</span>
+      <span class="sidebar-toggle-icon">‹</span>
+    </div>
+
+    <div class="nav-sep">Khởi động</div>
+    <button class="nav-item active" onclick="showPanel('overview', this)">
+      <div class="nav-num-col"><span class="nav-num">≡</span></div>
+      <div class="nav-text-col"><span class="nav-name">Tổng quan flow</span></div>
+      <div class="nav-tooltip">Tổng quan flow</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p0', this)">
+      <div class="nav-num-col"><span class="nav-num">00</span></div>
+      <div class="nav-text-col"><span class="nav-name">Nguyên tắc không gian</span><span class="nav-duration">Trước khi bắt đầu</span></div>
+      <div class="nav-tooltip">00 · Nguyên tắc không gian</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p1', this)">
+      <div class="nav-num-col"><span class="nav-num">01</span></div>
+      <div class="nav-text-col"><span class="nav-name">Opening & Check-in</span><span class="nav-duration">20–25 phút</span></div>
+      <div class="nav-tooltip">01 · Opening & Check-in</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p2', this)">
+      <div class="nav-num-col"><span class="nav-num">02</span></div>
+      <div class="nav-text-col"><span class="nav-name">Dẫn nhập vấn đề</span><span class="nav-duration">15–20 phút</span></div>
+      <div class="nav-tooltip">02 · Dẫn nhập vấn đề</div>
+    </button>
+
+    <div class="nav-sep">Activities</div>
+    <button class="nav-item" onclick="showPanel('p3', this)">
+      <div class="nav-num-col"><span class="nav-num">A1</span></div>
+      <div class="nav-text-col"><span class="nav-name">Tôi thường giới thiệu mình như thế nào?</span><span class="nav-duration">25 phút</span></div>
+      <div class="nav-tooltip">A1 · Giới thiệu bản thân</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p4', this)">
+      <div class="nav-num-col"><span class="nav-num">A2</span></div>
+      <div class="nav-text-col"><span class="nav-name">Nếu không còn title, tôi còn lại gì?</span><span class="nav-duration">35 phút</span></div>
+      <div class="nav-tooltip">A2 · Không còn title</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p5', this)">
+      <div class="nav-num-col"><span class="nav-num">A3</span></div>
+      <div class="nav-text-col"><span class="nav-name">Bản sắc ngoài công việc</span><span class="nav-duration">35 phút</span></div>
+      <div class="nav-tooltip">A3 · Identity Map</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p6', this)">
+      <div class="nav-num-col"><span class="nav-num">A4</span></div>
+      <div class="nav-text-col"><span class="nav-name">Tôi muốn trở thành người như thế nào?</span><span class="nav-duration">30 phút</span></div>
+      <div class="nav-tooltip">A4 · Future self</div>
+    </button>
+
+    <div class="nav-sep">Kết thúc</div>
+    <button class="nav-item" onclick="showPanel('p7', this)">
+      <div class="nav-num-col"><span class="nav-num">05</span></div>
+      <div class="nav-text-col"><span class="nav-name">Sharing circle</span><span class="nav-duration">25–30 phút</span></div>
+      <div class="nav-tooltip">05 · Sharing circle</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('p8', this)">
+      <div class="nav-num-col"><span class="nav-num">06</span></div>
+      <div class="nav-text-col"><span class="nav-name">Closing & Commitment</span><span class="nav-duration">15–20 phút</span></div>
+      <div class="nav-tooltip">06 · Closing</div>
+    </button>
+
+    <div class="nav-sep">Tài nguyên</div>
+    <button class="nav-item" onclick="showPanel('materials', this)">
+      <div class="nav-num-col"><span class="nav-num">📦</span></div>
+      <div class="nav-text-col"><span class="nav-name">Materials checklist</span></div>
+      <div class="nav-tooltip">Materials checklist</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('facilitator', this)">
+      <div class="nav-num-col"><span class="nav-num">🎤</span></div>
+      <div class="nav-text-col"><span class="nav-name">Facilitator tips</span></div>
+      <div class="nav-tooltip">Facilitator tips</div>
+    </button>
+    <button class="nav-item" onclick="showPanel('cards', this)">
+      <div class="nav-num-col"><span class="nav-num">💬</span></div>
+      <div class="nav-text-col"><span class="nav-name">Reflection cards</span></div>
+      <div class="nav-tooltip">Reflection cards</div>
+    </button>
+  </nav>
+
+  <!-- CONTENT AREA -->
+  <main class="content">
+
+    <!-- ── OVERVIEW ──────────────────────────────── -->
+    <div id="overview" class="panel active">
+      <div class="panel-header">
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Tổng quan</div>
+          <div class="panel-title">Flow Workshop — Nhìn toàn cảnh</div>
+        </div>
+      </div>
+
+      <div class="compact-note">
+        <strong>Cách dùng:</strong> Bấm vào từng dòng trong bảng hoặc menu bên trái để xem chi tiết từng phần — mục tiêu, hướng dẫn từng bước, prompt gợi ý và cách debrief.
+      </div>
+
+      <div class="block">
+        <div style="overflow:hidden; border-radius:10px; border: 1px solid rgba(12,30,53,0.10);">
+          <table class="flow-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Phần</th>
+                <th>Thời lượng</th>
+                <th>Mục đích</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="flow-row" onclick="showPanelById('p0')">
+                <td class="f-num">00</td>
+                <td class="f-name">Nguyên tắc không gian</td>
+                <td class="f-dur">Trước khi bắt đầu</td>
+                <td class="f-goal">Đặt container an toàn, 4 ground rules</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p1')">
+                <td class="f-num">01</td>
+                <td class="f-name">Opening & Check-in</td>
+                <td class="f-dur">20–25 phút</td>
+                <td class="f-goal">Tạo kết nối, làm người tham gia thấy "chuyện này có liên quan đến mình"</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p2')">
+                <td class="f-num">02</td>
+                <td class="f-name">Dẫn nhập vấn đề</td>
+                <td class="f-dur">15–20 phút</td>
+                <td class="f-goal">Đặt khung: job không chỉ là thu nhập, mà còn là bản sắc, nhịp sống, địa vị, belonging</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p3')">
+                <td class="f-num">A1</td>
+                <td class="f-name">Tôi thường giới thiệu mình như thế nào?</td>
+                <td class="f-dur">25 phút</td>
+                <td class="f-goal">Nhìn thấy mình đang định nghĩa bản thân qua vai trò nào</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p4')">
+                <td class="f-num">A2</td>
+                <td class="f-name">Nếu không còn title, tôi còn lại gì?</td>
+                <td class="f-dur">35 phút</td>
+                <td class="f-goal">Tách "tôi làm gì" khỏi "tôi là ai"</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p5')">
+                <td class="f-num">A3</td>
+                <td class="f-name">Bản sắc ngoài công việc</td>
+                <td class="f-dur">35 phút</td>
+                <td class="f-goal">Khám phá các phần bản sắc bị bỏ quên — Identity Map</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p6')">
+                <td class="f-num">A4</td>
+                <td class="f-name">Tôi muốn trở thành người như thế nào?</td>
+                <td class="f-dur">30 phút</td>
+                <td class="f-goal">Chuyển từ achievement-based identity sang value/person-based identity</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p7')">
+                <td class="f-num">05</td>
+                <td class="f-name">Sharing circle</td>
+                <td class="f-dur">25–30 phút</td>
+                <td class="f-goal">Chia sẻ có chọn lọc, lắng nghe sâu, không phán xét</td>
+                <td class="f-arrow">→</td>
+              </tr>
+              <tr class="flow-row" onclick="showPanelById('p8')">
+                <td class="f-num">06</td>
+                <td class="f-name">Closing & Commitment</td>
+                <td class="f-dur">15–20 phút</td>
+                <td class="f-goal">Kết lại bằng một hành động nhỏ sau workshop</td>
+                <td class="f-arrow">→</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="total-bar">
+            <span class="total-label">Tổng thời lượng (full version)</span>
+            <span class="total-val">≈ 3 giờ</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="compact-note">
+        <strong>Version rút gọn 2 giờ:</strong> Bỏ A3 (Identity Map), rút sharing còn 15 phút. A1 → A2 → A4 → Sharing → Closing.
+      </div>
+    </div>
+
+    <!-- ── P0: GROUND RULES ────────────────────────── -->
+    <div id="p0" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">00</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Setup · Trước khi bắt đầu</div>
+          <div class="panel-title">Nguyên tắc không gian</div>
+          <div class="panel-duration-badge">⏱ Trước khi bắt đầu</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Đặt "container" an toàn cho không gian workshop. Vì chủ đề khá sâu và có thể chạm cảm xúc, người tham gia cần biết họ đang ở trong một không gian không bị phán xét trước khi sẵn sàng mở lòng.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Script gợi ý cho facilitator</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Nói với nhóm</div>
+          <div class="prompt-text">"Buổi hôm nay không phải để tìm ra câu trả lời hoàn hảo cho câu hỏi 'tôi là ai'. Mình chỉ cùng nhau mở ra một không gian để nhìn lại: mình đang định nghĩa bản thân bằng điều gì, điều gì thật sự quan trọng với mình, và nếu công việc biến động, phần nào trong mình vẫn còn nguyên vẹn."</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">4 Ground Rules</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Chia sẻ tự nguyện</div>
+              <div class="step-desc">Ai cũng có quyền pass ở bất kỳ phần nào. Không có áp lực phải chia sẻ nếu chưa sẵn sàng.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Không sửa, không khuyên vội</div>
+              <div class="step-desc">Khi người khác chia sẻ, mình lắng nghe trước. Không phân tích, không đưa lời khuyên ngay.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Bảo mật</div>
+              <div class="step-desc">Câu chuyện ở lại trong phòng. Những gì được chia sẻ ở đây không mang ra bên ngoài.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Không có câu trả lời đúng</div>
+              <div class="step-desc">Chỉ có câu trả lời thật ở thời điểm hiện tại. Mọi cảm nhận đều có giá trị.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Viết ground rules lên bảng/flipchart</span>
+          <span class="tag">Hoặc dùng slide 2 (Ground Rules)</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" disabled>← Trước</button>
+        <button class="nav-btn primary" onclick="showPanelById('p1')">Tiếp: Opening →</button>
+      </div>
+    </div>
+
+    <!-- ── P1: OPENING ─────────────────────────────── -->
+    <div id="p1" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">01</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Khởi động</div>
+          <div class="panel-title">Opening & Check-in — "Tôi là…"</div>
+          <div class="panel-duration-badge">⏱ 20–25 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Tạo kết nối trong nhóm và làm người tham gia nhận ra: khi nói về bản thân, ta thường nói về vai trò trước khi nói về con người.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Các bước thực hiện</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Phát giấy + Viết cá nhân</div>
+              <div class="step-desc">Mỗi người nhận 1 tờ giấy nhỏ. Yêu cầu hoàn thành nhanh 5 câu bắt đầu bằng "Tôi là…" Không giải thích thêm.</div>
+            </div>
+            <div class="step-time">3 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Chia sẻ vòng tròn</div>
+              <div class="step-desc">Mời từng người đọc 1–2 câu họ thấy thoải mái chia sẻ. Facilitator lắng nghe, không nhận xét.</div>
+            </div>
+            <div class="step-time">10 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Câu hỏi debrief nhẹ</div>
+              <div class="step-desc">Hỏi cả nhóm — không cần phân tích dài, chỉ để nhóm nhận ra pattern.</div>
+            </div>
+            <div class="step-time">5–7 phút</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Câu hỏi debrief</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Hỏi cả nhóm</div>
+          <div class="prompt-text">"Trong những câu vừa rồi, có bao nhiêu câu liên quan đến công việc, vai trò, chức danh, hoặc trách nhiệm với người khác?"</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Expected insight từ nhóm</div>
+        <div class="block-content">
+          <span class="tag teal">Nhiều người viết về nghề nghiệp / chức danh</span>
+          <span class="tag teal">Ít câu về phẩm chất / cảm xúc / giá trị</span>
+          <span class="tag teal">Một số người ngạc nhiên khi nhận ra điều này</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Giấy nhỏ (post-it hoặc A5)</span>
+          <span class="tag">Bút viết cho mỗi người</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p0')">← Nguyên tắc</button>
+        <button class="nav-btn primary" onclick="showPanelById('p2')">Tiếp: Dẫn nhập →</button>
+      </div>
+    </div>
+
+    <!-- ── P2: DẪN NHẬP ────────────────────────────── -->
+    <div id="p2" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">02</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Frame setting</div>
+          <div class="panel-title">Dẫn nhập vấn đề</div>
+          <div class="panel-duration-badge">⏱ 15–20 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Đặt khung tư duy: job không chỉ là thu nhập — nó còn là bản sắc, lịch sinh hoạt, nhóm thuộc về, địa vị, sự công nhận. Vì vậy khi job lung lay, nhiều người sợ hơn chỉ mất thu nhập.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Key message để dẫn</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Script gợi ý</div>
+          <div class="prompt-text">"Công việc không chỉ cho mình tiền. Nó còn cho mình lịch sinh hoạt, nhóm thuộc về, cảm giác có ích, địa vị, sự công nhận, và một cách để trả lời câu hỏi 'tôi là ai'. Vì vậy, khi công việc lung lay, nhiều người không chỉ sợ mất thu nhập. Họ sợ mất một phần bản thân."</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">3 Điểm chính cần truyền đạt</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Chúng ta được huấn luyện để "làm", ít được huấn luyện để "là"</div>
+              <div class="step-desc">Từ nhỏ, câu hỏi luôn là: Con học trường nào? Làm nghề gì? Lương bao nhiêu? — Ít ai hỏi: Con thấy điều gì thật sự quan trọng? Con muốn trở thành kiểu người nào?</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Mạng xã hội biến bản sắc thành cuộc đua</div>
+              <div class="step-desc">Không chỉ so sánh thành tích — ta còn so sánh "phiên bản cuộc đời": ai đi du học, ai lên chức, ai nghỉ việc mở business, ai cưới, mua nhà, sinh con.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Áp lực kinh tế cao làm tự hiểu mình trở thành thứ xa xỉ</div>
+              <div class="step-desc">Người trẻ không phải không sâu sắc — nhiều khi họ chỉ quá mệt để hỏi những câu sâu sắc.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Câu chốt dẫn nhập</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Kết phần này bằng câu</div>
+          <div class="prompt-text">"Hôm nay mình không cố trả lời hết câu hỏi 'tôi là ai'. Mình chỉ bắt đầu bằng một câu nhỏ hơn: Tôi đang dùng điều gì để định nghĩa bản thân — và điều đó có đủ bền không?"</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Lưu ý</div>
+        <div class="block-content">Phần này nên ngắn, sâu, <strong>không lecture quá nhiều</strong>. Tối đa 15–20 phút. Ưu tiên gợi mở hơn là giải thích toàn bộ.</div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p1')">← Opening</button>
+        <button class="nav-btn primary" onclick="showPanelById('p3')">Tiếp: Activity 1 →</button>
+      </div>
+    </div>
+
+    <!-- ── P3: ACTIVITY 1 ──────────────────────────── -->
+    <div id="p3" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">A1</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Activity 1</div>
+          <div class="panel-title">Tôi thường giới thiệu mình như thế nào?</div>
+          <div class="panel-duration-badge">⏱ 25 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Giúp người tham gia nhận ra <strong>default identity script</strong> của mình — phiên bản "tôi là ai" được dùng nhiều nhất trong cuộc sống hằng ngày.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Các bước thực hiện</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Viết phần giới thiệu tự nhiên</div>
+              <div class="step-desc">Prompt: "Tưởng tượng bạn đang gặp người mới trong networking. Họ hỏi: 'Bạn là ai?' — Bạn thường sẽ trả lời như thế nào?" → Viết nguyên văn tự nhiên nhất. Sau đó gạch chân phần liên quan đến công việc, chức danh, thành tích, học vấn, vai trò xã hội.</div>
+            </div>
+            <div class="step-time">7 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Viết lại — không được dùng nghề nghiệp</div>
+              <div class="step-desc">Viết lại phần giới thiệu nhưng không nhắc: công ty, chức danh, ngành nghề, trường học, thành tích, trạng thái hôn nhân/gia đình. Ví dụ: "Tôi là người thích quan sát con người. Tôi là người hay tìm ý nghĩa phía sau những việc mình làm."</div>
+            </div>
+            <div class="step-time">7 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Pair sharing</div>
+              <div class="step-desc">Chia cặp. Mỗi người chia sẻ: Bản giới thiệu đầu tiên nói gì về cách tôi định nghĩa mình? Bản thứ hai khiến tôi thấy dễ hay khó? Vì sao?</div>
+            </div>
+            <div class="step-time">8 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Debrief nhóm</div>
+              <div class="step-desc">Hỏi cả nhóm: "Điều gì khó nhất khi giới thiệu bản thân mà không dùng công việc?"</div>
+            </div>
+            <div class="step-time">3 phút</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Expected insight</div>
+        <div class="block-content">
+          <span class="tag teal">Mình không quen nói về mình ngoài vai trò</span>
+          <span class="tag teal">Mình thấy trống</span>
+          <span class="tag teal">Không biết cái gì "đáng kể" nếu không phải thành tích</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Giấy A4</span>
+          <span class="tag">Bút</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p2')">← Dẫn nhập</button>
+        <button class="nav-btn primary" onclick="showPanelById('p4')">Tiếp: Activity 2 →</button>
+      </div>
+    </div>
+
+    <!-- ── P4: ACTIVITY 2 ──────────────────────────── -->
+    <div id="p4" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">A2</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Activity 2 · Core Activity</div>
+          <div class="panel-title">Nếu không còn title, tôi còn lại gì?</div>
+          <div class="panel-duration-badge">⏱ 35 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Tách "tôi làm gì" khỏi "tôi là ai" — đây là <strong>activity trung tâm</strong> của workshop.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Setup worksheet</div>
+        <div class="block-content" style="margin-bottom:10px;">Phát worksheet 3 cột. Điều kiện: <strong>không liên quan trực tiếp đến công việc.</strong></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <div style="background:var(--alex-white);border-radius:8px;padding:14px;border-top:3px solid var(--alex-amber);">
+            <div style="font-size:11px;font-weight:600;color:var(--alex-amber);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em;">10 điều tôi thích</div>
+            <div style="font-size:12px;color:var(--alex-navy-300);line-height:1.7;">đọc sách lịch sử, pha cà phê, đi bộ, chăm mèo, nghe người khác kể chuyện…</div>
+          </div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:14px;border-top:3px solid var(--alex-teal);">
+            <div style="font-size:11px;font-weight:600;color:var(--alex-teal);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em;">10 điều tôi giỏi</div>
+            <div style="font-size:12px;color:var(--alex-navy-300);line-height:1.7;">làm người khác thấy an toàn, sắp xếp ý tưởng, nhớ chi tiết nhỏ, quan sát cảm xúc…</div>
+          </div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:14px;border-top:3px solid var(--alex-amber-golden);">
+            <div style="font-size:11px;font-weight:600;color:var(--alex-navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em;">10 điều quan trọng</div>
+            <div style="font-size:12px;color:var(--alex-navy-300);line-height:1.7;">tự do, tử tế, học hỏi, gia đình, sức khỏe, sự thật, bình yên…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Các bước thực hiện</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Viết cá nhân</div>
+              <div class="step-desc">Người tham gia tự điền 3 cột. Facilitator nói: "Nếu bạn không viết đủ 10 điều, đó không phải thất bại. Đó là dữ liệu."</div>
+            </div>
+            <div class="step-time">15 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Khoanh tròn</div>
+              <div class="step-desc">3 điều khiến họ thấy "đây là mình nhất" · 3 điều họ đã bỏ quên lâu nhất · 1 điều muốn đem trở lại trong tháng tới.</div>
+            </div>
+            <div class="step-time">5 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Reflection — 3 câu hoàn thành</div>
+              <div class="step-desc">"Tôi nhận ra mình không chỉ là người làm nghề ________. Tôi cũng là người ________. Một phần của tôi đã bị bỏ quên là ________."</div>
+            </div>
+            <div class="step-time">5 phút</div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Small group sharing (nhóm 3)</div>
+              <div class="step-desc">Mỗi người chia sẻ: "Một phần ngoài công việc mà tôi muốn nhớ lại là…"</div>
+            </div>
+            <div class="step-time">10 phút</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Worksheet 3 cột (in sẵn hoặc vẽ tay)</span>
+          <span class="tag">Bút</span>
+          <span class="tag">Bút màu để khoanh</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p3')">← Activity 1</button>
+        <button class="nav-btn primary" onclick="showPanelById('p5')">Tiếp: Activity 3 →</button>
+      </div>
+    </div>
+
+    <!-- ── P5: ACTIVITY 3 ──────────────────────────── -->
+    <div id="p5" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">A3</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Activity 3 · Identity Map</div>
+          <div class="panel-title">Bản sắc ngoài công việc</div>
+          <div class="panel-duration-badge">⏱ 35 phút · Có thể bỏ ở version 2h</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Giúp người tham gia nhìn thấy bản thân như một <strong>hệ sinh thái</strong>, không phải một chức danh. Mỗi người đều có nhiều mảnh bản sắc — không phải chỉ "người làm nghề X".</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Hướng dẫn vẽ Identity Map</div>
+        <div class="block-content" style="margin-bottom:12px;">Mỗi người vẽ vòng tròn giữa, ghi tên mình. Xung quanh là các "mảnh bản sắc":</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          <span class="tag">Người học</span><span class="tag">Người bạn</span><span class="tag">Người con</span><span class="tag">Người yêu/vợ/chồng</span><span class="tag">Người chăm sóc</span><span class="tag">Người sáng tạo</span><span class="tag">Người vận động cơ thể</span><span class="tag">Người thuộc về cộng đồng</span><span class="tag">Người tâm linh</span><span class="tag">Người thích khám phá</span><span class="tag">Người nghỉ ngơi</span><span class="tag">Người chơi</span><span class="tag">Người đóng góp</span><span class="tag">Người làm nghề</span>
+        </div>
+        <div style="background:var(--alex-navy);border-radius:10px;padding:16px;">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--alex-teal);margin-bottom:10px;">3 ký hiệu đánh dấu</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div style="color:rgba(255,255,255,0.75);font-size:13px;"><strong style="color:var(--alex-amber-golden);">+</strong> Phần này đang sống khỏe</div>
+            <div style="color:rgba(255,255,255,0.75);font-size:13px;"><strong style="color:var(--alex-amber);">–</strong> Phần này đang bị bỏ quên</div>
+            <div style="color:rgba(255,255,255,0.75);font-size:13px;"><strong style="color:var(--alex-teal);">?</strong> Phần này tôi muốn khám phá thêm</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Reflection prompts</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Mảnh bản sắc nào đang chiếm quá nhiều không gian?</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Mảnh nào từng quan trọng nhưng đã bị bỏ rơi?</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Mảnh nào nếu được nuôi lại sẽ giúp tôi vững hơn?</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Tôi đang để thị trường lao động định giá phần nào của mình?</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Có phần nào trong tôi không cần ai công nhận vẫn có giá trị không?</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Câu chốt debrief</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Facilitator nói</div>
+          <div class="prompt-text">"Một bản sắc bền không phải là bản sắc không có công việc. Mà là bản sắc có nhiều nguồn sống hơn ngoài công việc."</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Giấy A4 trắng (vẽ tự do)</span>
+          <span class="tag">Bút màu / marker</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p4')">← Activity 2</button>
+        <button class="nav-btn primary" onclick="showPanelById('p6')">Tiếp: Activity 4 →</button>
+      </div>
+    </div>
+
+    <!-- ── P6: ACTIVITY 4 ──────────────────────────── -->
+    <div id="p6" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">A4</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Activity 4 · Future Self</div>
+          <div class="panel-title">Tôi muốn trở thành người như thế nào?</div>
+          <div class="panel-duration-badge">⏱ 30 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Chuyển từ <strong>achievement-based identity</strong> sang <strong>value-based identity</strong> — từ "mình muốn đạt được gì" sang "mình muốn trở thành người như thế nào".</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Bước 1 · Hai câu hỏi — cảm nhận sự khác biệt</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px;">
+          <div style="background:rgba(232,147,10,0.08);border-radius:8px;padding:14px;border:1px solid rgba(232,147,10,0.2);">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--alex-navy-300);margin-bottom:6px;">Câu hỏi thành tích</div>
+            <div style="font-size:13px;color:var(--alex-navy);font-weight:600);">"Tôi muốn đạt được gì trong 5 năm tới?"</div>
+            <div style="font-size:11px;color:var(--alex-navy-300);margin-top:6px;">→ Tạo áp lực. Tập trung vào kết quả bên ngoài.</div>
+          </div>
+          <div style="background:rgba(42,171,187,0.08);border-radius:8px;padding:14px;border:1px solid rgba(42,171,187,0.2);">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--alex-teal);margin-bottom:6px;">Câu hỏi bản sắc</div>
+            <div style="font-size:13px;color:var(--alex-navy);font-weight:600);">"Tôi muốn trở thành người như thế nào trong 5 năm tới?"</div>
+            <div style="font-size:11px;color:var(--alex-navy-300);margin-top:6px;">→ Mở ra phẩm chất, giá trị, cách sống.</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);margin-top:8px;">Thời gian: 5 phút · Hỏi nhóm: "Hai câu tạo ra cảm giác khác nhau như thế nào?"</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Bước 2 · Future self writing</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Prompt viết</div>
+          <div class="prompt-text">"Hãy tưởng tượng 5 năm nữa, bạn không nhất thiết có một chức danh hoàn hảo, nhưng bạn cảm thấy mình sống đúng hơn. Khi đó, bạn là người như thế nào?"</div>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+          <div style="background:var(--alex-white);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--alex-navy);border-left:3px solid var(--alex-amber);">Tôi là người <strong>biết</strong>…</div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--alex-navy);border-left:3px solid var(--alex-amber);">Tôi là người <strong>dám</strong>…</div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--alex-navy);border-left:3px solid var(--alex-amber);">Tôi là người <strong>không còn</strong>…</div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--alex-navy);border-left:3px solid var(--alex-amber);">Tôi là người <strong>vẫn giữ</strong>…</div>
+          <div style="background:var(--alex-white);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--alex-navy);border-left:3px solid var(--alex-amber);">Tôi là người <strong>chọn</strong>…</div>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);margin-top:8px;">Thời gian: 15 phút viết cá nhân</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Bước 3 · Chọn 3 phẩm chất muốn nuôi</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+          <span class="tag">Dũng cảm</span><span class="tag">Bình an</span><span class="tag">Trung thực</span><span class="tag">Kỷ luật</span><span class="tag">Tự do</span><span class="tag">Sâu sắc</span><span class="tag">Tử tế</span><span class="tag">Kiên nhẫn</span><span class="tag">Có mặt</span><span class="tag">Sáng tạo</span><span class="tag">Vững vàng</span><span class="tag">Rộng lượng</span>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);margin-top:4px;">Thời gian: 5 phút</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Bước 4 · Micro-action (7 ngày tới)</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Prompt</div>
+          <div class="prompt-text">"Trong 7 ngày tới, một hành động nhỏ nào có thể chứng minh rằng tôi đang sống gần hơn với phẩm chất này?"</div>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);margin-top:8px;">Ví dụ: Nếu chọn "bình an" → đi bộ 20 phút không nghe podcast. Nếu chọn "trung thực" → nói thật một điều mình đang né tránh.</div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p5')">← Activity 3</button>
+        <button class="nav-btn primary" onclick="showPanelById('p7')">Tiếp: Sharing →</button>
+      </div>
+    </div>
+
+    <!-- ── P7: SHARING CIRCLE ──────────────────────── -->
+    <div id="p7" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">05</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Chia sẻ</div>
+          <div class="panel-title">Sharing Circle</div>
+          <div class="panel-duration-badge">⏱ 25–30 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Mục tiêu</div>
+        <div class="block-content">Giúp người tham gia được nhìn thấy mà không bị đánh giá. Mỗi người có tối đa 3 phút.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Prompt sharing</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Lựa chọn 1</div>
+          <div class="prompt-text">"Sau buổi hôm nay, một điều tôi nhìn thấy rõ hơn về bản thân là…"</div>
+        </div>
+        <div class="prompt-box" style="margin-top:10px;">
+          <div class="prompt-label">Lựa chọn 2</div>
+          <div class="prompt-text">"Nếu ngày mai tôi không còn chức danh/công ty hiện tại, một phần của tôi vẫn còn là…"</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Nguyên tắc khi nghe</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">✗</div><div class="step-body"><div class="step-desc">Không chen vào</div></div></div>
+          <div class="step"><div class="step-num">✗</div><div class="step-body"><div class="step-desc">Không đưa lời khuyên</div></div></div>
+          <div class="step"><div class="step-num">✗</div><div class="step-body"><div class="step-desc">Không relate bằng cách kể chuyện của mình ngay</div></div></div>
+          <div class="step"><div class="step-num">✓</div><div class="step-body"><div class="step-desc">Chỉ có thể nói: "Cảm ơn bạn đã chia sẻ."</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Option nâng cao · Witnessing (nếu nhóm thân)</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Vòng thứ 2 — sau khi nghe xong</div>
+          <div class="prompt-text">"Sau khi nghe bạn chia sẻ, một phẩm chất tôi nhìn thấy ở bạn là…" (dũng cảm / sâu sắc / chân thành / tử tế)</div>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);margin-top:6px;">⚠️ Chỉ dùng khi facilitator kiểm soát được không gian an toàn. Rất mạnh nếu làm đúng.</div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p6')">← Activity 4</button>
+        <button class="nav-btn primary" onclick="showPanelById('p8')">Tiếp: Closing →</button>
+      </div>
+    </div>
+
+    <!-- ── P8: CLOSING ─────────────────────────────── -->
+    <div id="p8" class="panel">
+      <div class="panel-header">
+        <div class="panel-num">06</div>
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Kết thúc</div>
+          <div class="panel-title">Closing & Personal Commitment</div>
+          <div class="panel-duration-badge">⏱ 15–20 phút</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Closing reflection — viết vào card</div>
+        <div style="background:var(--alex-navy);border-radius:10px;padding:20px;margin-bottom:10px;">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--alex-teal);margin-bottom:12px;">Mỗi người viết vào tấm card:</div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.80);line-height:2.2;font-style:italic;">
+            Tôi không chỉ là ________.<br>
+            Tôi cũng là ________.<br>
+            Trong 7 ngày tới, tôi sẽ nuôi phần này bằng cách ________.
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--alex-navy-300);">Card này là của riêng từng người — không cần thu lại.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Closing script cho facilitator</div>
+        <div class="prompt-box">
+          <div class="prompt-label">Nói với nhóm</div>
+          <div class="prompt-text">"Công việc là một phần quan trọng của đời sống. Mình không cần phủ nhận điều đó. Nhưng mình cũng không cần trao toàn bộ quyền định nghĩa bản thân cho công việc, chức danh, công ty, hay thị trường lao động.<br><br>Một bản sắc dày không được xây bằng một câu trả lời lớn. Nó được xây bằng những lựa chọn nhỏ: mình dành thời gian cho điều gì, mình giữ giá trị nào, mình chăm phần nào của bản thân, mình từ chối điều gì dù xã hội đang kéo mình đi hướng khác.<br><br>Câu hỏi hôm nay không cần trả lời xong. Chỉ cần mình bắt đầu sống với nó thật hơn."</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Final one-word checkout</div>
+        <div class="block-content" style="margin-bottom:8px;">Mỗi người nói 1 từ mô tả trạng thái hiện tại:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="tag teal">nhẹ</span><span class="tag teal">rõ</span><span class="tag teal">chạm</span><span class="tag teal">hơi buồn</span><span class="tag teal">biết ơn</span><span class="tag teal">mở</span><span class="tag teal">bình yên</span><span class="tag teal">nhiều suy nghĩ</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Cần chuẩn bị</div>
+        <div class="block-content">
+          <span class="tag">Card nhỏ (index card hoặc A6)</span>
+          <span class="tag">Bút viết</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="showPanelById('p7')">← Sharing</button>
+        <button class="nav-btn primary" onclick="showPanelById('materials')">Xem Materials →</button>
+      </div>
+    </div>
+
+    <!-- ── MATERIALS ────────────────────────────────── -->
+    <div id="materials" class="panel">
+      <div class="panel-header">
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Chuẩn bị</div>
+          <div class="panel-title">Materials Checklist</div>
+        </div>
+      </div>
+
+      <div class="compact-note">
+        <strong>Tip:</strong> Bấm vào từng item để đánh dấu đã chuẩn bị xong.
+      </div>
+
+      <div class="block">
+        <div class="block-label">Văn phòng phẩm</div>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Giấy A4 trắng</div><div class="check-note">Mỗi người 3–4 tờ</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Giấy nhỏ (post-it hoặc A5) cho opening</div><div class="check-note">1 tờ/người</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Card nhỏ cho closing</div><div class="check-note">1 card/người</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Bút viết đủ màu</div><div class="check-note">1 bút/người tối thiểu</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Bút màu / marker cho Identity Map (A3)</div><div class="check-note">Dùng cho activity 3</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Sticky notes</div><div class="check-note">Tùy ý, dùng để collect insights</div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Không gian</div>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Phòng có thể ngồi vòng tròn</div><div class="check-note">Không có bàn cũng được</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Không gian thân mật, tách biệt</div><div class="check-note">Không ồn ào, không bị nhìn từ ngoài vào</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Bảng trắng hoặc flipchart</div><div class="check-note">Để viết ground rules + key messages</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Tissue / khăn giấy</div><div class="check-note">Chủ đề có thể chạm cảm xúc</div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Trải nghiệm</div>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Trà / cà phê / nước</div><div class="check-note">Tạo không khí ấm áp</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Nhạc nhẹ (instrumental) — khi viết cá nhân</div><div class="check-note">Spotify: lo-fi, acoustic, café ambient</div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Slides (tối đa 5–7)</div>
+        <div class="checklist">
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Slide 1: Tên workshop</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Slide 2: Ground rules (4 nguyên tắc)</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Slide 3: Key idea — "Job is not just income"</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Slide 4: Hướng dẫn activity (per activity)</div></div>
+          <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-label">Slide 5: Closing quote / câu hỏi kết</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FACILITATOR TIPS ────────────────────────── -->
+    <div id="facilitator" class="panel">
+      <div class="panel-header">
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Hướng dẫn</div>
+          <div class="panel-title">Facilitator Tips</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Vai trò của facilitator</div>
+        <div class="block-content">Với chủ đề này, facilitator <strong>không đóng vai "người dạy"</strong>. Giữ vai trò: người giữ không gian · người đặt câu hỏi · người làm chậm nhịp · người normalize cảm xúc · người không vội kết luận.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Nên dùng / Nên tránh</div>
+        <div class="tips-grid">
+          <div class="tips-col good">
+            <div class="tips-col-header">✓ Nên dùng</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Bạn không cần trả lời ngay."</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Bạn có thể pass."</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Cứ viết điều thật, không cần viết điều hay."</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Nếu thấy trống, hãy ghi nhận cái trống đó."</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Mình không cần biến mọi insight thành kế hoạch ngay."</div>
+            <div class="tip-item"><span class="tip-dot">✓</span> "Câu hỏi này có thể đi cùng bạn thêm vài ngày nữa."</div>
+          </div>
+          <div class="tips-col bad">
+            <div class="tips-col-header">✗ Nên tránh</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Bạn phải tìm ra purpose của mình."</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Cứ nghỉ việc nếu không đúng với mình."</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Bạn nên…"</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Mình nghĩ vấn đề của bạn là…"</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Ai cũng phải có đam mê."</div>
+            <div class="tip-item"><span class="tip-dot">✗</span> "Chỉ cần yêu bản thân là được."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Xử lý khi có người xúc động mạnh</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Cho họ không gian. Không cần giải quyết ngay, không cần dừng toàn nhóm.</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Nói nhẹ: "Cảm ơn bạn đã cho phép mình được thấy điều này."</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Đặt tissue gần họ. Tiếp tục chạy workshop sau khi họ ổn hơn.</div></div></div>
+          <div class="step"><div class="step-num">→</div><div class="step-body"><div class="step-desc">Break out nếu cần — cho nhóm viết cá nhân trong khi bạn check-in nhanh với người đó.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REFLECTION CARDS ────────────────────────── -->
+    <div id="cards" class="panel">
+      <div class="panel-header">
+        <div class="panel-meta">
+          <div class="panel-eyebrow">Tài nguyên</div>
+          <div class="panel-title">Bộ câu hỏi Reflection Cards</div>
+        </div>
+      </div>
+
+      <div class="block-content" style="margin-bottom:16px;font-size:13px;color:var(--alex-navy-300);">Có thể in thành reflection cards phát cho người tham gia, hoặc dùng làm gợi ý xuyên suốt workshop.</div>
+
+      <div class="block">
+        <div class="block-label">Nhóm 1 · Về bản sắc</div>
+        <div class="quote-grid">
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Khi không dùng chức danh, tôi thường khó nói gì về mình?</div>
+            <div class="quote-q">Tôi đang để điều gì định nghĩa giá trị của mình?</div>
+            <div class="quote-q">Nếu không ai đánh giá, tôi muốn dành thời gian cho điều gì?</div>
+          </div>
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Có phần nào trong tôi từng rất sống động nhưng giờ bị bỏ quên?</div>
+            <div class="quote-q">Tôi là ai trong mắt chính mình, không phải trong mắt thị trường lao động?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Nhóm 2 · Về công việc</div>
+        <div class="quote-grid">
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Công việc hiện tại đang cho tôi điều gì ngoài tiền?</div>
+            <div class="quote-q">Tôi sợ mất gì nhất nếu mất job?</div>
+            <div class="quote-q">Tôi đang dùng thành tích nghề nghiệp để bù đắp cho nhu cầu cảm xúc nào?</div>
+          </div>
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Có điều gì tôi đang chịu đựng chỉ vì nó giúp tôi giữ một bản sắc "thành công"?</div>
+            <div class="quote-q">Nếu công việc không còn là trung tâm, đời tôi sẽ có thêm không gian cho điều gì?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Nhóm 3 · Về future self</div>
+        <div class="quote-grid">
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Tôi muốn trở thành người như thế nào, không chỉ đạt được điều gì?</div>
+            <div class="quote-q">Tôi muốn người thân cảm nhận gì khi ở gần tôi?</div>
+            <div class="quote-q">Tôi muốn giữ phẩm chất nào dù cuộc sống biến động?</div>
+          </div>
+          <div class="quote-card">
+            <div class="quote-group-label">Reflection</div>
+            <div class="quote-q">Tôi muốn bớt sống theo kịch bản nào?</div>
+            <div class="quote-q">Một lựa chọn nhỏ nào trong tuần này có thể kéo tôi gần hơn với con người đó?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const layout = document.querySelector('.layout');
+
+  /* Start collapsed on mobile, expanded on desktop */
+  function initSidebar() {
+    if (window.innerWidth <= 768) {
+      layout.classList.add('sidebar-collapsed');
+    }
+  }
+  initSidebar();
+
+  function toggleSidebar() {
+    layout.classList.toggle('sidebar-collapsed');
+  }
+
+  function showPanel(id, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (btn) btn.classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+    /* Auto-collapse on mobile after selection */
+    if (window.innerWidth <= 768) {
+      layout.classList.add('sidebar-collapsed');
+    }
+  }
+
+  function showPanelById(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      const attr = btn.getAttribute('onclick') || '';
+      if (attr.includes("'" + id + "'")) btn.classList.add('active');
+    });
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+</script>
+</body>
+</html>
