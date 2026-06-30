@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bộ công cụ đánh giá PAEI - Consolidated</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#16315e;--teal:#5fd1c1;--teal-light:#e8f9f7;
+  --P:#E8503A;--A:#F0B429;--E:#5BB3E8;--I:#4BAE6E;
+  --gap-low:#4BAE6E;--gap-mid:#F0B429;--gap-high:#E8503A;
+  --bg:#f4f4f2;--white:#fff;--border:#e2e2de;
+  --text:#1a1a1a;--muted:#6b7280;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:'Lexend Deca',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+.app{max-width:680px;margin:0 auto;padding:0 0 80px}
+.landing{padding:40px 20px}
+.landing h1{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.landing .sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.resume-banner{background:#fffbeb;border:1px solid #fcd34d;border-radius:var(--radius);padding:16px;margin-bottom:20px}
+.resume-banner h4{font-size:14px;color:#92400e;margin-bottom:8px;font-weight:600}
+.resume-banner p{font-size:12px;color:#78350f;margin-bottom:12px;line-height:1.5}
+.resume-actions{display:flex;gap:8px}
+.btn-resume{flex:1;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-resume:hover{background:#1e4080}
+.btn-discard{flex:1;padding:10px;background:#fff;color:#92400e;border:1px solid #fcd34d;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-discard:hover{background:#fef3c7}
+.main-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;text-align:center}
+.main-card h3{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.main-card p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.main-card .meta{display:flex;justify-content:center;gap:16px;font-size:11px;color:var(--muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em}
+.main-card .meta span{display:flex;align-items:center;gap:4px}
+.main-card .meta strong{color:var(--navy);font-weight:600}
+.btn-primary{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:#1e4080}
+.storage-note{background:#fffbeb;border:1px solid #fcd34d;border-radius:var(--radius-sm);padding:10px 14px;font-size:11px;color:#92400e;margin-bottom:16px;line-height:1.6}
+.screen{display:none}
+.screen.active{display:block}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer;margin-bottom:20px;background:none;border:none;font-family:inherit;padding:0}
+.back-btn:hover{color:var(--navy)}
+.form-title{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;letter-spacing:.03em}
+.field input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--teal)}
+.quiz-header{padding:16px 20px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.quiz-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.quiz-label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.quiz-count{font-size:13px;font-weight:600;color:var(--navy)}
+.progress-bar{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--teal));border-radius:2px;transition:width .3s}
+.quiz-body{padding:20px}
+.quiz-instruction{background:var(--teal-light);border:1px solid rgba(95,209,193,.3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--navy);line-height:1.6}
+.quiz-instruction strong{font-weight:600}
+.mode-toggle{display:flex;gap:6px;margin-bottom:16px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px}
+.mode-btn{flex:1;padding:8px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .2s}
+.mode-btn.active{background:var(--navy);color:#fff}
+.quiz-q{font-size:15px;font-weight:600;color:var(--navy);line-height:1.5;margin-bottom:16px}
+.priority-hint{font-size:11px;color:var(--teal);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.05em}
+.drag-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.drag-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:10px;user-select:none;-webkit-user-select:none;transition:border-color .2s, box-shadow .2s}
+.drag-item:hover{border-color:var(--teal)}
+.sortable-ghost{opacity:.4;background:var(--teal-light)!important;border:2px dashed var(--teal)!important}
+.sortable-chosen{box-shadow:0 8px 24px rgba(22,49,94,.18);border-color:var(--navy)!important;cursor:grabbing}
+.sortable-drag{transform:rotate(1deg);opacity:.95}
+.drag-handle{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:18px;flex-shrink:0;cursor:grab;border-radius:6px;touch-action:none}
+.drag-handle:hover{background:var(--bg);color:var(--navy)}
+.drag-handle:active{cursor:grabbing}
+.rank-badge{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:var(--muted);background:var(--border);transition:all .25s}
+.drag-item[data-rank="1"] .rank-badge{background:var(--navy);color:#fff;box-shadow:0 0 0 3px rgba(22,49,94,.12)}
+.drag-item[data-rank="2"] .rank-badge{background:#4a6fa8;color:#fff}
+.drag-item[data-rank="3"] .rank-badge{background:#8fa8c8;color:#fff}
+.drag-item[data-rank="4"] .rank-badge{background:var(--border);color:var(--muted)}
+.drag-item[data-rank="1"]{border-color:rgba(22,49,94,.25)}
+.option-text{font-size:13px;color:var(--text);line-height:1.4;flex:1}
+.rank-picker{display:flex;gap:3px;flex-shrink:0}
+.rank-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--white);font-family:inherit;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;padding:0}
+.rank-btn:hover{border-color:var(--navy);color:var(--navy)}
+.rank-btn.current{background:var(--navy);color:#fff;border-color:var(--navy)}
+.quiz-body[data-mode="drag"] .rank-picker{display:none}
+.quiz-body[data-mode="tap"] .drag-handle{display:none}
+.quiz-body[data-mode="tap"] .drag-item{cursor:default}
+.quiz-nav{display:flex;gap:10px;margin-top:24px}
+.btn-next{flex:1;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-next:hover{background:#1e4080}
+.btn-prev{padding:13px 16px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;cursor:pointer;color:var(--muted);transition:all .2s}
+.btn-prev:hover{border-color:var(--navy);color:var(--navy)}
+.result-header{background:var(--navy);color:#fff;padding:24px 20px;text-align:center}
+.result-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.result-position{font-size:12px;opacity:.75}
+.result-body{padding:20px}
+.report-section{margin-bottom:28px}
+.report-title{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;text-align:center}
+.report-subtitle{font-size:12px;color:var(--muted);margin-bottom:14px;text-align:center;line-height:1.5}
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+table.paei-table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+table.paei-table th{background:#f8f8f6;color:var(--navy);font-weight:600;text-align:center;padding:12px 8px;border:1px solid var(--border);font-size:12px;letter-spacing:.02em}
+table.paei-table td{padding:12px 8px;border:1px solid var(--border);text-align:center;color:var(--text)}
+table.paei-table td.test-name{text-align:left;padding-left:16px;font-weight:500;color:var(--navy)}
+table.paei-table td.paei-code{font-weight:700;letter-spacing:2px;font-size:14px}
+table.paei-table td.score{font-weight:600;font-variant-numeric:tabular-nums}
+table.paei-table tr.discrepancy-row td{background:#f8f8f6;font-weight:700}
+table.paei-table tr.discrepancy-row td.test-name{color:var(--navy)}
+table.paei-table td.gap-cell{font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+.gap-low{color:var(--gap-low)}
+.gap-mid{color:var(--gap-mid)}
+.gap-high{color:var(--gap-high)}
+.insight-box{background:var(--teal-light);border-left:3px solid var(--teal);border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px;font-size:13px;color:var(--text);line-height:1.7}
+.insight-box strong{color:var(--navy);font-weight:600}
+.insight-box .insight-item{margin-bottom:8px}
+.insight-box .insight-item:last-child{margin-bottom:0}
+.action-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.btn-outline{flex:1;min-width:120px;padding:12px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--navy);transition:all .2s}
+.btn-outline:hover{border-color:var(--teal);background:var(--teal-light)}
+.btn-restart{width:100%;padding:13px;background:var(--teal);color:var(--navy);border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;margin-bottom:16px}
+.btn-restart:hover{background:#4ab8a9}
+.footer{padding:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7;text-align:center}
+.footer strong{color:var(--navy);font-weight:600}
+.landing-footer{padding:24px 0 0;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7;text-align:center;margin-top:16px}
+.landing-footer strong{color:var(--navy);font-weight:600}
+@media (prefers-reduced-motion: reduce){.drag-item,.rank-badge{transition:none!important}}
+@media print{
+  @page{margin:12mm;size:A4}
+  body{background:#fff!important;font-size:11pt}
+  .app{max-width:100%;padding:0;margin:0}
+  .quiz-header,.mode-toggle,.quiz-nav,.action-row,.btn-restart,.footer,.storage-note,.landing-footer,.back-btn,.resume-banner{display:none!important}
+  #screen-landing,#screen-form,#screen-quiz{display:none!important}
+  #screen-result{display:block!important}
+  .result-header{background:#fff!important;color:var(--navy)!important;border-bottom:2px solid var(--navy);padding:12px 0 16px;text-align:center}
+  .result-name{color:var(--navy)!important;font-weight:600;font-size:13pt}
+  .result-position{color:var(--muted)!important;opacity:1;font-size:10pt}
+  .result-body{padding:12px 0}
+  .table-wrap{border:1px solid #d1d5db;box-shadow:none;page-break-inside:avoid;margin-bottom:8px}
+  .report-section{page-break-inside:avoid;margin-bottom:18px}
+  table.paei-table th,table.paei-table td,table.paei-table tr.discrepancy-row td{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .gap-low,.gap-mid,.gap-high{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .insight-box{print-color-adjust:exact;-webkit-print-color-adjust:exact;background:#f6fbfa!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- LANDING -->
+<div id="screen-landing" class="landing screen active">
+  <h1>Bộ công cụ đánh giá PAEI</h1>
+  <p class="sub">Bài đánh giá tổng hợp giúp bạn hiểu rõ tính cách, phong cách lãnh đạo và yêu cầu của vị trí công việc — tất cả trong một bài test.</p>
+
+  <div id="resume-container"></div>
+
+  <div class="main-card">
+    <h3>Bắt đầu đánh giá</h3>
+    <p>Bài test gồm 60 câu hỏi xếp hạng ưu tiên. Mất khoảng 15-20 phút để hoàn thành.</p>
+    <div class="meta">
+      <span>📝 <strong>60 câu</strong></span>
+      <span>⏱ <strong>15-20 phút</strong></span>
+      <span>💾 <strong>Tự lưu</strong></span>
+    </div>
+    <button class="btn-primary" onclick="goToForm()">Bắt đầu →</button>
+  </div>
+
+  <div class="storage-note">⚠️ Dữ liệu chỉ lưu trên trình duyệt này. Nếu bạn xóa bộ nhớ trình duyệt, kết quả sẽ bị mất.</div>
+
+  <div class="landing-footer">
+    Mô hình <strong>PAEI</strong> được phát triển bởi <strong>Adizes Institute</strong>, được hiệu chỉnh và sử dụng với mục đích nội bộ. Developed by <strong>alexnpeace</strong>
+  </div>
+</div>
+
+<!-- FORM -->
+<div id="screen-form" class="screen" style="padding:20px">
+  <button class="back-btn" onclick="goBack('landing')">← Quay lại</button>
+  <h2 class="form-title">Thông tin đánh giá</h2>
+  <p class="form-sub">Điền thông tin trước khi bắt đầu bài test 60 câu</p>
+  <div class="field">
+    <label>Họ và tên</label>
+    <input type="text" id="f-name" placeholder="Nhập họ và tên đầy đủ" autocomplete="name">
+  </div>
+  <div class="field">
+    <label>Vị trí đánh giá</label>
+    <input type="text" id="f-position" placeholder="VD: Project Manager, Senior Engineer...">
+  </div>
+  <button class="btn-primary" onclick="startQuiz()">Bắt đầu đánh giá →</button>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-progress-row">
+      <span class="quiz-label">Đánh giá PAEI</span>
+      <span class="quiz-count"><span id="q-current">1</span> / 60</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:1.67%"></div></div>
+  </div>
+  <div class="quiz-body" id="quiz-body" data-mode="drag">
+    <div class="mode-toggle" role="tablist" aria-label="Chế độ trả lời">
+      <button class="mode-btn active" data-mode="drag" onclick="switchMode('drag')">✋ Kéo thả</button>
+      <button class="mode-btn" data-mode="tap" onclick="switchMode('tap')">👆 Chạm số</button>
+    </div>
+    <div class="quiz-instruction" id="quiz-instruction">
+      <strong>Kéo thả</strong> để xếp thứ tự — trên cùng = phù hợp nhất với bạn.
+    </div>
+    <div class="quiz-q" id="quiz-question"></div>
+    <div class="priority-hint">🥇 Ưu tiên #1 nằm trên cùng</div>
+    <ul class="drag-list" id="drag-list" aria-label="Danh sách lựa chọn để xếp hạng"></ul>
+    <div class="quiz-nav">
+      <button class="btn-prev" id="btn-prev" onclick="prevQuestion()">← Trước</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Tiếp →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+  <div class="result-header">
+    <div class="result-name" id="res-name"></div>
+    <div class="result-position" id="res-position"></div>
+  </div>
+  <div class="result-body">
+
+    <div class="report-section">
+      <h3 class="report-title">Consolidated report</h3>
+      <p class="report-subtitle">Tổng hợp điểm PAEI của 3 nhóm đánh giá</p>
+      <div class="table-wrap">
+        <table class="paei-table" id="consolidated-table"></table>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h3 class="report-title">Position Requirements vs Leadership Styles</h3>
+      <p class="report-subtitle">Khoảng cách giữa yêu cầu vị trí và phong cách lãnh đạo của bạn</p>
+      <div class="table-wrap">
+        <table class="paei-table" id="discrepancy-a"></table>
+      </div>
+      <div class="insight-box" id="insight-a"></div>
+    </div>
+
+    <div class="report-section">
+      <h3 class="report-title">Personality Test vs Leadership Styles</h3>
+      <p class="report-subtitle">Khoảng cách giữa bản chất tự nhiên và cách bạn lãnh đạo</p>
+      <div class="table-wrap">
+        <table class="paei-table" id="discrepancy-b"></table>
+      </div>
+      <div class="insight-box" id="insight-b"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-outline" onclick="printPDF()">🖨 In / Lưu PDF</button>
+      <button class="btn-outline" onclick="exportCSV()">↓ Xuất CSV</button>
+      <button class="btn-outline" onclick="goLanding()">← Trang chủ</button>
+    </div>
+    <button class="btn-restart" onclick="retakeQuiz()">Làm lại bài test</button>
+    <div class="footer">
+      Mô hình <strong>PAEI</strong> được phát triển bởi <strong>Adizes Institute</strong>, được hiệu chỉnh và sử dụng với mục đích nội bộ. Developed by <strong>alexnpeace</strong>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const RAW_QUESTIONS = {"leadership": [{"q": "Khi tôi là người tổ chức, các cuộc họp của tôi thường", "opts": [{"t": "ngắn gọn và đi thẳng vào vấn đề", "r": "P"}, {"t": "có tổ chức và hệ thống", "r": "A"}, {"t": "là nơi để thảo luận ý tưởng mới", "r": "E"}, {"t": "thân thiện và không có xung đột", "r": "I"}]}, {"q": "Loại thông tin mà tôi muốn người khác trình bày với mình là thông tin", "opts": [{"t": "cho phép tôi đưa ra kết luận ngay lập tức", "r": "P"}, {"t": "được cấu trúc tốt", "r": "A"}, {"t": "trình bày bức tranh tổng thể", "r": "E"}, {"t": "được đồng thuận bởi các bên có liên quan", "r": "I"}]}, {"q": "Tôi đạt được thành công vì tôi", "opts": [{"t": "nỗ lực làm việc hơn mọi người", "r": "P"}, {"t": "làm việc hiệu quả với nguồn lực tối ưu", "r": "A"}, {"t": "sẵn sàng chấp nhận rủi ro", "r": "E"}, {"t": "có sự đồng cảm với người khác", "r": "I"}]}, {"q": "Trong công việc tôi giỏi", "opts": [{"t": "đạt kết quả nhanh nhất có thể", "r": "P"}, {"t": "nhìn thấy chi tiết người khác có thể không nhận ra", "r": "A"}, {"t": "tìm giải pháp mới mẻ", "r": "E"}, {"t": "dẫn dắt người khác đến sự đồng thuận", "r": "I"}]}, {"q": "Khi ai đó không thực hiện theo ý muốn của tôi, tôi sẽ", "opts": [{"t": "tự mình xử lý", "r": "P"}, {"t": "không bỏ qua, phải có xử lý phù hợp", "r": "A"}, {"t": "cảm thấy bị xúc phạm và sẽ \"ghim\"", "r": "E"}, {"t": "không vội kết luận và sẽ trao đổi lại", "r": "I"}]}, {"q": "Nếu cần chuẩn bị bài thuyết trình, tôi đảm bảo nó sẽ", "opts": [{"t": "ngắn gọn và đi thẳng vào vấn đề", "r": "P"}, {"t": "đầy đủ và có cấu trúc tốt", "r": "A"}, {"t": "trình bày tốt ý tưởng và tầm nhìn của tôi", "r": "E"}, {"t": "được người tham dự đón nhận", "r": "I"}]}, {"q": "Tôi đưa ra quyết định trong công việc", "opts": [{"t": "nhanh chóng và thực hiện ngay", "r": "P"}, {"t": "xem xét các rủi ro có thể xảy ra", "r": "A"}, {"t": "và có thể thay đổi, khi cần thiết", "r": "E"}, {"t": "và đảm bảo chúng sẽ được người khác ủng hộ", "r": "I"}]}, {"q": "Tôi mang lại giá trị cho công ty vì tôi", "opts": [{"t": "hoàn thành công việc", "r": "P"}, {"t": "đảm bảo mọi thứ vận hành chính xác", "r": "A"}, {"t": "có tư duy đột phá", "r": "E"}, {"t": "là rất giỏi làm việc nhóm", "r": "I"}]}, {"q": "Trong công việc tôi giỏi", "opts": [{"t": "thực hiện kế hoạch", "r": "P"}, {"t": "lập kế hoạch những gì cần thực hiện", "r": "A"}, {"t": "hình dung ra mục tiêu", "r": "E"}, {"t": "tìm kiếm được sự ủng hộ cho kế hoạch và quyết định của mình", "r": "I"}]}, {"q": "Đặc trưng trong phong cách làm việc của tôi là", "opts": [{"t": "cam kết hoàn thành những gì được kỳ vọng", "r": "P"}, {"t": "đúng giờ và chú ý đến chi tiết", "r": "A"}, {"t": "sẵn sàng chấp nhận rủi ro", "r": "E"}, {"t": "khả năng lắng nghe tốt", "r": "I"}]}, {"q": "Phong cách kinh doanh của tôi là", "opts": [{"t": "Tôi làm việc chăm chỉ để tạo ra kết quả", "r": "P"}, {"t": "Tôi kiểm soát chất lượng công việc", "r": "A"}, {"t": "Tôi tìm kiếm ý tưởng mới để cải tiến", "r": "E"}, {"t": "Tôi tìm kiếm sự ủng hộ của mọi người cho các quyết định", "r": "I"}]}, {"q": "Khi đưa ra quyết định trong công việc, tôi tính đến", "opts": [{"t": "kết quả tức thì", "r": "P"}, {"t": "chi tiết", "r": "A"}, {"t": "tác động đến tương lai", "r": "E"}, {"t": "tác động đến con người", "r": "I"}]}, {"q": "Thói quen làm việc của tôi là", "opts": [{"t": "làm việc mọi lúc", "r": "P"}, {"t": "theo lịch trình", "r": "A"}, {"t": "tùy hứng", "r": "E"}, {"t": "đáp ứng kỳ vọng của người khác", "r": "I"}]}, {"q": "Trong công việc, tôi chú ý nhiều hơn đến việc", "opts": [{"t": "đạt kết quả đo lường được", "r": "P"}, {"t": "xây dựng và tối ưu hóa quy trình kinh doanh", "r": "A"}, {"t": "tìm kiếm phương pháp làm việc sáng tạo", "r": "E"}, {"t": "cải thiện cách mọi người giao tiếp với nhau", "r": "I"}]}, {"q": "Trong công việc, mọi người đánh giá tôi là", "opts": [{"t": "thực tế", "r": "P"}, {"t": "cẩn thận", "r": "A"}, {"t": "sắc bén", "r": "E"}, {"t": "quan tâm người khác", "r": "I"}]}, {"q": "Trong công việc, tôi đánh giá cao những người", "opts": [{"t": "làm việc chăm chỉ", "r": "P"}, {"t": "tuân thủ các quy tắc và thời gian", "r": "A"}, {"t": "không lo ngại những điều mới và thay đổi", "r": "E"}, {"t": "nghĩ về cảm xúc của người khác", "r": "I"}]}, {"q": "Khẩu hiệu mô tả phong cách làm việc của tôi", "opts": [{"t": "nắm bắt đúng thời cơ", "r": "P"}, {"t": "nếu nó không hỏng, đừng sửa nó", "r": "A"}, {"t": "có cách nào khác tốt hơn không?", "r": "E"}, {"t": "không ai có thể sống hay làm việc một mình", "r": "I"}]}, {"q": "Tôi học nhanh nhất thông qua", "opts": [{"t": "trải nghiệm, bằng cách làm thực tế", "r": "P"}, {"t": "một chương trình có cấu trúc tốt với kết quả có thể dự đoán được", "r": "A"}, {"t": "một chương trình kích thích và thách thức tư duy", "r": "E"}, {"t": "một chương trình giúp xây dựng mối quan hệ trong quá trình học", "r": "I"}]}, {"q": "Chỗ làm việc của tôi thường là", "opts": [{"t": "chỉ cần làm được việc", "r": "P"}, {"t": "ngăn nắp và có tổ chức", "r": "A"}, {"t": "nằm ở trong đầu (nơi nào cũng được)", "r": "E"}, {"t": "một nơi dễ chịu và thoải mái", "r": "I"}]}, {"q": "Tôi khen ngợi mọi người khi họ", "opts": [{"t": "đạt được kết quả mong đợi", "r": "P"}, {"t": "kiểm soát được tình hình", "r": "A"}, {"t": "kiên trì theo đuổi ý tưởng của họ", "r": "E"}, {"t": "là những người làm việc nhóm tốt", "r": "I"}]}], "personality": [{"q": "Tôi được thúc đẩy nhiều nhất bởi", "opts": [{"t": "kết quả", "r": "P"}, {"t": "sự trật tự và có thể kiểm soát", "r": "A"}, {"t": "sự cải tiến", "r": "E"}, {"t": "sự hòa hợp lẫn nhau", "r": "I"}]}, {"q": "Tôi cảm thấy hài lòng khi tôi", "opts": [{"t": "hoàn thành công việc", "r": "P"}, {"t": "kiểm soát được mọi thứ", "r": "A"}, {"t": "thực hiện được những thay đổi cần thiết", "r": "E"}, {"t": "khiến mọi người đồng thuận", "r": "I"}]}, {"q": "Khi giải quyết xung đột, tôi KHÔNG sẵn sàng đánh đổi", "opts": [{"t": "kết quả", "r": "P"}, {"t": "chất lượng", "r": "A"}, {"t": "quan điểm của tôi", "r": "E"}, {"t": "mối quan hệ", "r": "I"}]}, {"q": "Khi ra quyết định tôi dựa vào", "opts": [{"t": "kinh nghiệm/thực tế", "r": "P"}, {"t": "logic", "r": "A"}, {"t": "trực giác", "r": "E"}, {"t": "cảm xúc của mọi người", "r": "I"}]}, {"q": "Tôi ưu tiên", "opts": [{"t": "có hoặc không, không mơ hồ", "r": "P"}, {"t": "hiểu rõ các lựa chọn", "r": "A"}, {"t": "khám phá mọi lựa chọn", "r": "E"}, {"t": "lựa chọn mà mọi người đồng thuận", "r": "I"}]}, {"q": "Tôi ưu tiên", "opts": [{"t": "đạt được kết quả", "r": "P"}, {"t": "hệ thống hóa", "r": "A"}, {"t": "đổi mới", "r": "E"}, {"t": "duy trì sự hòa hợp", "r": "I"}]}, {"q": "Điều quan trọng nhất với tôi là", "opts": [{"t": "kết quả", "r": "P"}, {"t": "trật tự", "r": "A"}, {"t": "tự do", "r": "E"}, {"t": "sự đồng thuận", "r": "I"}]}, {"q": "Tôi ưu tiên", "opts": [{"t": "hành động", "r": "P"}, {"t": "hiểu sâu vấn đề", "r": "A"}, {"t": "sáng tạo", "r": "E"}, {"t": "hỗ trợ mọi người", "r": "I"}]}, {"q": "Xếp hạng ưu tiên của bản thân", "opts": [{"t": "Làm", "r": "P"}, {"t": "Phân tích", "r": "A"}, {"t": "Tưởng tượng", "r": "E"}, {"t": "Cảm nhận", "r": "I"}]}, {"q": "Với tôi, điều quan trọng nhất trong bất kỳ công việc nào là", "opts": [{"t": "Hoàn thành nó", "r": "P"}, {"t": "Làm đúng", "r": "A"}, {"t": "Liên tục cải tiến", "r": "E"}, {"t": "Không có xung đột và \"hiềm khích\"", "r": "I"}]}, {"q": "Tôi thích khẩu hiệu", "opts": [{"t": "Nói ít làm nhiều", "r": "P"}, {"t": "Ăn chắc mặc bền", "r": "A"}, {"t": "Thay đổi để tốt hơn", "r": "E"}, {"t": "Sức mạnh của sói nằm ở bầy đàn", "r": "I"}]}, {"q": "Tôi KHÔNG được truyền cảm hứng bởi các mục tiêu", "opts": [{"t": "không khả thi", "r": "P"}, {"t": "không đủ rõ ràng", "r": "A"}, {"t": "không hấp dẫn", "r": "E"}, {"t": "không dựa trên giá trị", "r": "I"}]}, {"q": "Tôi thích các công việc", "opts": [{"t": "ngắn gọn và tập trung", "r": "P"}, {"t": "chi tiết và rõ ràng", "r": "A"}, {"t": "không giới hạn sự tự do của tôi", "r": "E"}, {"t": "được sự ủng hộ của mọi người", "r": "I"}]}, {"q": "Xếp hạng nỗi sợ của bản thân", "opts": [{"t": "sự phản bội", "r": "P"}, {"t": "rơi vào tình huống mất kiểm soát", "r": "A"}, {"t": "bị phớt lờ", "r": "E"}, {"t": "bị người khác từ chối", "r": "I"}]}, {"q": "Xếp hạng các khẩu hiệu theo sở thích của bạn", "opts": [{"t": "Muốn đi nhanh, thì đi một mình", "r": "P"}, {"t": "Chậm mà chắc", "r": "A"}, {"t": "Liều ăn nhiều", "r": "E"}, {"t": "Muốn đi xa, thì đi cùng nhau", "r": "I"}]}, {"q": "Để thăng tiến trong sự nghiệp, tôi đã dựa vào khả năng", "opts": [{"t": "vượt chỉ tiêu", "r": "P"}, {"t": "kiểm soát rủi ro, tuân thủ quy tắc và chính sách", "r": "A"}, {"t": "chấp nhận rủi ro, tư duy đột phá", "r": "E"}, {"t": "xây dựng mối quan hệ bền chặt", "r": "I"}]}, {"q": "Tôi thích được trả lương", "opts": [{"t": "theo hiệu suất của tôi", "r": "P"}, {"t": "thu nhập ổn định, ít biến động", "r": "A"}, {"t": "có cơ hội tăng thêm thu nhập", "r": "E"}, {"t": "công bằng với đội của tôi", "r": "I"}]}, {"q": "Tôi có thể không hài lòng với bản thân vì", "opts": [{"t": "tôi chưa làm được thứ mình nên làm", "r": "P"}, {"t": "tôi đã không thể kiểm soát tình huống", "r": "A"}, {"t": "mọi thứ diễn ra không như tôi mong muốn", "r": "E"}, {"t": "tôi không được yêu thích như mình mong muốn", "r": "I"}]}, {"q": "Tôi là người", "opts": [{"t": "chăm chỉ", "r": "P"}, {"t": "chính xác và chú ý đến chi tiết", "r": "A"}, {"t": "có khả năng ứng phó với sự không chắc chắn", "r": "E"}, {"t": "có khả năng làm việc với mọi người", "r": "I"}]}, {"q": "Tôi cảm thấy thoải mái khi các cuộc họp", "opts": [{"t": "ngắn gọn và không lãng phí thời gian", "r": "P"}, {"t": "theo đúng lịch trình", "r": "A"}, {"t": "cho phép tôi trình bày ý tưởng", "r": "E"}, {"t": "được tổ chức trong bầu không khí tôn trọng lẫn nhau", "r": "I"}]}], "position": [{"q": "Vị trí này đòi hỏi khả năng", "opts": [{"t": "Phản ứng nhanh", "r": "P"}, {"t": "Phân tích sâu, có hệ thống", "r": "A"}, {"t": "Có cái nhìn bao quát", "r": "E"}, {"t": "Giải quyết xung đột", "r": "I"}]}, {"q": "Để thành công ở vị trí này, cần", "opts": [{"t": "hoàn thành công việc", "r": "P"}, {"t": "tập trung vào hiệu suất", "r": "A"}, {"t": "không sợ thất bại", "r": "E"}, {"t": "có sự đồng cảm", "r": "I"}]}, {"q": "Vị trí này nên tập trung vào", "opts": [{"t": "Kết quả", "r": "P"}, {"t": "Sự chính xác", "r": "A"}, {"t": "Tương lai", "r": "E"}, {"t": "Con người", "r": "I"}]}, {"q": "Người thành công nhất ở vị trí này sẽ là người", "opts": [{"t": "Chăm chỉ", "r": "P"}, {"t": "Chú ý đến chi tiết", "r": "A"}, {"t": "Sáng tạo", "r": "E"}, {"t": "Khéo léo trong các mối quan hệ", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Tạo ra kết quả mong đợi đúng hạn", "r": "P"}, {"t": "Tuân thủ nghiêm ngặt các chính sách và quy tắc", "r": "A"}, {"t": "Tạo ra những ý tưởng mới có hiệu quả", "r": "E"}, {"t": "Làm việc trong môi trường đội nhóm", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Làm cả những công việc ngoài kế hoạch nếu cần", "r": "P"}, {"t": "Tuân thủ chính sách và quy trình hoạt động tiêu chuẩn", "r": "A"}, {"t": "Tạo ra những ý tưởng mới", "r": "E"}, {"t": "Phát triển và duy trì mối quan hệ tốt với người khác", "r": "I"}]}, {"q": "Để thành công, vị trí này đòi hỏi", "opts": [{"t": "Tạo ra kết quả mong đợi đúng hạn", "r": "P"}, {"t": "Chú ý đến chi tiết", "r": "A"}, {"t": "Thử nghiệm cái mới và linh hoạt", "r": "E"}, {"t": "Thuyết phục mọi người đồng thuận", "r": "I"}]}, {"q": "Vị trí này đòi hỏi khả năng", "opts": [{"t": "Thực hiện các thay đổi", "r": "P"}, {"t": "Phân tích rủi ro của sự thay đổi", "r": "A"}, {"t": "Khởi xướng sự thay đổi", "r": "E"}, {"t": "Thúc đẩy mọi người chấp nhận sự thay đổi", "r": "I"}]}, {"q": "Ưu tiên của vị trí này là", "opts": [{"t": "Hoàn thành công việc", "r": "P"}, {"t": "Kiểm soát công việc", "r": "A"}, {"t": "Cải tiến để công việc tốt hơn", "r": "E"}, {"t": "Xây dựng một đội ngũ mạnh mẽ", "r": "I"}]}, {"q": "Tại thời điểm này, vị trí này cần tập trung vào", "opts": [{"t": "Điều cần làm là gì (what)", "r": "P"}, {"t": "Làm như thế nào (how)", "r": "A"}, {"t": "Tại sao cần phải làm (why)", "r": "E"}, {"t": "Ai nên làm (who)", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Hành động nhanh chóng", "r": "P"}, {"t": "Tư duy hệ thống và logic", "r": "A"}, {"t": "Sáng tạo", "r": "E"}, {"t": "Phát triển về trí tuệ cảm xúc", "r": "I"}]}, {"q": "Vị trí này yêu cầu một người phải", "opts": [{"t": "Hiệu quả", "r": "P"}, {"t": "Có tổ chức và hệ thống", "r": "A"}, {"t": "Đổi mới", "r": "E"}, {"t": "Có khả năng hòa đồng tốt với người khác", "r": "I"}]}, {"q": "Vị trí này chủ yếu đòi hỏi khả năng", "opts": [{"t": "Tập trung vào kết quả có thể đo lường được", "r": "P"}, {"t": "Kiểm soát các quy trình", "r": "A"}, {"t": "Làm việc đa nhiệm", "r": "E"}, {"t": "Làm việc đội nhóm", "r": "I"}]}, {"q": "Vị trí này", "opts": [{"t": "Yêu cầu tạo ra kết quả cần thiết đúng thời hạn", "r": "P"}, {"t": "Yêu cầu tuân thủ nghiêm ngặt các quy tắc và quy định", "r": "A"}, {"t": "Tham gia vào việc ra quyết định trong điều kiện bất ổn cao", "r": "E"}, {"t": "Yêu cầu giải quyết các tình huống xung đột giữa các bên", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Một đánh giá thực tế về tình hình", "r": "P"}, {"t": "Tính nhất quán trong việc ra quyết định và thực thi", "r": "A"}, {"t": "Đổi mới liên tục", "r": "E"}, {"t": "Sự hợp tác", "r": "I"}]}, {"q": "Nhiệm vụ quan trọng nhất của vị trí này là", "opts": [{"t": "Sự hài lòng của khách hàng (bên ngoài và/hoặc bên trong)", "r": "P"}, {"t": "Đảm bảo tính hiệu quả và tối ưu nguồn lực", "r": "A"}, {"t": "Phát triển các sản phẩm/dịch vụ/hệ thống mới", "r": "E"}, {"t": "Xây dựng một đội ngũ hiệu suất cao", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Mang lại kết quả", "r": "P"}, {"t": "Kiểm soát việc thực thi", "r": "A"}, {"t": "Xác định được mục tiêu", "r": "E"}, {"t": "Kêu gọi sự đồng thuận cho các kế hoạch và quyết định", "r": "I"}]}, {"q": "Vị trí này yêu cầu làm việc", "opts": [{"t": "Tập trung cao độ vào công việc", "r": "P"}, {"t": "Kỹ lưỡng", "r": "A"}, {"t": "Với sự không chắc chắn", "r": "E"}, {"t": "Suôn sẻ với mọi người", "r": "I"}]}, {"q": "Vị trí này yêu cầu", "opts": [{"t": "Nỗ lực hết mình", "r": "P"}, {"t": "Đúng giờ", "r": "A"}, {"t": "Sẵn sàng thử nghiệm, đổi mới", "r": "E"}, {"t": "Quan tâm đến mọi người", "r": "I"}]}, {"q": "Vị trí này đòi hỏi", "opts": [{"t": "Làm việc dưới áp lực", "r": "P"}, {"t": "Tuân theo các quy trình và hệ thống", "r": "A"}, {"t": "Khả năng tìm ra các giải pháp không theo tiêu chuẩn", "r": "E"}, {"t": "Hội nhập và hợp tác với những người khác", "r": "I"}]}]};
+const INSIGHTS = {"position": {"P": "Vị trí này đòi hỏi người tạo ra kết quả cụ thể, đo lường được trong ngắn hạn — không thể chần chừ hay chờ đợi. Công việc gắn liền với hành động trực tiếp: xử lý vấn đề, hoàn thành mục tiêu, đẩy nhanh tiến độ. Năng suất và tốc độ là thước đo thành công chủ yếu của vai trò này.", "A": "Vị trí này cần người đảm bảo mọi thứ được thực hiện đúng cách, đúng quy trình — không chỉ đạt kết quả mà còn phải bền vững và có hệ thống. Độ chính xác, kiểm soát rủi ro, và tuân thủ là những yêu cầu cốt lõi. Sai sót nhỏ hoặc thiếu nhất quán ở vai trò này có thể gây hậu quả lớn cho toàn tổ chức.", "E": "Vị trí này cần người có tư duy dài hạn, nhận ra cơ hội sớm và dũng cảm đề xuất hướng đi mới cho tổ chức. Sáng tạo, chấp nhận sự mơ hồ và khả năng \"vẽ\" bức tranh lớn là những năng lực cốt lõi cần có. Nếu không có E, tổ chức dễ bị mắc kẹt trong lối mòn và mất khả năng thích nghi.", "I": "Vị trí này cần người xây dựng sự gắn kết — giữa các cá nhân, phòng ban, và các luồng công việc khác nhau. Tạo dựng niềm tin, giải quyết xung đột, và đảm bảo mọi người đi cùng một hướng là những yêu cầu trọng yếu. Nếu không có I, tổ chức dễ bị chia rẽ, mất đoàn kết và phụ thuộc quá nhiều vào một cá nhân."}, "personality": {"P": "Bạn có động lực nội tâm mạnh mẽ để \"làm xong việc\" — luôn muốn hành động thay vì thảo luận dài dòng. Bạn là người thực tế, chuyên môn sâu, thích nhìn thấy kết quả hữu hình và đo được. Đây là xu hướng ổn định trong bạn, khiến bạn cảm thấy thoải mái và có động lực nhất khi đang tạo ra output.", "A": "Bạn tự nhiên chú ý đến chi tiết, quy tắc và quy trình — cảm thấy thoải mái nhất khi mọi thứ có trật tự và có thể dự đoán được. Bạn có xu hướng phân tích kỹ trước khi quyết định và không thích những thay đổi đột ngột thiếu căn cứ. Đây là bản năng ổn định của bạn, giúp bạn bảo vệ tổ chức khỏi rủi ro không đáng có.", "E": "Bạn là người tự nhiên nhìn xa, luôn tìm kiếm cái gì đó mới hơn, tốt hơn, khác biệt hơn so với hiện trạng. Bạn bị thu hút bởi ý tưởng và sự thay đổi hơn là các công việc lặp lại hàng ngày. Đây là động lực bẩm sinh của bạn — không phải bốc đồng, mà là cách bạn tự nhiên xử lý và nhìn nhận thế giới.", "I": "Bạn có bản năng mạnh mẽ trong việc đọc hiểu cảm xúc và động lực của người khác — nhận ra những gì không được nói ra trong cuộc họp. Bạn tự nhiên quan tâm đến sự hài hòa của nhóm và cảm thấy có trách nhiệm khi ai đó bị bỏ lại phía sau. Đây là điểm mạnh bền vững của bạn trong việc giữ tổ chức gắn kết lâu dài."}, "leadership": {"P": "Người xung quanh nhận thấy bạn hành động nhanh, quyết đoán và tập trung cao vào mục tiêu. Bạn thường chốt quyết định sớm và kỳ vọng người khác cũng di chuyển nhanh như mình. Đôi khi phong cách này có thể khiến team cảm thấy áp lực hoặc thiếu không gian để trao đổi.", "A": "Trong mắt người khác, bạn là người đáng tin cậy, cẩn thận và nhất quán. Bạn thường đặt câu hỏi về quy trình, đòi hỏi tài liệu rõ ràng và nhắc nhở khi ai đó đi ngoài quy định. Đôi khi phong cách này bị xem là chậm hoặc cứng nhắc trong các tình huống cần linh hoạt nhanh.", "E": "Người khác thấy bạn đầy năng lượng, đam mê và hay đưa ra các ý tưởng táo bạo — đôi khi trước khi ý tưởng cũ được thực thi xong. Bạn có khả năng truyền cảm hứng mạnh mẽ, nhưng cũng có thể gây cảm giác bất ổn nếu team chưa sẵn sàng theo kịp nhịp thay đổi của bạn.", "I": "Người xung quanh thấy bạn là người lắng nghe giỏi, khéo léo trong xử lý tình huống nhạy cảm và biết cách tạo đồng thuận. Bạn thường cố gắng đảm bảo mọi tiếng nói đều được nghe trước khi chốt quyết định. Đôi khi phong cách này khiến bạn bị xem là thiếu quyết đoán hoặc cố làm hài lòng tất cả mọi người."}};
+const COLORS={P:"#E8503A",A:"#F0B429",E:"#5BB3E8",I:"#4BAE6E"};
+const ROLE_NAMES={P:"Producer",A:"Administrator",E:"Entrepreneur",I:"Integrator"};
+const ROLE_FULL={P:"Producer (P)",A:"Administrator (A)",E:"Entrepreneur (E)",I:"Integrator (I)"};
+const CAT_LABELS={per:"Personality Test",pos:"Position Requirements",lead:"Leadership Styles"};
+const CAT_ORDER=["per","pos","lead"];
+const SKILL_DESC={
+  P:"khả năng tạo kết quả nhanh và quyết đoán",
+  A:"sự chú ý đến quy trình, chi tiết và kiểm soát",
+  E:"tư duy đột phá và tầm nhìn dài hạn",
+  I:"khả năng kết nối, đồng thuận và xây dựng nhóm"
+};
+const ROLE_BEHAVIOR={
+  P:"tập trung vào kết quả tức thì",
+  A:"kiểm soát quy trình chi tiết",
+  E:"đề xuất thay đổi và ý tưởng mới",
+  I:"xây dựng đồng thuận và quan tâm con người"
+};
+const TRAIT_DESC={
+  P:"động lực hành động và tạo kết quả",
+  A:"thiên hướng có tổ chức và cẩn thận",
+  E:"khả năng sáng tạo và nhìn xa",
+  I:"sự đồng cảm và kết nối con người"
+};
+
+// Build combined 60-question pool with category tags
+const ALL_QUESTIONS = [];
+RAW_QUESTIONS.personality.forEach(q => ALL_QUESTIONS.push({...q, cat:"per"}));
+RAW_QUESTIONS.position.forEach(q => ALL_QUESTIONS.push({...q, cat:"pos"}));
+RAW_QUESTIONS.leadership.forEach(q => ALL_QUESTIONS.push({...q, cat:"lead"}));
+
+const TOTAL_Q = 60;
+const SESSION_KEY = "paei_session";
+const HISTORY_KEY = "paei_history";
+
+let state = {name:"", position:"", questions:[], answers:[], currentQ:0, mode:'drag'};
+let sortableInstance = null;
+
+function shuffle(arr){
+  let a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goBack(to){showScreen(to)}
+function goLanding(){showScreen('landing'); renderResumeBanner();}
+function haptic(ms){if(navigator.vibrate)navigator.vibrate(ms)}
+
+// ===== Session save/restore =====
+function saveSession(){
+  try{
+    const s = {
+      name: state.name,
+      position: state.position,
+      questions: state.questions,
+      answers: state.answers,
+      currentQ: state.currentQ,
+      mode: state.mode,
+      ts: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+  }catch(e){console.warn('Session save failed',e)}
+}
+function clearSession(){
+  try{localStorage.removeItem(SESSION_KEY)}catch(e){}
+}
+function loadSession(){
+  try{
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(!s || !s.questions || s.questions.length !== TOTAL_Q) return null;
+    if(!s.name || !s.position) return null;
+    return s;
+  }catch(e){return null}
+}
+
+function renderResumeBanner(){
+  const container = document.getElementById('resume-container');
+  const s = loadSession();
+  if(!s){container.innerHTML=''; return;}
+  const answered = (s.answers || []).filter(a => a !== null).length;
+  container.innerHTML = `
+    <div class="resume-banner">
+      <h4>📋 Có bài test chưa hoàn thành</h4>
+      <p>Bạn đã trả lời <strong>${answered}/${TOTAL_Q}</strong> câu cho vị trí "<strong>${escapeHtml(s.position)}</strong>". Bạn muốn tiếp tục từ câu ${s.currentQ + 1}?</p>
+      <div class="resume-actions">
+        <button class="btn-resume" onclick="resumeSession()">Tiếp tục</button>
+        <button class="btn-discard" onclick="discardSession()">Bắt đầu lại</button>
+      </div>
+    </div>`;
+}
+
+function resumeSession(){
+  const s = loadSession();
+  if(!s) return;
+  state.name = s.name;
+  state.position = s.position;
+  state.questions = s.questions;
+  state.answers = s.answers;
+  state.currentQ = s.currentQ;
+  state.mode = s.mode || 'drag';
+  document.getElementById('quiz-body').setAttribute('data-mode', state.mode);
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode === state.mode);
+  });
+  renderQuestion();
+  showScreen('quiz');
+}
+
+function discardSession(){
+  if(!confirm('Bạn chắc chắn muốn xóa bài test đang dở và bắt đầu lại?')) return;
+  clearSession();
+  renderResumeBanner();
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ===== Flow =====
+function goToForm(){
+  showScreen('form');
+}
+
+function startQuiz(){
+  const name = document.getElementById('f-name').value.trim();
+  const position = document.getElementById('f-position').value.trim();
+  if(!name || !position){alert('Vui lòng điền đầy đủ thông tin'); return;}
+  state.name = name;
+  state.position = position;
+  state.questions = shuffle(ALL_QUESTIONS);
+  state.answers = Array(TOTAL_Q).fill(null);
+  state.currentQ = 0;
+  state.mode = 'drag';
+  document.getElementById('quiz-body').setAttribute('data-mode','drag');
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode === 'drag');
+  });
+  saveSession();
+  renderQuestion();
+  showScreen('quiz');
+}
+
+function switchMode(mode){
+  state.mode = mode;
+  document.getElementById('quiz-body').setAttribute('data-mode', mode);
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  document.getElementById('quiz-instruction').innerHTML = mode === 'drag'
+    ? '<strong>Kéo thả</strong> để xếp thứ tự — trên cùng = phù hợp nhất với bạn.'
+    : '<strong>Chạm số</strong> 1-2-3-4 bên phải mỗi lựa chọn để gán thứ hạng.';
+  setupSortable();
+  saveSession();
+}
+
+function renderQuestion(){
+  const q = state.questions[state.currentQ];
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('q-current').textContent = state.currentQ + 1;
+  document.getElementById('progress-fill').style.width = ((state.currentQ + 1) / TOTAL_Q * 100) + '%';
+  document.getElementById('btn-prev').style.display = state.currentQ === 0 ? 'none' : 'inline-block';
+  document.getElementById('btn-next').textContent = state.currentQ === TOTAL_Q - 1 ? 'Xem kết quả →' : 'Tiếp →';
+  if(!state.answers[state.currentQ]){
+    state.answers[state.currentQ] = shuffle([...q.opts]);
+  }
+  const opts = state.answers[state.currentQ];
+  const list = document.getElementById('drag-list');
+  list.innerHTML = '';
+  opts.forEach((opt, i) => {
+    const li = document.createElement('li');
+    li.className = 'drag-item';
+    li.dataset.rank = i + 1;
+    li.dataset.idx = i;
+    li.setAttribute('aria-label', `Lựa chọn rank ${i+1}: ${opt.t}`);
+    li.innerHTML = `
+      <span class="drag-handle" aria-label="Kéo để sắp xếp" role="button">⠯</span>
+      <span class="rank-badge" aria-hidden="true">${i+1}</span>
+      <span class="option-text">${escapeHtml(opt.t)}</span>
+      <div class="rank-picker" role="group" aria-label="Chọn thứ hạng">
+        ${[1,2,3,4].map(n=>`<button class="rank-btn ${n===i+1?'current':''}" data-rank="${n}" onclick="tapRank(${i},${n})" aria-label="Đặt rank ${n}">${n}</button>`).join('')}
+      </div>`;
+    list.appendChild(li);
+  });
+  setupSortable();
+}
+
+function setupSortable(){
+  if(sortableInstance){sortableInstance.destroy(); sortableInstance = null;}
+  if(state.mode !== 'drag') return;
+  const list = document.getElementById('drag-list');
+  sortableInstance = Sortable.create(list, {
+    animation:200, handle:'.drag-handle', delay:150, delayOnTouchOnly:true,
+    touchStartThreshold:5, forceFallback:true, fallbackClass:'sortable-drag',
+    ghostClass:'sortable-ghost', chosenClass:'sortable-chosen',
+    scroll:true, scrollSensitivity:80, scrollSpeed:15,
+    onChoose:()=>haptic(15),
+    onEnd:(evt)=>{
+      haptic(25);
+      if(evt.oldIndex === evt.newIndex) return;
+      const arr = state.answers[state.currentQ];
+      const moved = arr.splice(evt.oldIndex, 1)[0];
+      arr.splice(evt.newIndex, 0, moved);
+      updateRanksInPlace();
+      saveSession();
+    }
+  });
+}
+
+function tapRank(currentIdx, newRank){
+  haptic(15);
+  const arr = state.answers[state.currentQ];
+  const newIdx = newRank - 1;
+  if(currentIdx === newIdx) return;
+  const moved = arr.splice(currentIdx, 1)[0];
+  arr.splice(newIdx, 0, moved);
+  renderQuestion();
+  haptic(25);
+  saveSession();
+}
+
+function updateRanksInPlace(){
+  const list = document.getElementById('drag-list');
+  [...list.children].forEach((li, i) => {
+    li.dataset.rank = i + 1;
+    li.dataset.idx = i;
+    li.querySelector('.rank-badge').textContent = i + 1;
+    li.querySelectorAll('.rank-btn').forEach(btn => {
+      const r = parseInt(btn.dataset.rank);
+      btn.classList.toggle('current', r === i + 1);
+      btn.setAttribute('onclick', `tapRank(${i},${r})`);
+    });
+  });
+}
+
+function nextQuestion(){
+  if(state.currentQ < TOTAL_Q - 1){
+    state.currentQ++;
+    renderQuestion();
+    saveSession();
+  } else {
+    showResult();
+  }
+}
+function prevQuestion(){
+  if(state.currentQ > 0){
+    state.currentQ--;
+    renderQuestion();
+    saveSession();
+  }
+}
+
+// ===== Scoring =====
+function calcScores(){
+  const scores = {
+    per:{P:0,A:0,E:0,I:0},
+    pos:{P:0,A:0,E:0,I:0},
+    lead:{P:0,A:0,E:0,I:0}
+  };
+  state.questions.forEach((q, qi) => {
+    const opts = state.answers[qi];
+    if(!opts) return;
+    const cat = q.cat;
+    opts.forEach((opt, i) => {
+      scores[cat][opt.r] += (4 - i);
+    });
+  });
+  // Each category has 20 questions => divide by 2 (same normalization as v2.3)
+  ['per','pos','lead'].forEach(cat => {
+    ['P','A','E','I'].forEach(r => {
+      scores[cat][r] = Math.round(scores[cat][r] / 2);
+    });
+  });
+  return scores;
+}
+
+function getPAEICode(s){
+  return ['P','A','E','I'].map(r => s[r] >= 25 ? r.toUpperCase() : r.toLowerCase()).join('');
+}
+
+function paeiCodeHtml(s){
+  return ['P','A','E','I'].map(r => {
+    const dom = s[r] >= 25;
+    const letter = dom ? r : r.toLowerCase();
+    const op = dom ? 1 : 0.5;
+    return `<span style="color:${COLORS[r]};opacity:${op}">${letter}</span>`;
+  }).join('');
+}
+
+function gapClass(v){
+  const a = Math.abs(v);
+  if(a <= 3) return 'gap-low';
+  if(a <= 6) return 'gap-mid';
+  return 'gap-high';
+}
+function signed(v){
+  if(v > 0) return '+' + v;
+  return String(v);
+}
+
+// ===== Result rendering =====
+function showResult(){
+  const scores = calcScores();
+  document.getElementById('res-name').textContent = state.name;
+  document.getElementById('res-position').textContent = 'Vị trí đánh giá: ' + state.position;
+
+  renderConsolidated(scores);
+  renderDiscrepancy('discrepancy-a', 'insight-a', 'pos', 'lead', scores, generateInsightA);
+  renderDiscrepancy('discrepancy-b', 'insight-b', 'per', 'lead', scores, generateInsightB);
+
+  saveHistory(scores);
+  clearSession();
+  showScreen('result');
+}
+
+function renderConsolidated(scores){
+  const tbl = document.getElementById('consolidated-table');
+  let html = `
+    <thead><tr>
+      <th style="text-align:left;padding-left:16px">Test</th>
+      <th>PAEI Code</th>
+      <th style="color:${COLORS.P}">P</th>
+      <th style="color:${COLORS.A}">A</th>
+      <th style="color:${COLORS.E}">E</th>
+      <th style="color:${COLORS.I}">I</th>
+    </tr></thead><tbody>`;
+  CAT_ORDER.forEach(cat => {
+    const s = scores[cat];
+    html += `<tr>
+      <td class="test-name">${CAT_LABELS[cat]}</td>
+      <td class="paei-code">${paeiCodeHtml(s)}</td>
+      <td class="score">${s.P}</td>
+      <td class="score">${s.A}</td>
+      <td class="score">${s.E}</td>
+      <td class="score">${s.I}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+}
+
+function renderDiscrepancy(tableId, insightId, catTop, catBot, scores, insightFn){
+  const sTop = scores[catTop];
+  const sBot = scores[catBot];
+  const delta = {
+    P: sTop.P - sBot.P,
+    A: sTop.A - sBot.A,
+    E: sTop.E - sBot.E,
+    I: sTop.I - sBot.I
+  };
+  const tbl = document.getElementById(tableId);
+  let html = `
+    <thead><tr>
+      <th style="text-align:left;padding-left:16px">Test</th>
+      <th>PAEI Code</th>
+      <th style="color:${COLORS.P}">P</th>
+      <th style="color:${COLORS.A}">A</th>
+      <th style="color:${COLORS.E}">E</th>
+      <th style="color:${COLORS.I}">I</th>
+    </tr></thead><tbody>
+    <tr>
+      <td class="test-name">${CAT_LABELS[catTop]}</td>
+      <td class="paei-code">${paeiCodeHtml(sTop)}</td>
+      <td class="score">${sTop.P}</td>
+      <td class="score">${sTop.A}</td>
+      <td class="score">${sTop.E}</td>
+      <td class="score">${sTop.I}</td>
+    </tr>
+    <tr>
+      <td class="test-name">${CAT_LABELS[catBot]}</td>
+      <td class="paei-code">${paeiCodeHtml(sBot)}</td>
+      <td class="score">${sBot.P}</td>
+      <td class="score">${sBot.A}</td>
+      <td class="score">${sBot.E}</td>
+      <td class="score">${sBot.I}</td>
+    </tr>
+    <tr class="discrepancy-row">
+      <td class="test-name">Discrepancy</td>
+      <td></td>
+      <td class="gap-cell ${gapClass(delta.P)}">${signed(delta.P)}</td>
+      <td class="gap-cell ${gapClass(delta.A)}">${signed(delta.A)}</td>
+      <td class="gap-cell ${gapClass(delta.E)}">${signed(delta.E)}</td>
+      <td class="gap-cell ${gapClass(delta.I)}">${signed(delta.I)}</td>
+    </tr>
+    </tbody>`;
+  tbl.innerHTML = html;
+
+  document.getElementById(insightId).innerHTML = insightFn(sTop, sBot, delta);
+}
+
+// Insight A: Position Requirements vs Leadership Styles
+function generateInsightA(sPos, sLead, delta){
+  const items = [];
+  ['P','A','E','I'].forEach(r => {
+    const d = delta[r];
+    if(Math.abs(d) < 4) return;
+    let text = '';
+    if(d > 0){
+      text = `<strong>${ROLE_FULL[r]}</strong>: Vị trí yêu cầu mức ${sPos[r]} nhưng phong cách lãnh đạo của bạn chỉ đạt ${sLead[r]} <em>(gap ${signed(d)})</em> — bạn có thể chưa đáp ứng đủ ${SKILL_DESC[r]} mà vị trí cần.`;
+    } else {
+      text = `<strong>${ROLE_FULL[r]}</strong>: Phong cách lãnh đạo của bạn thể hiện mức ${sLead[r]} cao hơn yêu cầu vị trí ${sPos[r]} <em>(gap ${signed(d)})</em> — bạn có xu hướng ${ROLE_BEHAVIOR[r]} nhiều hơn cần thiết cho vai trò này.`;
+    }
+    items.push(`<div class="insight-item">${text}</div>`);
+  });
+  if(items.length === 0){
+    return '<div class="insight-item">Phong cách lãnh đạo của bạn nhìn chung <strong>khớp với yêu cầu của vị trí</strong>, không có khoảng cách đáng kể trên cả 4 vai trò PAEI.</div>';
+  }
+  return items.join('');
+}
+
+// Insight B: Personality Test vs Leadership Styles
+function generateInsightB(sPer, sLead, delta){
+  const items = [];
+  ['P','A','E','I'].forEach(r => {
+    const d = delta[r];
+    if(Math.abs(d) < 4) return;
+    let text = '';
+    if(d > 0){
+      text = `<strong>${ROLE_FULL[r]}</strong>: Bản chất bạn có xu hướng ${sPer[r]} nhưng khi lãnh đạo chỉ thể hiện ${sLead[r]} <em>(gap ${signed(d)})</em> — bạn có thể đang kìm nén ${TRAIT_DESC[r]} tự nhiên của mình trong vai trò lãnh đạo.`;
+    } else {
+      text = `<strong>${ROLE_FULL[r]}</strong>: Khi lãnh đạo bạn thể hiện ${sLead[r]} cao hơn bản chất ${sPer[r]} <em>(gap ${signed(d)})</em> — bạn đang nỗ lực ${ROLE_BEHAVIOR[r]} vượt mức tự nhiên của mình, có thể gây mệt mỏi lâu dài.`;
+    }
+    items.push(`<div class="insight-item">${text}</div>`);
+  });
+  if(items.length === 0){
+    return '<div class="insight-item">Phong cách lãnh đạo của bạn <strong>phản ánh đúng bản chất tự nhiên</strong>, không có sự gồng ép đáng kể trên cả 4 vai trò PAEI.</div>';
+  }
+  return items.join('');
+}
+
+// ===== History & export =====
+function saveHistory(scores){
+  try{
+    const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    hist.push({
+      date: new Date().toISOString(),
+      name: state.name,
+      position: state.position,
+      per: scores.per, pos: scores.pos, lead: scores.lead,
+      code_per: getPAEICode(scores.per),
+      code_pos: getPAEICode(scores.pos),
+      code_lead: getPAEICode(scores.lead)
+    });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+  }catch(e){console.warn('History save failed',e)}
+}
+
+function exportCSV(){
+  try{
+    const hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    if(!hist.length){alert('Chưa có dữ liệu nào được lưu'); return;}
+    const rows = [['Ngày','Họ tên','Vị trí đánh giá',
+      'P_Personality','A_Personality','E_Personality','I_Personality','Code_Personality',
+      'P_Position','A_Position','E_Position','I_Position','Code_Position',
+      'P_Leadership','A_Leadership','E_Leadership','I_Leadership','Code_Leadership']];
+    hist.forEach(h => {
+      rows.push([h.date, h.name, h.position,
+        h.per.P, h.per.A, h.per.E, h.per.I, h.code_per,
+        h.pos.P, h.pos.A, h.pos.E, h.pos.I, h.code_pos,
+        h.lead.P, h.lead.A, h.lead.E, h.lead.I, h.code_lead]);
+    });
+    const csv = rows.map(r => r.map(c => '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `paei_consolidated_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }catch(e){alert('Lỗi xuất CSV: '+e.message)}
+}
+
+function printPDF(){
+  const originalTitle = document.title;
+  const safeName = (state.name || 'unknown').replace(/[^a-zA-Z0-9\u00C0-\u1EF9\s]/g,'').replace(/\s+/g,'_').slice(0,40);
+  const dateStr = new Date().toISOString().slice(0,10);
+  document.title = `PAEI_Consolidated_${safeName}_${dateStr}`;
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {document.title = originalTitle}, 500);
+  }, 100);
+}
+
+function retakeQuiz(){
+  if(!confirm('Bạn chắc chắn muốn làm lại bài test với cùng thông tin?')) return;
+  state.questions = shuffle(ALL_QUESTIONS);
+  state.answers = Array(TOTAL_Q).fill(null);
+  state.currentQ = 0;
+  saveSession();
+  renderQuestion();
+  showScreen('quiz');
+}
+
+// ===== Init =====
+window.addEventListener('DOMContentLoaded', () => {
+  renderResumeBanner();
+});
+</script>
+</body>
+</html>
