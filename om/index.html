@@ -33,7 +33,7 @@
   /* ---------- HERO ---------- */
   .hero{
     position:relative;
-    min-height:100vh;
+    min-height:88vh;
     background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 55%,#1c3e73 100%);
     display:flex;
     flex-direction:column;
@@ -105,7 +105,7 @@
 
   .scroll-cue{
     z-index:2;
-    margin-top:3rem;
+    margin-top:2.6rem;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -148,8 +148,8 @@
   }
 
   /* ---------- SECTION SHELL ---------- */
-  section{padding:5.5rem 1.5rem;}
-  .wrap{max-width:1120px;margin:0 auto;}
+  section{padding:5rem 1.5rem;}
+  .wrap{max-width:1180px;margin:0 auto;}
   .section-tag{
     color:var(--teal-vivid);
     font-size:.72rem;
@@ -174,188 +174,154 @@
     font-weight:300;
   }
 
-  /* reveal on scroll */
   .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease;}
   .reveal.in{opacity:1; transform:translateY(0);}
 
-  /* ---------- PIPELINE (signature element) ---------- */
-  .pipeline{
-    margin-top:3.5rem;
+  /* ---------- SELECTOR LAYOUT ---------- */
+  .explorer{
+    margin-top:3rem;
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:1.2rem;
-    position:relative;
-  }
-  .pipeline::before{
-    content:'';
-    position:absolute;
-    top:38px; left:8%; right:8%;
-    height:2px;
-    background:repeating-linear-gradient(90deg,var(--gray-light) 0 8px, transparent 8px 16px);
-    z-index:0;
-  }
-  .pipe-stage{
-    position:relative;
-    z-index:1;
-    text-align:center;
-  }
-  .pipe-dot{
-    width:76px;height:76px;
-    border-radius:50%;
-    background:var(--navy);
-    color:var(--teal);
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto;
-    font-size:1.7rem;
-    font-weight:700;
-    box-shadow:0 10px 24px -8px rgba(22,49,94,.4);
-  }
-  .pipe-stage h4{color:var(--navy);margin-top:1rem;font-size:1.05rem;font-weight:600;}
-  .pipe-stage p{color:var(--gray);font-size:.86rem;margin-top:.35rem;font-weight:300;}
-
-  /* ---------- GROUP TABS ---------- */
-  .tabs-nav{
-    display:flex;
-    gap:.6rem;
-    flex-wrap:wrap;
-    margin-top:2.8rem;
-    margin-bottom:2.2rem;
-  }
-  .tab-btn{
-    border:1.5px solid var(--gray-light);
-    background:transparent;
-    color:var(--navy);
-    font-family:'Lexend Deca',sans-serif;
-    padding:.65rem 1.15rem;
-    border-radius:999px;
-    font-size:.86rem;
-    font-weight:500;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    gap:.5rem;
-    transition:all .25s ease;
-    white-space:nowrap;
-  }
-  .tab-btn .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .tab-btn:hover{border-color:var(--navy);}
-  .tab-btn.active{
-    background:var(--navy);
-    border-color:var(--navy);
-    color:#fff;
-  }
-
-  .panels{position:relative;}
-  .panel{
-    display:none;
-    animation:fadeUp .5s ease;
-  }
-  .panel.active{display:block;}
-  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
-
-  .panel-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:2.2rem;
+    grid-template-columns:380px 1fr;
+    gap:2.4rem;
     align-items:start;
   }
-  .panel-col h5{
-    font-size:.78rem;
-    letter-spacing:.14em;
+
+  .issue-list{
+    display:flex;
+    flex-direction:column;
+    gap:.65rem;
+    position:sticky;
+    top:1.5rem;
+  }
+  .issue-btn{
+    display:flex;
+    align-items:flex-start;
+    gap:.9rem;
+    text-align:left;
+    width:100%;
+    background:#fff;
+    border:1.5px solid #eceef2;
+    border-radius:14px;
+    padding:.9rem 1.05rem;
+    cursor:pointer;
+    font-family:'Lexend Deca',sans-serif;
+    transition:border-color .25s ease, box-shadow .25s ease, transform .2s ease;
+  }
+  .issue-btn:hover{
+    border-color:var(--gray-light);
+    transform:translateX(3px);
+  }
+  .issue-btn.active{
+    border-color:var(--navy);
+    box-shadow:0 14px 30px -16px rgba(22,49,94,.28);
+    background:#fbfcfd;
+  }
+  .issue-num{
+    flex-shrink:0;
+    width:34px;height:34px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    font-size:.86rem;
+    font-weight:700;
+  }
+  .issue-txt h4{
+    color:var(--navy);
+    font-size:.92rem;
+    font-weight:600;
+    line-height:1.35;
+  }
+  .issue-txt span{
+    display:inline-block;
+    margin-top:.3rem;
+    font-size:.68rem;
+    letter-spacing:.08em;
     text-transform:uppercase;
     font-weight:700;
-    margin-bottom:1.1rem;
+    color:var(--gray-light);
+  }
+  .issue-btn.active .issue-txt span{color:var(--gray);}
+
+  /* ---------- DETAIL PANEL ---------- */
+  .detail{
+    background:#fafbfc;
+    border:1px solid #eceef2;
+    border-radius:20px;
+    padding:2.2rem 2.4rem;
+    min-height:420px;
+  }
+  .detail-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:.3rem .75rem;
+    border-radius:999px;
+    margin-bottom:1rem;
+  }
+  .detail-tag .dot{width:7px;height:7px;border-radius:50%;}
+  .detail h3{
+    color:var(--navy);
+    font-size:1.5rem;
+    font-weight:700;
+    line-height:1.3;
+    margin-bottom:.8rem;
+  }
+  .detail .desc{
+    color:var(--gray);
+    font-size:.95rem;
+    line-height:1.7;
+    font-weight:300;
+    margin-bottom:1.8rem;
+    max-width:680px;
+  }
+  .fix-label{
+    font-size:.75rem;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:1rem;
     display:flex;
     align-items:center;
     gap:.5rem;
   }
-  .panel-col.risk h5{color:var(--brick);}
-  .panel-col.fix h5{color:var(--green);}
-
-  .item-card{
-    background:#fafbfc;
-    border:1px solid #eceef2;
-    border-radius:14px;
-    padding:1.1rem 1.25rem;
-    margin-bottom:.85rem;
-    cursor:pointer;
-    transition:box-shadow .25s ease, transform .25s ease, background .25s ease;
-  }
-  .item-card:hover{
-    box-shadow:0 12px 28px -14px rgba(22,49,94,.22);
-    transform:translateY(-2px);
-    background:#fff;
-  }
-  .item-card .head{
+  .fix-list{
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-weight:600;
-    color:var(--navy);
-    font-size:.96rem;
+    flex-direction:column;
+    gap:.8rem;
   }
-  .item-card .chev{
-    color:var(--gray-light);
-    transition:transform .3s ease;
+  .fix-item{
+    display:flex;
+    gap:.9rem;
+    background:#fff;
+    border:1px solid #eceef2;
+    border-radius:12px;
+    padding:.95rem 1.1rem;
+    animation:fadeUp .45s ease both;
+  }
+  .fix-item .fnum{
     flex-shrink:0;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:rgba(81,172,112,.12);
+    color:var(--green);
+    font-size:.76rem;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
   }
-  .item-card.open .chev{transform:rotate(90deg);}
-  .item-card .body{
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .35s ease;
-  }
-  .item-card.open .body{max-height:200px;}
-  .item-card .body p{
-    padding-top:.7rem;
-    font-size:.87rem;
+  .fix-item p{
+    font-size:.9rem;
     line-height:1.6;
-    font-weight:300;
     color:var(--gray);
-  }
-
-  .fix .item-card{border-left:none;}
-  .fix .item-card .head::before{
-    content:'';
-    width:6px;height:6px;border-radius:50%;
-    background:var(--green);
-    flex-shrink:0;
-    margin-right:.6rem;
-    display:none;
-  }
-
-  /* ---------- CTA / CLOSING ---------- */
-  .closing{
-    background:var(--navy);
-    color:#fff;
-    text-align:center;
-  }
-  .closing .section-tag{color:var(--teal);}
-  .closing .section-title{color:#fff;max-width:760px;margin:0 auto;}
-  .closing .section-desc{color:var(--gray-light);margin:1rem auto 0;text-align:center;}
-  .quote-box{
-    max-width:680px;
-    margin:2.6rem auto 0;
-    background:rgba(255,255,255,.05);
-    border-radius:16px;
-    padding:2rem 2.2rem;
-  }
-  .quote-box p{
-    font-size:1.15rem;
     font-weight:300;
-    line-height:1.6;
-    color:#fff;
-    font-style:italic;
   }
-  .quote-box span{
-    display:block;
-    margin-top:1rem;
-    color:var(--teal);
-    font-size:.8rem;
-    font-weight:600;
-    letter-spacing:.05em;
-    font-style:normal;
-  }
+  .fix-item p b{color:var(--navy); font-weight:600;}
+
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
 
   footer{
     background:var(--navy-deep);
@@ -366,12 +332,12 @@
     letter-spacing:.05em;
   }
 
-  @media (max-width:760px){
+  @media (max-width:860px){
     .stats{grid-template-columns:repeat(2,1fr);}
     .stat{border-bottom:1px solid rgba(255,255,255,.06);}
-    .pipeline{grid-template-columns:1fr;gap:2rem;}
-    .pipeline::before{display:none;}
-    .panel-grid{grid-template-columns:1fr;}
+    .explorer{grid-template-columns:1fr;}
+    .issue-list{position:static;}
+    .detail{padding:1.6rem 1.4rem;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -386,7 +352,7 @@
   <div class="hero-arrow"></div>
   <div class="eyebrow">Bài tập nhóm · Quản trị điều hành nâng cao · UEH</div>
   <h1>Thách thức &amp; <span>Giải pháp</span><br>vận hành tại Coteccons</h1>
-  <p class="sub">Soi bối cảnh vận hành thực tế của Coteccons qua lăng kính Quản trị điều hành (Operations Management) — và đề xuất hướng giải quyết cho từng nhóm thách thức.</p>
+  <p class="sub">7 thách thức thực tế trong vận hành Coteccons — chọn một thách thức để xem các giải pháp đề xuất tương ứng.</p>
   <div class="scroll-cue"><span>CUỘN XUỐNG</span><div class="line"></div></div>
 </section>
 
@@ -397,56 +363,17 @@
   <div class="stat"><div class="num" data-count="7">0</div><div class="label">Thách thức vận hành<br>được nhóm phân tích</div></div>
 </div>
 
-<section>
-  <div class="wrap">
-    <div class="reveal">
-      <div class="section-tag">Khung phân tích</div>
-      <h2 class="section-title">Nhìn Coteccons như một hệ thống vận hành</h2>
-      <p class="section-desc">Quản trị điều hành chuyển đổi đầu vào (nguyên vật liệu, lao động, vốn) thành đầu ra (công trình). Mỗi giai đoạn trong chuỗi này đều gắn với ít nhất một thách thức mà nhóm brainstorm — nhấn từng điểm để xem thách thức đi kèm.</p>
-    </div>
-
-    <div class="pipeline reveal">
-      <div class="pipe-stage">
-        <div class="pipe-dot">IN</div>
-        <h4>Đầu vào</h4>
-        <p>Vật liệu, lao động, vốn — nơi phát sinh #1, #2, #6</p>
-      </div>
-      <div class="pipe-stage">
-        <div class="pipe-dot">→</div>
-        <h4>Chuyển đổi</h4>
-        <p>Thi công, quản lý dự án — nơi phát sinh #3, #7</p>
-      </div>
-      <div class="pipe-stage">
-        <div class="pipe-dot">OUT</div>
-        <h4>Đầu ra</h4>
-        <p>Công trình bàn giao, biên lợi nhuận — chịu ảnh hưởng #4, #5</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section style="background:#f7f8fa;">
   <div class="wrap">
     <div class="reveal">
-      <div class="section-tag">7 thách thức · 4 nhóm</div>
-      <h2 class="section-title">Chọn một nhóm để xem thách thức và giải pháp</h2>
-      <p class="section-desc">Nhấn vào từng thẻ để mở chi tiết. Giải pháp bên phải được gắn trực tiếp với thách thức tương ứng bên trái.</p>
+      <div class="section-tag">7 thách thức</div>
+      <h2 class="section-title">Chọn một thách thức để xem giải pháp</h2>
+      <p class="section-desc">Mỗi thách thức đi kèm bộ giải pháp riêng, cụ thể theo tình huống vận hành thực tế — nhấn vào một mục bên trái để xem chi tiết bên phải.</p>
     </div>
 
-    <div class="tabs-nav reveal" id="tabsNav"></div>
-
-    <div class="panels reveal" id="panels"></div>
-  </div>
-</section>
-
-<section class="closing">
-  <div class="wrap">
-    <div class="section-tag">Kết luận</div>
-    <h2 class="section-title">Hiệu quả vận hành là lợi thế cạnh tranh, không phải giá thầu</h2>
-    <p class="section-desc">Cả 7 thách thức đều quy về một điểm: doanh nghiệp thắng trong ngành xây dựng 2026 là doanh nghiệp kiểm soát được dữ liệu vận hành theo thời gian thực — từ vật liệu, con người đến dòng tiền.</p>
-    <div class="quote-box">
-      <p>"Thị trường xây dựng ngày càng cạnh tranh khốc liệt, biên lợi nhuận giảm đi, yêu cầu đối với doanh nghiệp rất cao. Gia tăng hiệu quả chính là lợi thế khác biệt."</p>
-      <span>— Ông Võ Hoàng Lâm, Phó Tổng Giám đốc Coteccons</span>
+    <div class="explorer reveal">
+      <div class="issue-list" id="issueList"></div>
+      <div class="detail" id="detail"></div>
     </div>
   </div>
 </section>
@@ -458,7 +385,7 @@
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
-  }, {threshold:.15});
+  }, {threshold:.12});
   revealEls.forEach(el=>io.observe(el));
 
   // ---- Stat counters ----
@@ -484,117 +411,135 @@
   }, {threshold:.4});
   stats.forEach(s=>statIO.observe(s));
 
-  // ---- Data: 4 groups ----
-  const groups = [
+  // ---- Data: 7 individual challenges ----
+  const CATS = {
+    cost:{label:'Chi phí & Vật liệu', color:'#b86054'},
+    people:{label:'Nhân sự', color:'#51ac70'},
+    env:{label:'Môi trường & Công trường', color:'#c59a6e'},
+    cash:{label:'Dòng tiền', color:'#0047ba'},
+    process:{label:'Công nghệ & Quy trình', color:'#16315e'}
+  };
+
+  const issues = [
     {
-      id:'cost',
-      label:'Chi phí & Vật liệu',
-      color:'#b86054',
-      risks:[
-        {t:'Biến động giá NVL do thời gian thi công dài', d:'Giá vật liệu như nhựa đường, đá, cát tăng 25–37% theo diễn biến thị trường 2026, trong khi hợp đồng thi công kéo dài nhiều tháng.'},
-        {t:'Chi phí cao → giảm khả năng cạnh tranh giá', d:'Biên lợi nhuận gộp co lại (2,59% so với 3,37% cùng kỳ) trong bối cảnh cạnh tranh khốc liệt toàn ngành.'}
-      ],
+      cat:'cost',
+      title:'Nguy cơ biến động giá nguyên vật liệu do thời gian thi công dài',
+      desc:'Hợp đồng thi công kéo dài nhiều tháng khiến giá thép, xi măng, nhựa đường... có thể biến động mạnh giữa lúc chào giá và lúc thi công thực tế, ăn thẳng vào biên lợi nhuận.',
       fixes:[
-        {t:'Điều khoản điều chỉnh giá theo chỉ số vật liệu', d:'Đưa price-escalation clause vào hợp đồng dài hạn để chia sẻ rủi ro biến động giá với chủ đầu tư.'},
-        {t:'Hedging / mua trước vật liệu chiến lược', d:'Chốt giá sớm với nhà cung cấp cho thép, xi măng — nhóm vật liệu chiếm tỷ trọng chi phí lớn nhất.'},
-        {t:'Activity-based costing', d:'Tính đúng chi phí thực từng loại công trình để tránh báo giá dưới giá thành khi cạnh tranh thầu.'}
+        '<b>Rút ngắn thời gian thi công</b> — dùng vật liệu đúc sẵn tại nhà máy mang ra lắp ráp, hoặc tổ chức các đội thợ thi công song song ngày/đêm thay vì làm tuần tự.',
+        '<b>Khóa giá vật tư ngay từ ngày đầu</b> — ký hợp đồng bao tiêu với nhà cung cấp lớn (nhà máy thép, trạm trộn xi măng) ngay khi trúng thầu để chốt cứng mức giá cho toàn bộ khối lượng công trình.',
+        '<b>Chia sẻ rủi ro với chủ đầu tư</b> — hạn chế nhận thầu trọn gói; đàm phán điều khoản mở: nếu giá vật liệu vượt biên độ 5–10%, chủ đầu tư cùng bù đắp phần chênh lệch.',
+        '<b>Mua gom sớm khi dự báo giá tăng</b> — bộ phận mua hàng chủ động xuất tiền mua trước khi có dự báo tăng giá mạnh, đồng thời kiểm soát chặt để không phát sinh thêm chi phí tồn kho.'
       ]
     },
     {
-      id:'people',
-      label:'Nhân sự',
-      color:'#51ac70',
-      risks:[
-        {t:'Thiếu hụt lao động đầu vào', d:'Nghề công nhân xây dựng kém hấp dẫn hơn làm việc trong nhà máy do tính chất nặng nhọc, nhiều rủi ro thể chất.'},
-        {t:'Tỷ lệ nghỉ việc quản lý cấp trung–cao', d:'Nhân sự PM/PD bị đối thủ và chủ đầu tư săn trực tiếp, đặc biệt trong giai đoạn ngành phục hồi và mở rộng quy mô.'}
-      ],
+      cat:'people',
+      title:'Thiếu hụt lao động đầu vào',
+      desc:'Ngành xây dựng ngày càng kém hấp dẫn so với các ngành khác vì tính chất công việc nặng về thể chất và tinh thần, khiến nguồn cung lao động phổ thông ngày càng khan hiếm.',
       fixes:[
-        {t:'Cải thiện điều kiện làm việc & cơ giới hóa', d:'Đầu tư thiết bị hỗ trợ để giảm yếu tố nặng nhọc, nâng chuẩn an toàn tại công trường.'},
-        {t:'Employer branding cho lao động thi công', d:'Truyền thông rõ lộ trình thu nhập, phúc lợi, thay vì chỉ gắn hình ảnh "công việc nặng nhọc".'},
-        {t:'Lộ trình phát triển & đãi ngộ giữ chân PM/PD', d:'Gắn thưởng theo hiệu quả dự án dài hạn, đầu tư văn hoá trao quyền cho cấp quản lý.'}
+        '<b>Tái định vị hình ảnh nghề xây dựng</b> — truyền thông tuyển dụng nhấn mạnh lộ trình phát triển rõ ràng (thợ phổ thông → thợ chính → tổ trưởng → giám sát) thay vì chỉ mô tả công việc nặng nhọc.',
+        '<b>Liên kết đào tạo với trường nghề, trung tâm GDNN</b> — hợp tác tạo nguồn cung lao động ổn định, kèm học bổng hoặc cam kết việc làm sau tốt nghiệp.',
+        '<b>Đầu tư cơ giới hóa</b> — dùng thiết bị, công cụ chuyên dụng để giảm cường độ lao động chân tay, giúp công việc bớt nặng nhọc hơn.',
+        '<b>Chính sách lương khởi điểm & phụ cấp hấp dẫn hơn</b> — mức lương học việc/thử việc cạnh tranh, kèm phụ cấp ăn ở, đi lại ngay từ đầu.',
+        '<b>Chăm sóc sức khỏe thể chất – tinh thần tại công trường</b> — khám sức khỏe định kỳ, bố trí ca nghỉ hợp lý, khu nghỉ trưa/giải trí.',
+        '<b>Chương trình giới thiệu nhân sự nội bộ</b> — thưởng khi lao động hiện tại giới thiệu người quen gắn bó đủ thời gian nhất định.',
+        '<b>Hợp tác với địa phương có nguồn lao động dồi dào</b> — làm việc với chính quyền các tỉnh có lao động nông nhàn, hỗ trợ chi phí di chuyển ban đầu.'
       ]
     },
     {
-      id:'cash',
-      label:'Dòng tiền',
-      color:'#c59a6e',
-      risks:[
-        {t:'Bị động dòng tiền', d:'Khách hàng thanh toán chậm trong khi chi phí vật tư, nhân công phải chi trả trước — đặc thù kinh niên của ngành xây dựng.'}
-      ],
+      cat:'env',
+      title:'Lượng rác thải thi công lớn, khó quản lý',
+      desc:'Xà bần, bê tông, gạch đá, bao bì vật liệu, gỗ, kim loại, nhựa và một số chất thải nguy hại phát sinh nhiều, nhưng rác chưa được phân loại tốt tại nguồn, thiếu khu tập kết rõ ràng và thiếu dữ liệu theo dõi khối lượng — làm tăng chi phí, ảnh hưởng mỹ quan, môi trường và rủi ro pháp lý/hình ảnh doanh nghiệp.',
       fixes:[
-        {t:'Progress billing gắn chặt với milestone', d:'Đàm phán điều khoản thanh toán theo tiến độ thi công cụ thể, giảm khoảng trễ thu tiền.'},
-        {t:'Supply chain finance', d:'Hợp tác ngân hàng để nhà cung cấp được thanh toán sớm, còn Coteccons giữ kỳ hạn trả chậm hơn.'},
-        {t:'Quỹ dự phòng thanh khoản', d:'Xây dựng dự báo dòng tiền theo từng dự án lớn để chủ động ứng phó khi khách hàng trễ hạn.'}
+        '<b>Giảm rác phát sinh tại nguồn</b> — tối ưu thiết kế và cách sử dụng vật liệu để hạn chế phần dư thừa ngay từ đầu.',
+        '<b>Phân loại rác ngay tại nguồn</b> — bố trí khu tập kết riêng cho từng loại rác thải trên công trường.',
+        '<b>Lựa chọn đơn vị thu gom, xử lý có năng lực</b> — kiểm soát chặt quá trình thu gom, vận chuyển, xử lý thay vì giao khoán không giám sát.',
+        '<b>Bảng theo dõi khối lượng & chi phí xử lý</b> — ghi nhận khối lượng rác, chi phí xử lý, tỷ lệ tái chế và trách nhiệm của từng nhà thầu phụ để có dữ liệu quản lý rõ ràng.'
       ]
     },
     {
-      id:'ops',
-      label:'Công nghệ & Quy trình',
-      color:'#0047ba',
-      risks:[
-        {t:'Quản lý dự án bằng Excel, không đồng nhất', d:'Thiếu chuẩn hoá giữa các dự án, effort tổng hợp báo cáo cao, dữ liệu vận hành cập nhật chậm.'},
-        {t:'Lượng rác thải lớn, khó quản lý', d:'Thất thoát vật liệu tại công trường không chỉ là vấn đề môi trường mà còn là chi phí ẩn.'}
-      ],
+      cat:'cost',
+      title:'Chi phí cao, dẫn đến giảm khả năng cạnh tranh về giá',
+      desc:'Áp lực chi phí đầu vào (vật liệu, nhân công, vận hành) tăng nhanh hơn khả năng kiểm soát, khiến Coteccons khó đưa ra mức giá cạnh tranh mà vẫn giữ được biên lợi nhuận.',
       fixes:[
-        {t:'Hệ thống quản lý dự án tập trung', d:'Thay Excel bằng nền tảng PM/ERP có dashboard real-time theo dõi chi phí và tiến độ.'},
-        {t:'BIM (Building Information Modeling)', d:'Đồng bộ dữ liệu thiết kế – thi công – chi phí trên một nền tảng duy nhất cho mọi dự án.'},
-        {t:'Lean Construction', d:'Giảm lãng phí ngay tại từng công đoạn thi công, kết hợp tái sử dụng vật liệu dư để giảm chi phí xử lý rác.'}
+        '<b>Activity-based costing</b> — tính đúng chi phí thực tế của từng loại công trình để tránh báo giá dưới giá thành khi cạnh tranh thầu.',
+        '<b>Chuẩn hóa quy trình thi công</b> — giảm chi phí gián tiếp và lãng phí phát sinh do quy trình không đồng nhất giữa các dự án.',
+        '<b>Chọn lọc danh mục dự án</b> — ưu tiên khách hàng/dự án phù hợp năng lực cốt lõi, cạnh tranh bằng hiệu quả thực thi thay vì chỉ cạnh tranh bằng giá.'
+      ]
+    },
+    {
+      cat:'people',
+      title:'Tỷ lệ nghỉ việc của nhân sự quản lý cấp trung – cao',
+      desc:'Nhân sự quản lý cấp trung – cao (PM/PD) thường bị các đối thủ và chủ đầu tư "săn" trực tiếp, đặc biệt trong giai đoạn ngành phục hồi và mở rộng quy mô dự án.',
+      fixes:[
+        '<b>Lộ trình phát triển sự nghiệp & đãi ngộ cạnh tranh riêng cho PM/PD</b> — xây dựng khung thăng tiến rõ ràng gắn với quy mô/độ phức tạp dự án được giao.',
+        '<b>Giữ chân qua thưởng gắn hiệu quả dự án dài hạn</b> — ví dụ ESOP hoặc thưởng theo lợi nhuận thực tế của dự án khi hoàn thành.',
+        '<b>Đầu tư văn hóa trao quyền và công nhận</b> — với cấp quản lý, mức độ được trao quyền và công nhận thường có tác dụng giữ chân không kém lương thưởng.'
+      ]
+    },
+    {
+      cat:'cash',
+      title:'Bị động về dòng tiền do thanh toán từ khách hàng chậm trong khi phải chi trả trước',
+      desc:'Đặc thù ngành xây dựng: khách hàng thường thanh toán theo tiến độ hoặc trễ hạn, trong khi chi phí vật tư và nhân công phải chi trả ngay — tạo áp lực thanh khoản liên tục.',
+      fixes:[
+        '<b>Với khách hàng (đầu ra):</b> chia nhỏ thời gian thanh toán theo tiến độ, có chiết khấu khi thanh toán sớm và chế tài rõ ràng nếu thanh toán chậm.',
+        '<b>Với nội bộ (vốn):</b> bán lại các khoản phải thu (hóa đơn, biên bản nghiệm thu chưa thanh toán) cho ngân hàng/công ty tài chính — được ứng trước khoảng 70–85% giá trị hóa đơn để có vốn chi trả trước.',
+        '<b>Với nhà cung cấp (đầu vào):</b> đàm phán công nợ — cam kết sản lượng dài hạn để kéo dài thời gian thanh toán (ví dụ trả sau 45–60 ngày kể từ khi nhận hàng/nghiệm thu).',
+        '<b>Chuyển giao điều khoản thanh toán:</b> nhà thầu chính thanh toán cho nhà thầu phụ trong một số ngày cố định kể từ khi nhận được tiền từ chủ đầu tư.'
+      ]
+    },
+    {
+      cat:'process',
+      title:'Quản lý dự án theo cách truyền thống (Excel), không đồng nhất, effort báo cáo cao',
+      desc:'Thiếu một hệ thống chung khiến mỗi dự án quản lý theo cách khác nhau, dữ liệu cập nhật chậm và effort tổng hợp báo cáo giữa các bên (nội bộ và vendor) rất cao.',
+      fixes:[
+        '<b>Quản lý tiến độ công trường</b> — thay bảng Gantt thủ công bằng phần mềm chuyên dụng (MS Project / Primavera P6 hoặc Asana / Base), tự động liên kết đầu việc và cảnh báo chậm trễ theo thời gian thực.',
+        '<b>Quản lý chi phí & nguồn lực</b> — vận hành triệt để hệ thống ERP (SAP/Oracle) để liên thông dữ liệu vật tư, dòng tiền giữa công trường và văn phòng, tự động hóa phân bổ chi phí.',
+        '<b>Đồng nhất chuẩn giữa internal company và vendor</b> — một hệ thống dùng chung giúp cả nội bộ và nhà thầu phụ báo cáo theo cùng định dạng, giảm effort tổng hợp thủ công.'
       ]
     }
   ];
 
-  const tabsNav = document.getElementById('tabsNav');
-  const panels = document.getElementById('panels');
+  const issueList = document.getElementById('issueList');
+  const detail = document.getElementById('detail');
 
-  groups.forEach((g, i)=>{
+  issues.forEach((issue, i)=>{
+    const cat = CATS[issue.cat];
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
-    btn.dataset.target = g.id;
-    btn.innerHTML = `<span class="dot" style="background:${g.color}"></span>${g.label}`;
-    btn.addEventListener('click', ()=>switchTab(g.id));
-    tabsNav.appendChild(btn);
-
-    const panel = document.createElement('div');
-    panel.className = 'panel' + (i===0 ? ' active' : '');
-    panel.id = 'panel-' + g.id;
-
-    const riskCards = g.risks.map(r => `
-      <div class="item-card">
-        <div class="head"><span>${r.t}</span><span class="chev">›</span></div>
-        <div class="body"><p>${r.d}</p></div>
-      </div>`).join('');
-
-    const fixCards = g.fixes.map(f => `
-      <div class="item-card">
-        <div class="head"><span>${f.t}</span><span class="chev">›</span></div>
-        <div class="body"><p>${f.d}</p></div>
-      </div>`).join('');
-
-    panel.innerHTML = `
-      <div class="panel-grid">
-        <div class="panel-col risk">
-          <h5>Thách thức</h5>
-          ${riskCards}
-        </div>
-        <div class="panel-col fix">
-          <h5>Giải pháp</h5>
-          ${fixCards}
-        </div>
+    btn.className = 'issue-btn' + (i===0 ? ' active' : '');
+    btn.innerHTML = `
+      <div class="issue-num" style="background:${cat.color}">${i+1}</div>
+      <div class="issue-txt">
+        <h4>${issue.title}</h4>
+        <span>${cat.label}</span>
       </div>`;
-    panels.appendChild(panel);
+    btn.addEventListener('click', ()=>renderDetail(i));
+    issueList.appendChild(btn);
   });
 
-  function switchTab(id){
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.target===id));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id === 'panel-'+id));
+  function renderDetail(idx){
+    document.querySelectorAll('.issue-btn').forEach((b,i)=>b.classList.toggle('active', i===idx));
+    const issue = issues[idx];
+    const cat = CATS[issue.cat];
+
+    const fixItems = issue.fixes.map((f,i)=>`
+      <div class="fix-item" style="animation-delay:${i*0.05}s">
+        <div class="fnum">${i+1}</div>
+        <p>${f}</p>
+      </div>`).join('');
+
+    detail.innerHTML = `
+      <div class="detail-tag" style="background:${cat.color}1A;color:${cat.color}">
+        <span class="dot" style="background:${cat.color}"></span>${cat.label}
+      </div>
+      <h3>${issue.title}</h3>
+      <p class="desc">${issue.desc}</p>
+      <div class="fix-label"><span>&#8594;</span>Giải pháp đề xuất</div>
+      <div class="fix-list">${fixItems}</div>
+    `;
   }
 
-  // ---- Card open/close (event delegation) ----
-  panels.addEventListener('click', (e)=>{
-    const card = e.target.closest('.item-card');
-    if(!card) return;
-    card.classList.toggle('open');
-  });
+  renderDetail(0);
 </script>
 
 </body>
