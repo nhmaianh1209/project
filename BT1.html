@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thách thức & Giải pháp — Quản trị điều hành Coteccons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16315e;
+    --navy-deep:#0d1f3f;
+    --teal:#5fd1c1;
+    --teal-vivid:#0047ba;
+    --teal-light:#94eedc;
+    --gray:#434447;
+    --gray-light:#c4cad6;
+    --white:#ffffff;
+    --brick:#b86054;
+    --green:#51ac70;
+    --sand:#c59a6e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Lexend Deca',sans-serif;
+    background:var(--white);
+    color:var(--gray);
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--teal);color:var(--navy);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 55%,#1c3e73 100%);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:2rem 1.5rem;
+    overflow:hidden;
+  }
+  .hero-grid{
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(148,238,220,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,238,220,0.05) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at center, black 0%, transparent 75%);
+    animation:drift 30s linear infinite;
+  }
+  @keyframes drift{ from{background-position:0 0;} to{background-position:96px 96px;} }
+
+  .hero-arrow{
+    position:absolute;
+    width:140vw;
+    height:140vw;
+    border:1px solid rgba(95,209,193,0.08);
+    border-radius:38%;
+    top:-40vw;
+    right:-60vw;
+    animation:spin 90s linear infinite;
+  }
+  @keyframes spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+  .eyebrow{
+    color:var(--teal);
+    letter-spacing:.22em;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    z-index:2;
+    opacity:0;
+    animation:riseIn .8s ease forwards;
+    animation-delay:.1s;
+  }
+  .hero h1{
+    z-index:2;
+    color:var(--white);
+    font-weight:700;
+    font-size:clamp(2.4rem,6.5vw,4.6rem);
+    line-height:1.05;
+    margin:1rem 0 .6rem;
+    opacity:0;
+    animation:riseIn .8s ease forwards;
+    animation-delay:.25s;
+  }
+  .hero h1 span{color:var(--teal);}
+  .hero p.sub{
+    z-index:2;
+    color:var(--gray-light);
+    max-width:640px;
+    font-size:clamp(1rem,1.6vw,1.15rem);
+    line-height:1.6;
+    font-weight:300;
+    opacity:0;
+    animation:riseIn .8s ease forwards;
+    animation-delay:.4s;
+  }
+  @keyframes riseIn{ from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+
+  .scroll-cue{
+    z-index:2;
+    margin-top:3rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.5rem;
+    color:var(--gray-light);
+    font-size:.75rem;
+    letter-spacing:.1em;
+    opacity:0;
+    animation:riseIn .8s ease forwards, bob 2s ease-in-out infinite;
+    animation-delay:.6s, 1.4s;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+  .scroll-cue .line{width:1px;height:34px;background:linear-gradient(var(--teal),transparent);}
+
+  /* ---------- STAT STRIP ---------- */
+  .stats{
+    background:var(--navy-deep);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .stat{
+    padding:2.2rem 1rem;
+    text-align:center;
+    border-right:1px solid rgba(255,255,255,.06);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{
+    color:var(--teal);
+    font-size:clamp(1.6rem,3vw,2.4rem);
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .label{
+    color:var(--gray-light);
+    font-size:.72rem;
+    margin-top:.35rem;
+    letter-spacing:.03em;
+    line-height:1.4;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:5.5rem 1.5rem;}
+  .wrap{max-width:1120px;margin:0 auto;}
+  .section-tag{
+    color:var(--teal-vivid);
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    margin-bottom:.7rem;
+  }
+  .section-title{
+    color:var(--navy);
+    font-size:clamp(1.7rem,3.4vw,2.5rem);
+    font-weight:700;
+    line-height:1.2;
+    max-width:720px;
+  }
+  .section-desc{
+    color:var(--gray);
+    max-width:620px;
+    margin-top:1rem;
+    font-size:1.02rem;
+    line-height:1.65;
+    font-weight:300;
+  }
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- PIPELINE (signature element) ---------- */
+  .pipeline{
+    margin-top:3.5rem;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1.2rem;
+    position:relative;
+  }
+  .pipeline::before{
+    content:'';
+    position:absolute;
+    top:38px; left:8%; right:8%;
+    height:2px;
+    background:repeating-linear-gradient(90deg,var(--gray-light) 0 8px, transparent 8px 16px);
+    z-index:0;
+  }
+  .pipe-stage{
+    position:relative;
+    z-index:1;
+    text-align:center;
+  }
+  .pipe-dot{
+    width:76px;height:76px;
+    border-radius:50%;
+    background:var(--navy);
+    color:var(--teal);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto;
+    font-size:1.7rem;
+    font-weight:700;
+    box-shadow:0 10px 24px -8px rgba(22,49,94,.4);
+  }
+  .pipe-stage h4{color:var(--navy);margin-top:1rem;font-size:1.05rem;font-weight:600;}
+  .pipe-stage p{color:var(--gray);font-size:.86rem;margin-top:.35rem;font-weight:300;}
+
+  /* ---------- GROUP TABS ---------- */
+  .tabs-nav{
+    display:flex;
+    gap:.6rem;
+    flex-wrap:wrap;
+    margin-top:2.8rem;
+    margin-bottom:2.2rem;
+  }
+  .tab-btn{
+    border:1.5px solid var(--gray-light);
+    background:transparent;
+    color:var(--navy);
+    font-family:'Lexend Deca',sans-serif;
+    padding:.65rem 1.15rem;
+    border-radius:999px;
+    font-size:.86rem;
+    font-weight:500;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    transition:all .25s ease;
+    white-space:nowrap;
+  }
+  .tab-btn .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .tab-btn:hover{border-color:var(--navy);}
+  .tab-btn.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+  }
+
+  .panels{position:relative;}
+  .panel{
+    display:none;
+    animation:fadeUp .5s ease;
+  }
+  .panel.active{display:block;}
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .panel-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2.2rem;
+    align-items:start;
+  }
+  .panel-col h5{
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:1.1rem;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .panel-col.risk h5{color:var(--brick);}
+  .panel-col.fix h5{color:var(--green);}
+
+  .item-card{
+    background:#fafbfc;
+    border:1px solid #eceef2;
+    border-radius:14px;
+    padding:1.1rem 1.25rem;
+    margin-bottom:.85rem;
+    cursor:pointer;
+    transition:box-shadow .25s ease, transform .25s ease, background .25s ease;
+  }
+  .item-card:hover{
+    box-shadow:0 12px 28px -14px rgba(22,49,94,.22);
+    transform:translateY(-2px);
+    background:#fff;
+  }
+  .item-card .head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+    color:var(--navy);
+    font-size:.96rem;
+  }
+  .item-card .chev{
+    color:var(--gray-light);
+    transition:transform .3s ease;
+    flex-shrink:0;
+  }
+  .item-card.open .chev{transform:rotate(90deg);}
+  .item-card .body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease;
+  }
+  .item-card.open .body{max-height:200px;}
+  .item-card .body p{
+    padding-top:.7rem;
+    font-size:.87rem;
+    line-height:1.6;
+    font-weight:300;
+    color:var(--gray);
+  }
+
+  .fix .item-card{border-left:none;}
+  .fix .item-card .head::before{
+    content:'';
+    width:6px;height:6px;border-radius:50%;
+    background:var(--green);
+    flex-shrink:0;
+    margin-right:.6rem;
+    display:none;
+  }
+
+  /* ---------- CTA / CLOSING ---------- */
+  .closing{
+    background:var(--navy);
+    color:#fff;
+    text-align:center;
+  }
+  .closing .section-tag{color:var(--teal);}
+  .closing .section-title{color:#fff;max-width:760px;margin:0 auto;}
+  .closing .section-desc{color:var(--gray-light);margin:1rem auto 0;text-align:center;}
+  .quote-box{
+    max-width:680px;
+    margin:2.6rem auto 0;
+    background:rgba(255,255,255,.05);
+    border-radius:16px;
+    padding:2rem 2.2rem;
+  }
+  .quote-box p{
+    font-size:1.15rem;
+    font-weight:300;
+    line-height:1.6;
+    color:#fff;
+    font-style:italic;
+  }
+  .quote-box span{
+    display:block;
+    margin-top:1rem;
+    color:var(--teal);
+    font-size:.8rem;
+    font-weight:600;
+    letter-spacing:.05em;
+    font-style:normal;
+  }
+
+  footer{
+    background:var(--navy-deep);
+    color:var(--gray-light);
+    text-align:center;
+    padding:1.4rem;
+    font-size:.75rem;
+    letter-spacing:.05em;
+  }
+
+  @media (max-width:760px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat{border-bottom:1px solid rgba(255,255,255,.06);}
+    .pipeline{grid-template-columns:1fr;gap:2rem;}
+    .pipeline::before{display:none;}
+    .panel-grid{grid-template-columns:1fr;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-arrow"></div>
+  <div class="eyebrow">Bài tập nhóm · Quản trị điều hành nâng cao · UEH</div>
+  <h1>Thách thức &amp; <span>Giải pháp</span><br>vận hành tại Coteccons</h1>
+  <p class="sub">Soi bối cảnh vận hành thực tế của Coteccons qua lăng kính Quản trị điều hành (Operations Management) — và đề xuất hướng giải quyết cho từng nhóm thách thức.</p>
+  <div class="scroll-cue"><span>CUỘN XUỐNG</span><div class="line"></div></div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="num" data-count="62500">0</div><div class="label">Tỷ đồng backlog<br>kỷ lục cuối 2025</div></div>
+  <div class="stat"><div class="num" data-decimal="2.59">0</div><div class="label">% biên lợi nhuận gộp<br>quý gần nhất</div></div>
+  <div class="stat"><div class="num" data-count="30000">0</div><div class="label">Tỷ đồng mục tiêu<br>doanh thu FY2026</div></div>
+  <div class="stat"><div class="num" data-count="7">0</div><div class="label">Thách thức vận hành<br>được nhóm phân tích</div></div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag">Khung phân tích</div>
+      <h2 class="section-title">Nhìn Coteccons như một hệ thống vận hành</h2>
+      <p class="section-desc">Quản trị điều hành chuyển đổi đầu vào (nguyên vật liệu, lao động, vốn) thành đầu ra (công trình). Mỗi giai đoạn trong chuỗi này đều gắn với ít nhất một thách thức mà nhóm brainstorm — nhấn từng điểm để xem thách thức đi kèm.</p>
+    </div>
+
+    <div class="pipeline reveal">
+      <div class="pipe-stage">
+        <div class="pipe-dot">IN</div>
+        <h4>Đầu vào</h4>
+        <p>Vật liệu, lao động, vốn — nơi phát sinh #1, #2, #6</p>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-dot">→</div>
+        <h4>Chuyển đổi</h4>
+        <p>Thi công, quản lý dự án — nơi phát sinh #3, #7</p>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-dot">OUT</div>
+        <h4>Đầu ra</h4>
+        <p>Công trình bàn giao, biên lợi nhuận — chịu ảnh hưởng #4, #5</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#f7f8fa;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag">7 thách thức · 4 nhóm</div>
+      <h2 class="section-title">Chọn một nhóm để xem thách thức và giải pháp</h2>
+      <p class="section-desc">Nhấn vào từng thẻ để mở chi tiết. Giải pháp bên phải được gắn trực tiếp với thách thức tương ứng bên trái.</p>
+    </div>
+
+    <div class="tabs-nav reveal" id="tabsNav"></div>
+
+    <div class="panels reveal" id="panels"></div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <div class="section-tag">Kết luận</div>
+    <h2 class="section-title">Hiệu quả vận hành là lợi thế cạnh tranh, không phải giá thầu</h2>
+    <p class="section-desc">Cả 7 thách thức đều quy về một điểm: doanh nghiệp thắng trong ngành xây dựng 2026 là doanh nghiệp kiểm soát được dữ liệu vận hành theo thời gian thực — từ vật liệu, con người đến dòng tiền.</p>
+    <div class="quote-box">
+      <p>"Thị trường xây dựng ngày càng cạnh tranh khốc liệt, biên lợi nhuận giảm đi, yêu cầu đối với doanh nghiệp rất cao. Gia tăng hiệu quả chính là lợi thế khác biệt."</p>
+      <span>— Ông Võ Hoàng Lâm, Phó Tổng Giám đốc Coteccons</span>
+    </div>
+  </div>
+</section>
+
+<footer>Bài tập nhóm · Quản trị điều hành nâng cao · Chương trình Cao học UEH · Nội dung tổng hợp từ brainstorm nhóm &amp; nguồn báo chí công khai</footer>
+
+<script>
+  // ---- Scroll reveal ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, {threshold:.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // ---- Stat counters ----
+  const stats = document.querySelectorAll('.stat .num');
+  const statIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const isDecimal = el.dataset.decimal;
+        const target = parseFloat(isDecimal || el.dataset.count);
+        let cur = 0;
+        const step = target / 60;
+        const tick = ()=>{
+          cur += step;
+          if(cur >= target){ el.textContent = isDecimal ? target.toFixed(2) : target.toLocaleString('vi-VN'); return; }
+          el.textContent = isDecimal ? cur.toFixed(2) : Math.floor(cur).toLocaleString('vi-VN');
+          requestAnimationFrame(tick);
+        };
+        tick();
+        statIO.unobserve(el);
+      }
+    });
+  }, {threshold:.4});
+  stats.forEach(s=>statIO.observe(s));
+
+  // ---- Data: 4 groups ----
+  const groups = [
+    {
+      id:'cost',
+      label:'Chi phí & Vật liệu',
+      color:'#b86054',
+      risks:[
+        {t:'Biến động giá NVL do thời gian thi công dài', d:'Giá vật liệu như nhựa đường, đá, cát tăng 25–37% theo diễn biến thị trường 2026, trong khi hợp đồng thi công kéo dài nhiều tháng.'},
+        {t:'Chi phí cao → giảm khả năng cạnh tranh giá', d:'Biên lợi nhuận gộp co lại (2,59% so với 3,37% cùng kỳ) trong bối cảnh cạnh tranh khốc liệt toàn ngành.'}
+      ],
+      fixes:[
+        {t:'Điều khoản điều chỉnh giá theo chỉ số vật liệu', d:'Đưa price-escalation clause vào hợp đồng dài hạn để chia sẻ rủi ro biến động giá với chủ đầu tư.'},
+        {t:'Hedging / mua trước vật liệu chiến lược', d:'Chốt giá sớm với nhà cung cấp cho thép, xi măng — nhóm vật liệu chiếm tỷ trọng chi phí lớn nhất.'},
+        {t:'Activity-based costing', d:'Tính đúng chi phí thực từng loại công trình để tránh báo giá dưới giá thành khi cạnh tranh thầu.'}
+      ]
+    },
+    {
+      id:'people',
+      label:'Nhân sự',
+      color:'#51ac70',
+      risks:[
+        {t:'Thiếu hụt lao động đầu vào', d:'Nghề công nhân xây dựng kém hấp dẫn hơn làm việc trong nhà máy do tính chất nặng nhọc, nhiều rủi ro thể chất.'},
+        {t:'Tỷ lệ nghỉ việc quản lý cấp trung–cao', d:'Nhân sự PM/PD bị đối thủ và chủ đầu tư săn trực tiếp, đặc biệt trong giai đoạn ngành phục hồi và mở rộng quy mô.'}
+      ],
+      fixes:[
+        {t:'Cải thiện điều kiện làm việc & cơ giới hóa', d:'Đầu tư thiết bị hỗ trợ để giảm yếu tố nặng nhọc, nâng chuẩn an toàn tại công trường.'},
+        {t:'Employer branding cho lao động thi công', d:'Truyền thông rõ lộ trình thu nhập, phúc lợi, thay vì chỉ gắn hình ảnh "công việc nặng nhọc".'},
+        {t:'Lộ trình phát triển & đãi ngộ giữ chân PM/PD', d:'Gắn thưởng theo hiệu quả dự án dài hạn, đầu tư văn hoá trao quyền cho cấp quản lý.'}
+      ]
+    },
+    {
+      id:'cash',
+      label:'Dòng tiền',
+      color:'#c59a6e',
+      risks:[
+        {t:'Bị động dòng tiền', d:'Khách hàng thanh toán chậm trong khi chi phí vật tư, nhân công phải chi trả trước — đặc thù kinh niên của ngành xây dựng.'}
+      ],
+      fixes:[
+        {t:'Progress billing gắn chặt với milestone', d:'Đàm phán điều khoản thanh toán theo tiến độ thi công cụ thể, giảm khoảng trễ thu tiền.'},
+        {t:'Supply chain finance', d:'Hợp tác ngân hàng để nhà cung cấp được thanh toán sớm, còn Coteccons giữ kỳ hạn trả chậm hơn.'},
+        {t:'Quỹ dự phòng thanh khoản', d:'Xây dựng dự báo dòng tiền theo từng dự án lớn để chủ động ứng phó khi khách hàng trễ hạn.'}
+      ]
+    },
+    {
+      id:'ops',
+      label:'Công nghệ & Quy trình',
+      color:'#0047ba',
+      risks:[
+        {t:'Quản lý dự án bằng Excel, không đồng nhất', d:'Thiếu chuẩn hoá giữa các dự án, effort tổng hợp báo cáo cao, dữ liệu vận hành cập nhật chậm.'},
+        {t:'Lượng rác thải lớn, khó quản lý', d:'Thất thoát vật liệu tại công trường không chỉ là vấn đề môi trường mà còn là chi phí ẩn.'}
+      ],
+      fixes:[
+        {t:'Hệ thống quản lý dự án tập trung', d:'Thay Excel bằng nền tảng PM/ERP có dashboard real-time theo dõi chi phí và tiến độ.'},
+        {t:'BIM (Building Information Modeling)', d:'Đồng bộ dữ liệu thiết kế – thi công – chi phí trên một nền tảng duy nhất cho mọi dự án.'},
+        {t:'Lean Construction', d:'Giảm lãng phí ngay tại từng công đoạn thi công, kết hợp tái sử dụng vật liệu dư để giảm chi phí xử lý rác.'}
+      ]
+    }
+  ];
+
+  const tabsNav = document.getElementById('tabsNav');
+  const panels = document.getElementById('panels');
+
+  groups.forEach((g, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
+    btn.dataset.target = g.id;
+    btn.innerHTML = `<span class="dot" style="background:${g.color}"></span>${g.label}`;
+    btn.addEventListener('click', ()=>switchTab(g.id));
+    tabsNav.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (i===0 ? ' active' : '');
+    panel.id = 'panel-' + g.id;
+
+    const riskCards = g.risks.map(r => `
+      <div class="item-card">
+        <div class="head"><span>${r.t}</span><span class="chev">›</span></div>
+        <div class="body"><p>${r.d}</p></div>
+      </div>`).join('');
+
+    const fixCards = g.fixes.map(f => `
+      <div class="item-card">
+        <div class="head"><span>${f.t}</span><span class="chev">›</span></div>
+        <div class="body"><p>${f.d}</p></div>
+      </div>`).join('');
+
+    panel.innerHTML = `
+      <div class="panel-grid">
+        <div class="panel-col risk">
+          <h5>Thách thức</h5>
+          ${riskCards}
+        </div>
+        <div class="panel-col fix">
+          <h5>Giải pháp</h5>
+          ${fixCards}
+        </div>
+      </div>`;
+    panels.appendChild(panel);
+  });
+
+  function switchTab(id){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.target===id));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id === 'panel-'+id));
+  }
+
+  // ---- Card open/close (event delegation) ----
+  panels.addEventListener('click', (e)=>{
+    const card = e.target.closest('.item-card');
+    if(!card) return;
+    card.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>
