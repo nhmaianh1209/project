@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEATDeli & Hệ sinh thái bán lẻ Masan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1917;
+    --paper:#faf6f0;
+    --blood:#7a1f1a;
+    --blood-dark:#4d130f;
+    --gold:#c89b3c;
+    --coldblue:#2e5266;
+    --line: rgba(28,25,23,0.12);
+    --maxw: 1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'JetBrains Mono',monospace; letter-spacing:0.02em; }
+  a{color:inherit;}
+
+  .shell{ display:flex; min-height:100vh; }
+  nav.rail{
+    width:230px; flex-shrink:0;
+    position:sticky; top:0; height:100vh;
+    background:var(--ink);
+    color:#e9e3da;
+    padding:2rem 1.2rem;
+    display:flex; flex-direction:column;
+    gap:1.6rem;
+    z-index:20;
+    overflow-y:auto;
+  }
+  .rail-brand{
+    display:flex; align-items:center; gap:0.6rem;
+    font-family:'Fraunces',serif; font-weight:700; font-size:1rem;
+    color:#fff; margin-bottom:0.4rem;
+  }
+  .seal{
+    width:26px; height:26px; border-radius:50%;
+    border:1.6px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.6rem; font-weight:800; color:var(--gold);
+    flex-shrink:0;
+  }
+  .rail-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0; flex:1; }
+  .rail-list button{
+    all:unset; cursor:pointer;
+    display:flex; align-items:baseline; gap:0.55rem;
+    padding:0.42rem 0.3rem;
+    font-size:0.78rem; color:#a49f95;
+    border-left:2px solid transparent;
+    padding-left:0.7rem;
+    transition:color .2s ease, border-color .2s ease;
+    line-height:1.3;
+  }
+  .rail-list button .n{ font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#6b6660; }
+  .rail-list button.active{ color:#fff; border-left-color:var(--gold); }
+  .rail-list button.active .n{ color:var(--gold); }
+  .rail-list button:hover{ color:#fff; }
+  .rail-foot{ font-size:0.66rem; color:#75706a; line-height:1.5; border-top:1px solid #3a3530; padding-top:1rem; }
+
+  main{ flex:1; min-width:0; }
+  section{
+    padding:5.5rem 6vw;
+    max-width:var(--maxw);
+    margin:0 auto;
+    scroll-margin-top:1rem;
+  }
+  @media (max-width:900px){
+    nav.rail{ display:none; }
+    section{ padding:4rem 6vw; }
+  }
+
+  .hero{
+    background: radial-gradient(ellipse at 20% -10%, #3a0f0c 0%, var(--blood-dark) 45%, var(--ink) 100%);
+    color:#f5efe6;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    max-width:none;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 90px);
+    pointer-events:none;
+  }
+  .hero-inner{ max-width:var(--maxw); margin:0 auto; padding:0 6vw; position:relative; z-index:2; width:100%; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:0.78rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:1.4rem; display:flex; align-items:center; gap:0.6rem;
+  }
+  .eyebrow::before{ content:""; width:28px; height:1px; background:var(--gold); }
+  .hero h1{
+    font-size:clamp(2.2rem, 5vw, 4.3rem);
+    line-height:1.05; margin:0 0 1.3rem 0; color:#fff;
+    max-width:12ch;
+  }
+  .hero .sub{
+    font-size:1.1rem; color:#d8c9b8; max-width:46ch; line-height:1.55; margin-bottom:2.2rem;
+  }
+  .hero-tag{ color:var(--gold); font-style:italic; font-family:'Fraunces',serif; }
+  .group-card{
+    display:inline-flex; flex-direction:column; gap:0.9rem;
+    background:rgba(255,255,255,0.045);
+    border:1px solid rgba(255,255,255,0.14);
+    padding:1.3rem 1.6rem; border-radius:4px;
+    backdrop-filter:blur(6px);
+  }
+  .group-title{ font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; color:var(--gold); text-transform:uppercase; }
+  .group-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0.3rem 2.2rem; font-size:0.82rem; color:#d8c9b8; }
+  .group-grid span.id{ color:#8a7f70; font-family:'JetBrains Mono',monospace; font-size:0.7rem; margin-right:0.4rem;}
+
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--blood); margin-bottom:0.7rem; display:flex; align-items:center; gap:0.55rem;
+  }
+  .kicker .idx{ color:var(--gold); background:var(--ink); padding:0.1rem 0.45rem; border-radius:2px; }
+  section h2{ font-size:clamp(1.6rem,2.8vw,2.4rem); margin:0 0 0.9rem 0; color:var(--ink); }
+  .lede{ font-size:1.02rem; color:#5c5650; max-width:64ch; line-height:1.6; margin-bottom:2.4rem; }
+
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+  @media (max-width:820px){ .grid3,.grid2{ grid-template-columns:1fr; } }
+
+  .stat-card{
+    background:#fff; border:1px solid var(--line); border-radius:6px; padding:1.7rem 1.4rem;
+  }
+  .stat-num{ font-family:'Fraunces',serif; font-weight:700; font-size:2.3rem; color:var(--blood); line-height:1; margin-bottom:0.3rem; }
+  .stat-unit{ font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--gold); text-transform:uppercase; margin-bottom:0.7rem; display:block;}
+  .stat-label{ font-size:0.88rem; color:#5c5650; line-height:1.45; }
+
+  .insight-bar{
+    background:var(--blood); color:#fbe9e2; border-radius:6px; padding:1.5rem 1.7rem; margin-top:1.5rem;
+    font-size:0.92rem; line-height:1.6;
+  }
+  .insight-bar b{ color:var(--gold); }
+  .insight-bar.dark{ background:var(--ink); color:#e9e3da; }
+
+  .src{
+    font-size:0.72rem; color:#9a948b; margin-top:0.4rem; line-height:1.4;
+    font-style:italic;
+  }
+  .src b{ font-style:normal; color:#7a1f1a; font-weight:600; }
+  .src-block{
+    margin-top:2rem; padding-top:1rem; border-top:1px dashed var(--line);
+    font-size:0.74rem; color:#9a948b; line-height:1.7;
+  }
+  .src-block b{ color:var(--blood); font-weight:600; }
+
+  .timeline{ display:flex; flex-direction:column; gap:0; }
+  .tl-item{ display:flex; gap:1.2rem; padding:0.9rem 0; border-bottom:1px solid var(--line); align-items:baseline; }
+  .tl-year{ font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#fff; background:var(--blood); border-radius:3px; padding:0.22rem 0.55rem; flex-shrink:0; white-space:nowrap;}
+  .tl-desc{ font-size:0.92rem; color:#3d3833; }
+
+  .ecosystem-tree{
+    background:#fff; border:1px solid var(--line); border-radius:8px; padding:1.8rem;
+    margin-top:1.5rem;
+  }
+  .eco-row{ display:flex; align-items:center; justify-content:center; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.6rem;}
+  .eco-node{
+    background:var(--paper); border:1px solid var(--line); border-radius:6px;
+    padding:0.7rem 1.1rem; font-size:0.82rem; text-align:center; min-width:140px;
+  }
+  .eco-node.parent{ background:var(--ink); color:#fff; border:none; }
+  .eco-node.main{ background:var(--blood); color:#fff; border:none; font-weight:700; }
+  .eco-node.sister{ background:#efe9e0; }
+  .eco-arrow-down{ text-align:center; color:var(--gold); font-size:1.1rem; margin:0.1rem 0; }
+  .eco-pct{ display:block; font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--gold); margin-top:0.2rem;}
+
+  .chain{ display:flex; align-items:stretch; gap:0; margin-top:1rem; flex-wrap:wrap; }
+  .chain-node{
+    flex:1; min-width:150px; background:#fff; border:1px solid var(--line); border-radius:6px;
+    padding:1.3rem 1rem; text-align:center; position:relative;
+  }
+  .chain-node .seal-lg{
+    width:52px; height:52px; border-radius:50%; margin:0 auto 0.8rem auto;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--blood); color:#fff; font-size:1.3rem;
+  }
+  .chain-node:nth-child(even) .seal-lg{ background:var(--coldblue); }
+  .chain-node b{ display:block; font-family:'Fraunces',serif; font-size:0.98rem; margin-bottom:0.4rem; }
+  .chain-node span.d{ font-size:0.8rem; color:#5c5650; line-height:1.4; display:block; }
+  .chain-arrow{ display:flex; align-items:center; justify-content:center; width:1.8rem; color:var(--gold); font-size:1.2rem; flex-shrink:0; }
+  @media (max-width:820px){ .chain{flex-direction:column;} .chain-arrow{ transform:rotate(90deg); width:auto; padding:0.3rem 0;} }
+
+  .brand-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:1.5rem; }
+  @media (max-width:900px){ .brand-grid{ grid-template-columns:1fr; } }
+  .brand-card{
+    background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  }
+  .brand-head{ padding:1.2rem 1.3rem 0.9rem 1.3rem; }
+  .brand-head h4{ font-family:'Fraunces',serif; font-size:1.25rem; margin:0 0 0.3rem 0; }
+  .brand-head .tag{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--gold); text-transform:uppercase; }
+  .brand-body{ padding:0 1.3rem 1.3rem 1.3rem; font-size:0.86rem; color:#5c5650; line-height:1.55; }
+  .brand-stat{ background:var(--paper); margin:0 1.3rem 1.3rem 1.3rem; border-radius:6px; padding:0.8rem 1rem; display:flex; align-items:baseline; gap:0.6rem;}
+  .brand-stat .n{ font-family:'Fraunces',serif; font-weight:700; font-size:1.5rem; color:var(--blood); }
+  .brand-stat .l{ font-size:0.76rem; color:#5c5650; }
+
+  .channel-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.3rem; margin-top:1.5rem; }
+  @media (max-width:820px){ .channel-grid{ grid-template-columns:1fr; } }
+  .channel-card{ background:#fff; border:1px solid var(--line); border-radius:8px; padding:1.6rem; }
+  .channel-card h4{ font-family:'Fraunces',serif; font-size:1.15rem; margin:0 0 0.2rem 0; display:flex; align-items:center; gap:0.6rem; }
+  .channel-card .ch-badge{ width:34px; height:34px; border-radius:50%; background:var(--blood); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:700; flex-shrink:0;}
+  .channel-card p{ font-size:0.88rem; color:#5c5650; line-height:1.55; margin:0.7rem 0; }
+  .channel-stats{ display:flex; gap:1rem; margin-top:0.8rem; flex-wrap:wrap; }
+  .channel-stats div{ background:var(--paper); border-radius:6px; padding:0.6rem 0.9rem; }
+  .channel-stats .n{ font-family:'Fraunces',serif; font-weight:700; color:var(--blood); font-size:1.15rem; display:block; }
+  .channel-stats .l{ font-size:0.7rem; color:#5c5650; }
+
+  .flow{ display:flex; align-items:center; gap:0; overflow-x:auto; padding:2rem 0 1rem 0; }
+  .flow-node{
+    flex:1 0 140px; text-align:center; padding:1.2rem 0.7rem; border-radius:6px; color:#fff;
+  }
+  .flow-node.n1{ background:var(--ink); }
+  .flow-node.n2{ background:var(--blood); }
+  .flow-node.n3{ background:var(--blood); }
+  .flow-node.n4{ background:var(--ink); }
+  .flow-node.n5{ background:var(--coldblue); }
+  .flow-node b{ display:block; font-family:'Fraunces',serif; font-size:0.95rem; margin-bottom:0.3rem;}
+  .flow-node span{ font-size:0.75rem; opacity:0.85; }
+  .flow-arrow{ flex:0 0 26px; text-align:center; color:var(--gold); font-size:1.1rem; }
+  @media (max-width:900px){ .flow{ flex-wrap:wrap; } .flow-arrow{ display:none;} .flow-node{flex:1 1 45%;} }
+
+  .cc-steps{ display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap; }
+  .cc-step{ flex:1; min-width:180px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:1.3rem; position:relative;}
+  .cc-step .num{ position:absolute; top:-10px; left:1.2rem; background:var(--coldblue); color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700;}
+  .cc-step h5{ font-family:'Fraunces',serif; font-size:1rem; margin:0.6rem 0 0.5rem 0; }
+  .cc-step p{ font-size:0.82rem; color:#5c5650; line-height:1.5; margin:0; }
+  .cc-temp{ display:inline-block; margin-top:0.6rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; background:var(--paper); color:var(--coldblue); padding:0.2rem 0.5rem; border-radius:3px; }
+
+  .lesson{ display:flex; gap:1.4rem; padding:1.6rem; background:#fff; border:1px solid var(--line); border-radius:6px; margin-bottom:1rem; }
+  .lesson .num{ font-family:'Fraunces',serif; font-weight:900; font-size:2.1rem; color:var(--gold); flex-shrink:0; line-height:1; }
+  .lesson h4{ margin:0 0 0.4rem 0; font-family:'Fraunces',serif; font-size:1.05rem; color:var(--ink); }
+  .lesson p{ margin:0; font-size:0.9rem; color:#5c5650; line-height:1.55; }
+
+  footer.closing{
+    background:var(--ink); color:#e9e3da; max-width:none;
+    padding:6rem 6vw; text-align:center;
+  }
+  footer.closing h2{ color:#fff; font-size:clamp(1.7rem,4vw,2.8rem); margin-bottom:0.8rem; }
+  footer.closing p{ color:#a49f95; font-size:0.98rem; }
+  .seal-final{
+    width:66px; height:66px; border-radius:50%; border:2px solid var(--gold); margin:0 auto 1.8rem auto;
+    display:flex; align-items:center; justify-content:center; color:var(--gold); font-family:'Fraunces',serif; font-weight:700; font-size:1.4rem;
+  }
+
+  ::selection{ background:var(--gold); color:var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <nav class="rail" id="rail">
+    <div class="rail-brand"><span class="seal">M</span> MEATDeli</div>
+    <ul class="rail-list" id="railList">
+      <li><button data-target="hero"><span class="n">00</span> Mở đầu</button></li>
+      <li><button data-target="company"><span class="n">01</span> Doanh nghiệp &amp; hệ sinh thái</button></li>
+      <li><button data-target="products"><span class="n">02</span> Danh mục sản phẩm</button></li>
+      <li><button data-target="market"><span class="n">03</span> Bối cảnh thị trường</button></li>
+      <li><button data-target="channels"><span class="n">04</span> Kênh phân phối</button></li>
+      <li><button data-target="retailsupreme"><span class="n">05</span> Retail Supreme</button></li>
+      <li><button data-target="coldchain"><span class="n">06</span> Chiến dịch Cold Chain</button></li>
+      <li><button data-target="after"><span class="n">07</span> Sơ đồ tổng hợp</button></li>
+      <li><button data-target="results"><span class="n">08</span> Kết quả 2025</button></li>
+      <li><button data-target="lessons"><span class="n">09</span> Bài học OM</button></li>
+    </ul>
+    <div class="rail-foot">Quản trị Điều hành Nâng cao — UEH<br>Nhóm 1 · 2026<br><span style="color:#5c5650;">Nguồn chính: Masan MEATLife, Báo cáo thường niên 2025</span></div>
+  </nav>
+
+  <main>
+
+    <section class="hero" id="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Bài tập thảo luận · Kênh phân phối</div>
+        <h1>MEATDeli & Hệ sinh thái bán lẻ Masan</h1>
+        <p class="sub">Phân tích cải tiến kênh phân phối thịt có thương hiệu tại Việt Nam — từ chuỗi bán lẻ nội bộ đến mạng lưới hợp nhất <span class="hero-tag">GT + MT + Cold Chain</span> vận hành bởi dữ liệu.</p>
+        <div class="group-card">
+          <div class="group-title">Nhóm 1 — Quản trị Điều hành Nâng cao</div>
+          <div class="group-grid">
+            <div><span class="id">062</span>Trịnh Thành Vũ</div>
+            <div><span class="id">012</span>Nguyễn Hoàng Mai Anh</div>
+            <div><span class="id">021</span>Phạm Thị Ngọc Hạnh</div>
+            <div><span class="id">063</span>Hoàng Thị Tường Vy</div>
+            <div><span class="id">039</span>Phạm Thanh Phúc</div>
+            <div><span class="id">337</span>Phạm Ngọc Bảo Châu</div>
+            <div><span class="id">061</span>Trần Ngọc Thuỳ Vân</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="company">
+      <div class="kicker"><span class="idx">01</span> Doanh nghiệp &amp; hệ sinh thái Masan</div>
+      <h2>Masan MEATLife — nền tảng đạm động vật lớn nhất Việt Nam</h2>
+      <p class="lede">Masan MEATLife (MML) là nền tảng nội địa 3F (Feed–Farm–Food) tích hợp lớn nhất Việt Nam, đảm bảo sản phẩm thịt có thương hiệu, truy xuất nguồn gốc và giá cả hợp lý. Công ty niêm yết trên UPCoM (mã MML) từ tháng 12/2019.</p>
+
+      <div class="ecosystem-tree">
+        <div class="eco-row"><div class="eco-node parent">Masan Group Corporation</div></div>
+        <div class="eco-arrow-down">↓ 100%</div>
+        <div class="eco-row"><div class="eco-node">The Sherpa Company Limited</div></div>
+        <div class="eco-arrow-down">↓ 100%</div>
+        <div class="eco-row"><div class="eco-node">Masan Agri Company Limited</div></div>
+        <div class="eco-arrow-down">↓ 75,62% (+ 15,56% qua WinEco)</div>
+        <div class="eco-row"><div class="eco-node main">Masan MEATLife Corporation (MML)</div></div>
+        <div class="eco-arrow-down">↓ Công ty con &amp; công ty liên kết</div>
+        <div class="eco-row">
+          <div class="eco-node sister">MEATDeli HN<span class="eco-pct">100%</span></div>
+          <div class="eco-node sister">MEATDeli Sài Gòn<span class="eco-pct">100%</span></div>
+          <div class="eco-node sister">3F VIET JSC<span class="eco-pct">51%</span></div>
+          <div class="eco-node sister">Masan Jinju JSC<span class="eco-pct">74,99%</span></div>
+          <div class="eco-node sister">Vissan JSC (liên kết)<span class="eco-pct">24,94%</span></div>
+        </div>
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Company Organization Structure" &amp; "Notes to the consolidated financial statements — Note 1" (tr.110, 164-165).</div>
+
+      <div class="timeline" style="margin-top:2.4rem;">
+        <div class="tl-item"><span class="tl-year">2015</span><span class="tl-desc">Hợp nhất ANCO &amp; Proconco, ra mắt thức ăn chăn nuôi Bio-Zeem; nền tảng Masan Nutri-Science ra đời</span></div>
+        <div class="tl-item"><span class="tl-year">2018</span><span class="tl-desc">Khánh thành tổ hợp chế biến Hà Nam, ra mắt MEATDeli — thịt mát đầu tiên Việt Nam theo công nghệ châu Âu</span></div>
+        <div class="tl-item"><span class="tl-year">2020-2022</span><span class="tl-desc">Mua 51% 3F VIET (gia nhập thị trường gà), mua 74,99% Masan Jinju (mở rộng thịt chế biến)</span></div>
+        <div class="tl-item"><span class="tl-year">2025</span><span class="tl-desc">Doanh thu đạt 9.230 tỷ đồng (+20,7%), lợi nhuận sau thuế 619 tỷ đồng — năm lãi thứ hai liên tiếp</span></div>
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Summary of the Formation and Development" (tr.160-163) &amp; "Overview of Masan MEATLife" (tr.48-49).</div>
+
+      <div class="insight-bar dark">
+        <b>Tầm nhìn:</b> "Trở thành nền tảng thực phẩm và dinh dưỡng hiện đại hàng đầu Việt Nam — nơi tăng trưởng được dẫn dắt bởi năng lực cốt lõi, không phải chu kỳ thị trường." Quy mô cơ hội thị trường thịt ước tính hơn 30 tỷ USD.
+        <div class="src" style="color:#c9b9a8; margin-top:0.6rem;">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Serving Consumers and Leading the Category" (tr.28-29).</div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="kicker"><span class="idx">02</span> Danh mục sản phẩm</div>
+      <h2>Ba trụ cột thương hiệu — Pork, Poultry, Processed Meat</h2>
+      <p class="lede">MML vận hành theo 3 trụ cột kinh doanh cốt lõi: Thịt heo (MEATDeli Chilled Meat), Thịt gà (MEATDeli Fresh Chicken, 3F Fresh Chicken) và Thịt chế biến (MEATDeli Processed Meat, Pönnie, Heo Cao Bồi).</p>
+
+      <div class="brand-grid">
+        <div class="brand-card">
+          <div class="brand-head"><span class="tag">Thịt tươi/mát</span><h4>MEATDeli</h4></div>
+          <div class="brand-body">Thương hiệu bảo chứng chất lượng trong ngành thịt tươi, chuẩn châu Âu; đang mở rộng sang sản phẩm ướp gia vị chế biến sẵn (Bộ sưu tập Xiên que, Sốt ướp, Đa dụng), đại sứ thương hiệu Châu Bùi.</div>
+          <div class="brand-stat"><span class="n">85%</span><span class="l">độ nhận biết thương hiệu (Top-of-Mind &amp; Unaided Awareness)</span></div>
+        </div>
+        <div class="brand-card">
+          <div class="brand-head"><span class="tag">Thịt chế biến — trẻ em</span><h4>Heo Cao Bồi</h4></div>
+          <div class="brand-body">Xúc xích Shaking Sauce, dòng Cuốn Cuốn, mới ra mắt Sizzling Sausage; hợp tác Hội đồng Đội TW sản xuất series hoạt hình giáo dục kỹ năng cho học sinh tiểu học.</div>
+          <div class="brand-stat"><span class="n">99%</span><span class="l">độ nhận biết thương hiệu trong nhóm trẻ em</span></div>
+        </div>
+        <div class="brand-card">
+          <div class="brand-head"><span class="tag">Thịt chế biến — giới trẻ</span><h4>Pönnie</h4></div>
+          <div class="brand-body">Dẫn đầu phân khúc xúc xích tiệt trùng; tiên phong danh mục mới "Chill Meat Snacks"; đại sứ thương hiệu Sơn Tùng M-TP.</div>
+          <div class="brand-stat"><span class="n">35%</span><span class="l">thị phần ngành hàng xúc xích tiệt trùng (Nielsen Retail Audit)</span></div>
+        </div>
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Superior product portfolio rooted by deep consumer insights" &amp; "Building category-leading brands" (tr.32-35).</div>
+
+      <div class="insight-bar" style="margin-top:1.8rem;">
+        <b>Ghi chú vận hành:</b> Pönnie và Heo Cao Bồi ra đời từ hợp tác chiến lược với Masan Jinju (đối tác Hàn Quốc, sở hữu 74,99%) — đóng góp chính vào việc dịch chuyển cơ cấu doanh thu sang thịt chế biến giá trị cao hơn.
+      </div>
+    </section>
+
+    <section id="market">
+      <div class="kicker"><span class="idx">03</span> Bối cảnh thị trường</div>
+      <h2>Vì sao phân phối là chìa khóa</h2>
+      <p class="lede">Thị trường thịt Việt Nam có tiềm năng hơn 30 tỷ USD nhưng vẫn chưa chuẩn hóa — đây vừa là cơ hội vừa là bài toán vận hành khó nhất cho MML.</p>
+      <div class="grid3">
+        <div class="stat-card">
+          <div class="stat-num">&gt;30 tỷ</div><span class="stat-unit">USD</span>
+          <div class="stat-label">Quy mô cơ hội thị trường thịt Việt Nam</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">9,1%</div><span class="stat-unit">Thịt đóng gói</span>
+          <div class="stat-label">Tỷ trọng thịt đóng gói trong tổng khối lượng thịt bán lẻ 2024 — dư địa rất lớn cho thịt có thương hiệu (Euromonitor)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">~4%</div><span class="stat-unit">CAGR</span>
+          <div class="stat-label">Tốc độ tăng trưởng kép ngành thịt dự phóng đến 2029, đạt ~6,1 triệu tấn (Euromonitor)</div>
+        </div>
+      </div>
+      <div class="insight-bar">
+        <b>Xu hướng chuẩn hóa 2025-2026:</b> Quy định cấm chăn nuôi trong khu dân cư (hiệu lực từ 1/1/2025) cùng rủi ro dịch tả lợn châu Phi đang đẩy nhanh quá trình dịch chuyển sang các nền tảng sản xuất được kiểm soát sinh học, có thể kiểm chứng — tạo lợi thế cấu trúc cho MML.
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Vietnam Market: Trends and Emerging Opportunities" (tr.50-53).</div>
+    </section>
+
+    <section id="channels">
+      <div class="kicker"><span class="idx">04</span> Hệ thống phân phối</div>
+      <h2>Mạng lưới đa kênh — từ thành thị đến nông thôn</h2>
+      <p class="lede">MML vận hành "hệ thống siêu phân phối" (super-distribution system) trải dài từ nông thôn đến thành thị, qua 4 nhóm kênh chính.</p>
+
+      <div class="channel-grid">
+        <div class="channel-card">
+          <h4><span class="ch-badge">MT</span> Kênh hiện đại (Modern Trade)</h4>
+          <p>Mạng lưới WinCommerce (WinMart, WinMart+, WiN) — kênh chủ lực cho sản phẩm cần bảo quản 0-4°C. Bổ sung ~1.200 siêu thị/đại siêu thị khác (Co.opmart, Co.opFood, Co.opXtra, GO!, AEON) và chuỗi tiện lợi (Bách Hóa Xanh, GS25, FamilyMart, 7-Eleven).</p>
+          <div class="channel-stats">
+            <div><span class="n">&gt;4.600</span><span class="l">cửa hàng WinMart/WinMart+/WiN</span></div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <h4><span class="ch-badge" style="background:var(--coldblue);">GT</span> Kênh truyền thống (General Trade)</h4>
+          <p>Phân phối qua Masan Consumer bằng nền tảng Retail Supreme (Direct Coverage) — chuyển từ mô hình nhiều tầng trung gian sang tiếp cận trực tiếp từng điểm bán.</p>
+          <div class="channel-stats">
+            <div><span class="n">&gt;180.000</span><span class="l">điểm bán GT toàn quốc (cuối 2025)</span></div>
+            <div><span class="n">500.000</span><span class="l">điểm bán — độ phủ Retail Supreme</span></div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <h4><span class="ch-badge" style="background:var(--gold);">CC/B2B</span> Cold Chain &amp; HoReCa</h4>
+          <p>Phục vụ khách hàng định chế: chuỗi nhà hàng, quán ăn, bếp ăn trường học, khách doanh nghiệp, đơn vị cung cấp suất ăn công nghiệp — tối ưu giá trị từ mọi phần thịt và phụ phẩm.</p>
+          <div class="channel-stats">
+            <div><span class="n">~2.000</span><span class="l">khách hàng (cuối 2025)</span></div>
+            <div><span class="n">~300.000</span><span class="l">khách hàng tiềm năng</span></div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <h4><span class="ch-badge" style="background:#3d3833;">E-com</span> Thương mại điện tử &amp; Digital</h4>
+          <p>Shopee, TikTok, Lazada và nền tảng D2C riêng shop.MEATDeli.com.vn; tiên phong mạng lưới giao hàng nhanh chuyên biệt cho thịt tươi/mát, kết hợp livestream commerce và affiliate marketing.</p>
+        </div>
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "An extensive distribution network" (tr.36-39).</div>
+    </section>
+
+    <section id="retailsupreme">
+      <div class="kicker"><span class="idx">05</span> Cải tiến vận hành kênh GT</div>
+      <h2>Retail Supreme — số hóa route-to-market</h2>
+      <p class="lede">Retail Supreme (do Masan Consumer triển khai, MML hưởng lợi trực tiếp) là chiến lược "Direct Coverage" tích hợp công nghệ và dữ liệu trong nền tảng Digital 4P, tái cấu trúc toàn bộ hệ thống phân phối GT.</p>
+
+      <div class="grid2" style="align-items:start; margin-bottom:1.8rem;">
+        <div>
+          <h4 style="font-family:'Fraunces',serif; margin:0 0 0.6rem 0;">4 nguyên tắc vàng của Membership Program</h4>
+          <div class="timeline">
+            <div class="tl-item"><span class="tl-year" style="background:var(--coldblue);">1</span><span class="tl-desc"><b>Full Coverage</b> — tiếp cận trực tiếp mọi điểm bán lẻ trên toàn quốc</span></div>
+            <div class="tl-item"><span class="tl-year" style="background:var(--coldblue);">2</span><span class="tl-desc"><b>Dense Penetration</b> — mỗi điểm bán mang đầy đủ danh mục sản phẩm Masan</span></div>
+            <div class="tl-item"><span class="tl-year" style="background:var(--coldblue);">3</span><span class="tl-desc"><b>Perfect Store</b> — chuẩn hóa trưng bày qua tuân thủ planogram, chấm điểm bằng AI</span></div>
+            <div class="tl-item"><span class="tl-year" style="background:var(--coldblue);">4</span><span class="tl-desc"><b>Drive Offtake</b> — chương trình hội viên tăng tốc độ bán ra, đồng bộ GT và MT</span></div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-family:'Fraunces',serif; margin:0 0 0.6rem 0;">Bộ công nghệ vận hành</h4>
+          <div class="timeline">
+            <div class="tl-item"><span class="tl-year">App</span><span class="tl-desc"><b>Wincare App</b> — nền tảng hợp nhất đặt hàng, quản lý tồn kho, theo dõi khuyến mãi, báo cáo hiệu suất, tích điểm hội viên</span></div>
+            <div class="tl-item"><span class="tl-year">AI-1</span><span class="tl-desc"><b>Order Recommendation</b> — công cụ gợi ý đặt hàng thông minh, tăng tỷ lệ chốt đơn cho nhân viên bán hàng mới</span></div>
+            <div class="tl-item"><span class="tl-year">AI-2</span><span class="tl-desc"><b>AI Visibility</b> — chấm điểm trưng bày tự động bằng AI, đo lường tuân thủ planogram trên toàn mạng lưới</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="stat-card" style="background:var(--blood); color:#fff; text-align:center;">
+          <div class="stat-num" style="color:#fff;">500.000</div>
+          <div class="stat-label" style="color:#f0d4cd;">điểm bán — độ phủ toàn quốc của Retail Supreme</div>
+        </div>
+        <div class="stat-card" style="background:var(--blood); color:#fff; text-align:center;">
+          <div class="stat-num" style="color:#fff;">2x</div>
+          <div class="stat-label" style="color:#f0d4cd;">số SKU trung bình mỗi đơn hàng, so với đầu năm</div>
+        </div>
+        <div class="stat-card" style="background:var(--blood); color:#fff; text-align:center;">
+          <div class="stat-num" style="color:#fff;">Flat</div>
+          <div class="stat-label" style="color:#f0d4cd;">chi phí phục vụ (cost-to-serve) không đổi dù mở rộng độ phủ — nhờ loại bỏ chi phí trung gian</div>
+        </div>
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "An extensive distribution network — General trade channel" (tr.36-39). Triển khai theo 6 giai đoạn từ tháng 7/2024 đến tháng 9/2025.</div>
+    </section>
+
+    <section id="coldchain" style="max-width:none; background:var(--ink); color:#e9e3da; padding:6rem 6vw;">
+      <div style="max-width:var(--maxw); margin:0 auto;">
+      <div class="kicker" style="color:var(--gold);"><span class="idx" style="background:var(--gold); color:var(--ink);">06</span> Chiến dịch trọng tâm</div>
+      <h2 style="color:#fff;">Cold Chain — đầu tư chuỗi lạnh làm nền tảng tăng trưởng</h2>
+      <p style="font-size:1.02rem; color:#d8c9b8; max-width:64ch; line-height:1.6; margin-bottom:2rem;">Trong Thư của Chủ tịch HĐQT (Danny Le) trong Báo cáo thường niên 2025, "tối ưu hóa logistics chuỗi lạnh Việt Nam cùng Supra và nền tảng E2E của Masan" là 1 trong 3 trụ cột chiến lược, cùng với "Không lãng phí" và "Danh mục thương hiệu mạnh".</p>
+
+      <div class="cc-steps">
+        <div class="cc-step"><div class="num">1</div><h5>Giết mổ</h5><p>Gây choáng bằng CO2 — phương pháp nhân đạo nhất hiện có; xử lý cẩn thận trước chế biến.</p></div>
+        <div class="cc-step"><div class="num">2</div><h5>Làm lạnh</h5><p>Thân thịt được làm lạnh nhanh và có kiểm soát, đúng chuẩn châu Âu.<span class="cc-temp">0-4°C</span></p></div>
+        <div class="cc-step"><div class="num">3</div><h5>Cắt &amp; đóng gói</h5><p>Nhiệt độ lõi thịt duy trì liên tục để ức chế vi khuẩn, giữ độ tươi và giá trị dinh dưỡng.<span class="cc-temp">0-4°C</span></p></div>
+        <div class="cc-step"><div class="num">4</div><h5>Phân phối</h5><p>Vận chuyển bằng xe chuyên dụng dưới điều kiện chuỗi lạnh liên tục đến điểm bán.<span class="cc-temp">0-4°C</span></p></div>
+      </div>
+      <div class="src" style="color:#8a8378;">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Chilled meat production process" (tr.80-81). Thịt mát MEATDeli đạt hạn sử dụng 2-9 ngày tùy loại sản phẩm và quy cách đóng gói, tuân thủ TCVN 12429-1:2018 và tiêu chuẩn BRC Global Standard for Food Safety.</div>
+
+      <div class="grid2" style="margin-top:2.2rem; align-items:start;">
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:1.5rem;">
+          <h4 style="font-family:'Fraunces',serif; color:#fff; margin:0 0 0.7rem 0; font-size:1.05rem;">Vì sao đầu tư chuỗi lạnh quan trọng</h4>
+          <p style="font-size:0.9rem; color:#d8c9b8; line-height:1.6; margin:0;">Một chuỗi lạnh hiện đại, tích hợp giúp giảm mạnh hao hụt (spoilage &amp; shrinkage), kéo dài độ tươi, đảm bảo chất lượng đồng nhất — từ đó tăng hiệu suất sử dụng mỗi con vật nuôi và làm chuỗi giá trị hiệu quả hơn. Với nhà bán lẻ: phân phối rộng hơn, quản lý tồn kho tốt hơn, tin cậy an toàn thực phẩm cao hơn. Với người tiêu dùng: tiếp cận đạm động vật an toàn, tươi hơn, dinh dưỡng hơn với giá cả hợp lý hơn.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:1.5rem;">
+          <h4 style="font-family:'Fraunces',serif; color:#fff; margin:0 0 0.7rem 0; font-size:1.05rem;">Kết quả thị trường được ghi nhận</h4>
+          <p style="font-size:0.9rem; color:#d8c9b8; line-height:1.6; margin:0;">Theo Asian Agribiz (5/2026), MML hiện nắm giữ hơn 50% thị trường thịt chế biến Việt Nam và khoảng 60% doanh số thịt/thịt chế biến trong hệ thống bán lẻ WinCommerce — được ghi nhận là kết quả trực tiếp từ đầu tư chuỗi lạnh và cải thiện phân phối.</p>
+        </div>
+      </div>
+      <div class="src" style="color:#8a8378; margin-top:1rem;">Nguồn: Danny Le, "Chairman's Letter", Masan MEATLife Báo cáo thường niên 2025 (tr.22-23); Asian Agribiz, "Masan MeatLife powers growth through cold-chain innovation" (21/5/2026).</div>
+      </div>
+    </section>
+
+    <section id="after">
+      <div class="kicker"><span class="idx">07</span> Tổng hợp</div>
+      <h2>Sơ đồ kênh phân phối MEATDeli — mô hình hiện tại</h2>
+      <p class="lede">Ba lớp cải tiến cộng hưởng: chuỗi lạnh đảm bảo chất lượng hàng hóa, Retail Supreme số hóa tốc độ tiếp cận điểm bán, còn mạng lưới đa kênh (MT + GT + Cold Chain/HoReCa + E-commerce) đảm bảo độ phủ toàn diện.</p>
+      <div class="flow">
+        <div class="flow-node n1"><b>Nhà máy 3F</b><span>MEATDeli Hà Nam / Sài Gòn — chuỗi lạnh 0-4°C</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node n2"><b>Supra / E2E Platform</b><span>Tối ưu chuỗi cung ứng &amp; logistics lạnh</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node n3"><b>Retail Supreme</b><span>Direct Coverage, Wincare App, AI Visibility</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node n4"><b>MT + GT + HoReCa</b><span>&gt;4.600 WinMart · &gt;180.000 GT · ~2.000 B2B</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node n5"><b>Người tiêu dùng</b><span>Trên toàn quốc, offline &amp; online</span></div>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="kicker"><span class="idx">08</span> Hiệu quả tài chính 2025</div>
+      <h2>Kết quả đạt được (Năm tài chính 2025)</h2>
+      <div class="grid3">
+        <div class="stat-card"><div class="stat-num">9.230 tỷ</div><span class="stat-unit">+20,7% YoY</span><div class="stat-label">Doanh thu thuần hợp nhất MML năm 2025</div></div>
+        <div class="stat-card"><div class="stat-num">619 tỷ</div><span class="stat-unit">+24,4 lần YoY</span><div class="stat-label">Lợi nhuận sau thuế trước cổ đông thiểu số (NPAT Pre-MI)</div></div>
+        <div class="stat-card"><div class="stat-num">5,5%</div><span class="stat-unit">+330 bps</span><div class="stat-label">Biên EBIT — cải thiện chất lượng lợi nhuận</div></div>
+      </div>
+      <div class="grid3" style="margin-top:1.1rem;">
+        <div class="stat-card"><div class="stat-num">~60%</div><span class="stat-unit">+600 bps</span><div class="stat-label">Thị phần ngành hàng đạm động vật (protein) trong hệ thống WinCommerce</div></div>
+        <div class="stat-card"><div class="stat-num">31%</div><span class="stat-unit">so với 18% (2024)</span><div class="stat-label">Tỷ trọng doanh thu từ sản phẩm đổi mới/giá trị gia tăng trong ngành hàng thịt chế biến</div></div>
+        <div class="stat-card"><div class="stat-num">2,1 triệu đ</div><span class="stat-unit">/ngày/cửa hàng</span><div class="stat-label">Doanh thu bình quân MML mỗi ngày tại mỗi cửa hàng WinCommerce (+13,7% YoY)</div></div>
+      </div>
+      <div class="insight-bar">
+        <b>Nhận định:</b> Đây là năm lãi thứ hai liên tiếp của MML sau giai đoạn tái cấu trúc — cho thấy mô hình tích hợp 3F kết hợp số hóa phân phối (Retail Supreme) và đầu tư chuỗi lạnh đang vận hành cân bằng và có khả năng mở rộng quy mô.
+      </div>
+      <div class="src">Nguồn: Masan MEATLife, Báo cáo thường niên 2025, mục "Overview of Masan MEATLife" (tr.48-49) và "Assessment of Operating and Business Performance" (tr.58-59); Consolidated Statement of Income (tr.106-107).</div>
+    </section>
+
+    <section id="lessons">
+      <div class="kicker"><span class="idx">09</span> Bài học</div>
+      <h2>Bài học Quản trị Điều hành rút ra</h2>
+      <div class="lesson"><div class="num">01</div><div><h4>Chuỗi lạnh là hạ tầng, không phải chi phí phụ</h4><p>Đầu tư logistics chuỗi lạnh (0-4°C xuyên suốt từ nhà máy đến điểm bán) trực tiếp quyết định tỷ lệ hao hụt, hạn sử dụng và niềm tin an toàn thực phẩm — nền tảng để mọi cải tiến phân phối khác phát huy tác dụng.</p></div></div>
+      <div class="lesson"><div class="num">02</div><div><h4>Số hóa route-to-market giảm chi phí trung gian</h4><p>Retail Supreme chuyển từ mô hình nhiều tầng trung gian sang tiếp cận trực tiếp, giữ chi phí phục vụ không đổi (flat) dù độ phủ tăng gấp nhiều lần — minh chứng cho hiệu quả kinh tế theo quy mô trong phân phối bán lẻ.</p></div></div>
+      <div class="lesson"><div class="num">03</div><div><h4>Danh mục thương hiệu đa tầng mở rộng dịp tiêu dùng</h4><p>Ba thương hiệu (MEATDeli, Heo Cao Bồi, Pönnie) nhắm vào phân khúc khác nhau (gia đình, trẻ em, giới trẻ) giúp MML mở rộng dịp sử dụng và tối ưu hóa toàn bộ giá trị con vật nuôi — nguyên tắc "No Wastage" trong chiến lược 2026.</p></div></div>
+      <div class="src-block">
+        <b>Nguồn tham khảo chính:</b><br>
+        1. Masan MEATLife Corporation, <i>Annual Report 2025</i> ("The Great Connectivity"), phát hành tháng 3/2026 — các số liệu công ty, sản phẩm, kênh phân phối, tài chính.<br>
+        2. Asian Agribiz, "Masan MeatLife powers growth through cold-chain innovation", 21/5/2026.<br>
+        3. Masan Group, "Masan MEATLife: As the Operating Platform Matures, a New Growth Cycle Emerges", masangroup.com, 2/2026.
+      </div>
+    </section>
+
+    <footer class="closing">
+      <div class="seal-final">M</div>
+      <h2>Cảm ơn Thầy/Cô và các Anh Chị</h2>
+      <p>Nhóm 1 sẵn sàng trao đổi thêm cùng lớp — Quản trị Điều hành Nâng cao, UEH 2026</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.rail-list button');
+  const sections = Array.from(buttons).map(b => document.getElementById(b.dataset.target));
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById(btn.dataset.target).scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const idx = sections.indexOf(entry.target);
+      if (entry.isIntersecting && idx !== -1){
+        buttons.forEach(b => b.classList.remove('active'));
+        buttons[idx].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+  sections.forEach(s => { if(s) observer.observe(s); });
+</script>
+
+</body>
+</html>
