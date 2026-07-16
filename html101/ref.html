@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Các use-cases của landing page HTML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Recursive:wght@300..900&family=Fraunces:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --alex-amber: #E8930A;
+    --alex-amber-golden: #F2B705;
+    --alex-amber-light: #FEF3E2;
+    --alex-navy: #0C1E35;
+    --alex-navy-mid: #1A3A5C;
+    --alex-navy-300: #3A6080;
+    --alex-navy-light: #EBF0F6;
+    --alex-teal: #2AABBB;
+    --alex-teal-light: #E1F5F7;
+    --alex-warm-white: #F5F1EF;
+    --alex-white: #FFFFFF;
+    --alex-font: 'Lexend Deca', sans-serif;
+    --alex-font-stat: 'Recursive', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--alex-warm-white); font-family: var(--alex-font); }
+
+  .alex-hero { background: var(--alex-navy); padding: 56px 20px 44px; text-align: center; }
+  .alex-hero .eyebrow { font-family: var(--alex-font); font-weight: 500; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--alex-teal); margin-bottom: 12px; }
+  .alex-hero h1 { font-family: var(--alex-font); font-weight: 800; font-size: 30px; color: var(--alex-amber); margin-bottom: 12px; max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.25; }
+  .alex-hero p { font-family: var(--alex-font); font-weight: 400; font-size: 14px; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto 20px; line-height: 1.6; }
+  .alex-stat { display: inline-flex; align-items: baseline; gap: 10px; }
+  .alex-stat .num { font-family: var(--alex-font-stat); font-weight: 900; font-variation-settings: 'slnt' -15; color: var(--alex-amber-golden); font-size: 44px; }
+  .alex-stat .lbl { font-family: var(--alex-font); font-weight: 400; color: rgba(255,255,255,0.55); font-size: 13px; }
+
+  .wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; padding: 48px 20px 20px; }
+
+  .demo-label { font-family: var(--alex-font); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--alex-amber); margin-bottom: 10px; padding-left: 4px; }
+  .demo-label .n { color: var(--alex-teal); margin-right: 6px; }
+
+  section.demo { border-radius: 18px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+
+  /* ================= GROUP 1 — DE XUAT CHUONG TRINH ================= */
+  .g1 { background: #F6F1E4; font-family: 'Inter', sans-serif; color: #1E2A3A; }
+  .g1-head { background: #12233B; color: #F6F1E4; padding: 28px 32px 22px; }
+  .g1-head .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #C9A227; text-transform: uppercase; margin-bottom: 8px; }
+  .g1-head h2 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; margin-bottom: 6px; }
+  .g1-head p { font-size: 13.5px; color: #C6CBD4; max-width: 560px; }
+  .g1-body { padding: 26px 32px 32px; }
+  .g1-section-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: #12233B; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .g1-section-title::before { content: ''; width: 14px; height: 14px; background: #C9A227; border-radius: 3px; display: inline-block; }
+  .g1-timeline { display: flex; gap: 10px; margin-bottom: 28px; }
+  .g1-tl-step { flex: 1; background: #fff; border: 1px solid #E4DBC3; border-radius: 10px; padding: 12px 14px; }
+  .g1-tl-step .wk { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #C9A227; font-weight: 700; }
+  .g1-tl-step .nm { font-size: 13px; font-weight: 600; margin-top: 4px; }
+  table.g1-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 12.5px; }
+  table.g1-table th { background: #12233B; color: #F6F1E4; text-align: left; padding: 8px 10px; font-weight: 600; }
+  table.g1-table th:first-child { border-radius: 6px 0 0 0; }
+  table.g1-table th:last-child { border-radius: 0 6px 0 0; }
+  table.g1-table td { padding: 8px 10px; border-bottom: 1px solid #E4DBC3; background: #fff; }
+  table.g1-table tr:last-child td { font-weight: 700; background: #FBF3D9; }
+  .g1-foot { font-size: 11.5px; color: #8a8270; font-style: italic; }
+
+  /* ================= GROUP 2 — CV / PORTFOLIO ================= */
+  .g2 { background: #FBF6EF; font-family: 'Work Sans', sans-serif; color: #2B2622; }
+  .g2-inner { padding: 30px 32px 32px; display: flex; gap: 26px; }
+  .g2-avatar { width: 78px; height: 78px; border-radius: 50%; background: #C86B4A; color: #FBF6EF; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 26px; flex-shrink: 0; }
+  .g2-name { font-family: 'DM Serif Display', serif; font-size: 24px; font-style: italic; color: #2B2622; }
+  .g2-role { font-size: 13px; color: #8A7B6C; margin-top: 2px; margin-bottom: 14px; }
+  .g2-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .g2-tab { font-family: 'Work Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 100px; background: #EFE4D2; color: #8A7B6C; cursor: pointer; border: none; transition: 0.15s; }
+  .g2-tab.active { background: #C86B4A; color: #fff; }
+  .g2-panel { display: none; }
+  .g2-panel.active { display: block; }
+  .g2-item { border-left: 2px solid #E8DCC8; padding-left: 14px; margin-bottom: 14px; position: relative; }
+  .g2-item::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #C86B4A; position: absolute; left: -4.5px; top: 4px; }
+  .g2-item .t { font-size: 13.5px; font-weight: 600; }
+  .g2-item .d { font-size: 12px; color: #8A7B6C; }
+  .g2-skill { display: inline-block; background: #EFE4D2; color: #6B4F3B; font-size: 12px; padding: 5px 12px; border-radius: 8px; margin: 0 6px 6px 0; }
+  .g2-cert { font-size: 13px; margin-bottom: 8px; }
+  .g2-cert b { color: #C86B4A; }
+
+  /* ================= GROUP 3 — TRA CUU LOGISTICS ================= */
+  .g3 { background: #F0F6FB; font-family: 'Inter', sans-serif; color: #12263A; }
+  .g3-inner { padding: 30px 32px 34px; }
+  .g3-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #1863DC; font-weight: 700; margin-bottom: 4px; }
+  .g3-sub { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  .g3-search { display: flex; gap: 8px; margin-bottom: 18px; }
+  .g3-search input { flex: 1; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #C7DAF0; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; background: #fff; }
+  .g3-search input:focus { outline: none; border-color: #1863DC; }
+  .g3-search button { background: #1863DC; color: #fff; border: none; padding: 0 20px; border-radius: 10px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .g3-hint { font-size: 11.5px; color: #6b8bb3; margin-bottom: 16px; }
+  .g3-hint code { background: #E1EBF8; padding: 2px 6px; border-radius: 4px; }
+  .g3-result { background: #fff; border: 1.5px solid #C7DAF0; border-radius: 12px; padding: 16px 18px; display: none; }
+  .g3-result.show { display: block; }
+  .g3-result .row { display: grid; grid-template-columns: 90px 1fr; gap: 6px; font-size: 13px; padding: 6px 0; border-bottom: 1px dashed #DCE9F7; }
+  .g3-result .row:last-child { border-bottom: none; }
+  .g3-result .row .k { color: #6b8bb3; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; text-transform: uppercase; align-self: center; }
+  .g3-result .row .v { font-weight: 700; color: #0BA5A0; }
+  .g3-empty { font-size: 13px; color: #a8bdd4; padding: 14px 0; }
+
+  /* ================= GROUP 4 — DASHBOARD ONBOARDING ================= */
+  .g4 { background: #0B0F14; font-family: 'Space Grotesk', sans-serif; color: #E6EDF3; }
+  .g4-inner { padding: 28px 32px 32px; }
+  .g4-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+  .g4-top h3 { font-size: 19px; font-weight: 700; }
+  .g4-stat { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8A9A; text-align: right; }
+  .g4-stat b { color: #38BDF8; font-size: 15px; }
+  .g4-bar { height: 8px; background: #1A222C; border-radius: 100px; overflow: hidden; margin-bottom: 22px; }
+  .g4-bar-fill { height: 100%; background: linear-gradient(90deg, #38BDF8, #22C55E); width: 60%; border-radius: 100px; transition: width 0.3s; }
+  .g4-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; background: #131A23; margin-bottom: 8px; cursor: pointer; }
+  .g4-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #3A4553; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .g4-item.done .g4-check { background: #22C55E; border-color: #22C55E; color: #0B0F14; }
+  .g4-item.done .g4-txt { text-decoration: line-through; color: #5C6773; }
+  .g4-txt { font-size: 13.5px; flex: 1; }
+  .g4-pill { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; padding: 3px 9px; border-radius: 100px; font-weight: 600; }
+  .g4-pill.today { background: rgba(245,166,35,0.15); color: #F5A623; }
+  .g4-pill.done-pill { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .g4-pill.later { background: rgba(124,138,154,0.15); color: #7C8A9A; }
+
+  /* ================= GROUP 5 — KHAO SAT TRI HOAN ================= */
+  .g5 { background: #FDF4F5; font-family: 'Nunito', sans-serif; color: #3A2E39; }
+  .g5-inner { padding: 30px 32px 34px; }
+  .g5-h { font-family: 'Caveat', cursive; font-size: 30px; color: #8B7FD1; font-weight: 700; margin-bottom: 2px; }
+  .g5-sub { font-size: 13px; color: #8A7F94; margin-bottom: 20px; }
+  .g5-q { margin-bottom: 18px; }
+  .g5-q .qt { font-size: 14px; font-weight: 700; margin-bottom: 9px; }
+  .g5-opts { display: flex; flex-direction: column; gap: 7px; }
+  .g5-opt { display: flex; align-items: center; gap: 10px; background: #fff; border: 1.5px solid #F0DDE2; border-radius: 10px; padding: 9px 13px; cursor: pointer; font-size: 13px; transition: 0.15s; }
+  .g5-opt:hover { border-color: #FF6F61; }
+  .g5-opt input { accent-color: #FF6F61; }
+  .g5-opt.picked { border-color: #8B7FD1; background: #F3F0FB; }
+  .g5-btn { margin-top: 6px; background: #FF6F61; color: #fff; border: none; padding: 11px 22px; border-radius: 100px; font-weight: 800; font-size: 13.5px; cursor: pointer; font-family: 'Nunito', sans-serif; }
+  .g5-result { margin-top: 18px; background: #F3F0FB; border: 1.5px dashed #8B7FD1; border-radius: 14px; padding: 18px; display: none; }
+  .g5-result.show { display: block; }
+  .g5-result .rt { font-family: 'Caveat', cursive; font-size: 24px; color: #8B7FD1; font-weight: 700; }
+  .g5-result .rd { font-size: 13px; margin-top: 6px; color: #3A2E39; }
+
+  footer.note { text-align: center; font-family: var(--alex-font); font-weight: 300; font-size: 12px; color: rgba(12,30,53,0.4); padding-bottom: 32px; padding-top: 4px; }
+
+  /* ================= GROUP 6 — MO HINH 3D ================= */
+  .g6 { background: #150C29; font-family: 'Sora', sans-serif; color: #EDE9FA; }
+  .g6-inner { padding: 30px 32px 34px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .g6-text { flex: 1; min-width: 220px; }
+  .g6-title { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #B084F5; font-weight: 700; margin-bottom: 6px; }
+  .g6-sub { font-size: 19px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+  .g6-desc { font-size: 13px; color: #B7AEDB; line-height: 1.6; margin-bottom: 14px; }
+  .g6-hint { font-size: 11.5px; color: #8579A8; font-family: 'JetBrains Mono', monospace; }
+  .g6-stage { width: 220px; height: 220px; perspective: 700px; flex-shrink: 0; margin: 0 auto; }
+  .g6-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: rotateX(-24deg) rotateY(35deg); cursor: grab; transition: transform 0.05s linear; }
+  .g6-cube.dragging { cursor: grabbing; transition: none; }
+  .g6-face { position: absolute; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+  .g6-face.front  { background: linear-gradient(135deg,#7C3AED,#B084F5); transform: translateZ(110px); }
+  .g6-face.back   { background: linear-gradient(135deg,#4C1D95,#7C3AED); transform: rotateY(180deg) translateZ(110px); }
+  .g6-face.right  { background: linear-gradient(135deg,#38BDF8,#7C3AED); transform: rotateY(90deg) translateZ(110px); }
+  .g6-face.left   { background: linear-gradient(135deg,#7C3AED,#38BDF8); transform: rotateY(-90deg) translateZ(110px); }
+  .g6-face.top    { background: linear-gradient(135deg,#F2B705,#B084F5); transform: rotateX(90deg) translateZ(110px); color: #150C29; }
+  .g6-face.bottom { background: linear-gradient(135deg,#B084F5,#4C1D95); transform: rotateX(-90deg) translateZ(110px); }
+</style>
+</head>
+<body>
+
+  <div class="alex-hero">
+    <div class="eyebrow">Portfolio · Alex Nguyễn</div>
+    <h1>Các use-cases của landing page HTML</h1>
+    <p>Đây là những use-case Alex đã thực sự sử dụng HTML để giải quyết công việc — từ đề xuất chương trình, tra cứu logistics, đến khảo sát cá nhân hoá. Mỗi khối bên dưới tương tác được ngay tại đây.</p>
+    <div class="alex-stat"><span class="num">06</span><span class="lbl">use-case đã áp dụng</span></div>
+  </div>
+
+<div class="wrap">
+
+  <!-- GROUP 1 -->
+  <div>
+    <div class="demo-label"><span class="n">01</span>Đề xuất chương trình</div>
+    <section class="demo g1">
+      <div class="g1-head">
+        <div class="eyebrow">Program Proposal</div>
+        <h2>Young Talent Sprint 2027</h2>
+        <p>Chương trình phát triển 30 quản lý cấp trung tiềm năng trong 9 tuần, tập trung năng lực lãnh đạo và tư duy hệ thống.</p>
+      </div>
+      <div class="g1-body">
+        <div class="g1-section-title">Timeline</div>
+        <div class="g1-timeline">
+          <div class="g1-tl-step"><div class="wk">TUẦN 1–2</div><div class="nm">Khảo sát nhu cầu</div></div>
+          <div class="g1-tl-step"><div class="wk">TUẦN 3–4</div><div class="nm">Thiết kế chương trình</div></div>
+          <div class="g1-tl-step"><div class="wk">TUẦN 5–8</div><div class="nm">Triển khai đào tạo</div></div>
+          <div class="g1-tl-step"><div class="wk">TUẦN 9</div><div class="nm">Đánh giá & báo cáo</div></div>
+        </div>
+
+        <div class="g1-section-title">Phân công (RACI)</div>
+        <table class="g1-table">
+          <tr><th>Hoạt động</th><th>Responsible</th><th>Accountable</th><th>Consulted</th></tr>
+          <tr><td>Khảo sát nhu cầu</td><td>L&OD Team</td><td>Team Lead</td><td>Line Manager</td></tr>
+          <tr><td>Thiết kế nội dung</td><td>L&OD Team</td><td>Team Lead</td><td>Ban Giám đốc</td></tr>
+          <tr><td>Triển khai đào tạo</td><td>Facilitator</td><td>L&OD Team</td><td>HRBP</td></tr>
+        </table>
+
+        <div class="g1-section-title">Ngân sách</div>
+        <table class="g1-table">
+          <tr><th>Hạng mục</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th></tr>
+          <tr><td>Giảng viên ngoài</td><td>3 buổi</td><td>8.000.000đ</td><td>24.000.000đ</td></tr>
+          <tr><td>Tài liệu & học liệu</td><td>30 bộ</td><td>150.000đ</td><td>4.500.000đ</td></tr>
+          <tr><td>Venue & F&B</td><td>9 tuần</td><td>2.000.000đ</td><td>18.000.000đ</td></tr>
+          <tr><td>Tổng</td><td></td><td></td><td>46.500.000đ</td></tr>
+        </table>
+        <div class="g1-foot">* Số liệu minh hoạ cho mục đích tham khảo</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GROUP 2 -->
+  <div>
+    <div class="demo-label"><span class="n">02</span>CV / Portfolio cá nhân</div>
+    <section class="demo g2">
+      <div class="g2-inner">
+        <div class="g2-avatar">MA</div>
+        <div style="flex:1">
+          <div class="g2-name">Mai Anh</div>
+          <div class="g2-role">Learning & Organization Development</div>
+          <div class="g2-tabs">
+            <button class="g2-tab active" data-tab="exp">Kinh nghiệm</button>
+            <button class="g2-tab" data-tab="skill">Kỹ năng</button>
+            <button class="g2-tab" data-tab="cert">Chứng chỉ</button>
+          </div>
+          <div class="g2-panel active" id="exp">
+            <div class="g2-item"><div class="t">L&OD Team Lead — Coteccons</div><div class="d">2025 – Hiện tại</div></div>
+            <div class="g2-item"><div class="t">L&D Manager — GEEK Up</div><div class="d">2024 – 2025</div></div>
+            <div class="g2-item"><div class="t">Senior L&D — GEEK Up</div><div class="d">2020 – 2024</div></div>
+          </div>
+          <div class="g2-panel" id="skill">
+            <span class="g2-skill">Competency Framework</span>
+            <span class="g2-skill">Coaching (ICF ACC)</span>
+            <span class="g2-skill">Facilitation</span>
+            <span class="g2-skill">9-Box Assessment</span>
+            <span class="g2-skill">Instructional Design</span>
+          </div>
+          <div class="g2-panel" id="cert">
+            <div class="g2-cert"><b>APTD</b> — Association for Talent Development, 2025</div>
+            <div class="g2-cert"><b>ACC</b> — International Coaching Federation, 2024</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GROUP 3 -->
+  <div>
+    <div class="demo-label"><span class="n">03</span>Công cụ tra cứu thông tin sự kiện</div>
+    <section class="demo g3">
+      <div class="g3-inner">
+        <div class="g3-title">Event Logistics Lookup</div>
+        <div class="g3-sub">Tra cứu xe & phòng ở — Leadership Summit 2026</div>
+        <div class="g3-search">
+          <input type="text" id="g3input" placeholder="Nhập mã nhân viên, VD: NV001">
+          <button onclick="g3lookup()">Tra cứu</button>
+        </div>
+        <div class="g3-hint">Thử mã: <code>NV001</code>, <code>NV002</code>, <code>NV003</code></div>
+        <div class="g3-result" id="g3result">
+          <div class="row"><div class="k">Họ tên</div><div class="v" id="g3name"></div></div>
+          <div class="row"><div class="k">Xe số</div><div class="v" id="g3bus"></div></div>
+          <div class="row"><div class="k">Giờ đi</div><div class="v" id="g3time"></div></div>
+          <div class="row"><div class="k">Phòng</div><div class="v" id="g3room"></div></div>
+          <div class="row"><div class="k">Ở cùng</div><div class="v" id="g3mate"></div></div>
+        </div>
+        <div class="g3-empty" id="g3empty" style="display:none">Không tìm thấy mã nhân viên này.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GROUP 4 -->
+  <div>
+    <div class="demo-label"><span class="n">04</span>Dashboard theo dõi tiến độ</div>
+    <section class="demo g4">
+      <div class="g4-inner">
+        <div class="g4-top">
+          <h3>Onboarding — Nguyễn Văn A</h3>
+          <div class="g4-stat">Ngày làm việc<br><b>Day 4</b> / 10</div>
+        </div>
+        <div class="g4-bar"><div class="g4-bar-fill" id="g4fill"></div></div>
+        <div class="g4-item done" onclick="g4toggle(this)"><div class="g4-check">✓</div><div class="g4-txt">Cấp tài khoản email & công cụ nội bộ</div><div class="g4-pill done-pill">Xong</div></div>
+        <div class="g4-item done" onclick="g4toggle(this)"><div class="g4-check">✓</div><div class="g4-txt">Giới thiệu văn hoá & giá trị cốt lõi</div><div class="g4-pill done-pill">Xong</div></div>
+        <div class="g4-item done" onclick="g4toggle(this)"><div class="g4-check">✓</div><div class="g4-txt">Gặp mặt buddy & team trực tiếp</div><div class="g4-pill done-pill">Xong</div></div>
+        <div class="g4-item" onclick="g4toggle(this)"><div class="g4-check"></div><div class="g4-txt">Đào tạo quy trình vận hành cơ bản</div><div class="g4-pill today">Hôm nay</div></div>
+        <div class="g4-item" onclick="g4toggle(this)"><div class="g4-check"></div><div class="g4-txt">Check-in 30 ngày với quản lý trực tiếp</div><div class="g4-pill later">Sắp tới</div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GROUP 5 -->
+  <div>
+    <div class="demo-label"><span class="n">05</span>Công cụ khảo sát cá nhân hoá</div>
+    <section class="demo g5">
+      <div class="g5-inner">
+        <div class="g5-h">Bạn trì hoãn theo kiểu nào?</div>
+        <div class="g5-sub">3 câu hỏi nhanh — kết quả cá nhân hoá ngay bên dưới</div>
+
+        <div class="g5-q">
+          <div class="qt">1. Khi có deadline xa, bạn thường...</div>
+          <div class="g5-opts" data-q="1">
+            <label class="g5-opt"><input type="radio" name="q1" value="perfect"> Muốn làm thật kỹ nên chưa vội bắt đầu</label>
+            <label class="g5-opt"><input type="radio" name="q1" value="avoid"> Né tránh vì thấy hơi ngợp</label>
+            <label class="g5-opt"><input type="radio" name="q1" value="crisis"> Để đó, sát ngày mới tập trung được</label>
+          </div>
+        </div>
+
+        <div class="g5-q">
+          <div class="qt">2. Cảm giác nào quen thuộc nhất với bạn?</div>
+          <div class="g5-opts" data-q="2">
+            <label class="g5-opt"><input type="radio" name="q2" value="perfect"> Sợ làm chưa đủ tốt nên trì hoãn nộp</label>
+            <label class="g5-opt"><input type="radio" name="q2" value="avoid"> Không biết bắt đầu từ đâu nên né</label>
+            <label class="g5-opt"><input type="radio" name="q2" value="crisis"> Áp lực deadline mới khiến mình "vào guồng"</label>
+          </div>
+        </div>
+
+        <div class="g5-q">
+          <div class="qt">3. Bạn nghĩ gì khi task chưa hoàn thành?</div>
+          <div class="g5-opts" data-q="3">
+            <label class="g5-opt"><input type="radio" name="q3" value="perfect"> "Chưa đủ hoàn hảo để nộp"</label>
+            <label class="g5-opt"><input type="radio" name="q3" value="avoid"> "Để lúc khác đỡ mệt hơn"</label>
+            <label class="g5-opt"><input type="radio" name="q3" value="crisis"> "Còn thời gian mà, từ từ"</label>
+          </div>
+        </div>
+
+        <button class="g5-btn" onclick="g5calc()">Xem kết quả</button>
+
+        <div class="g5-result" id="g5result">
+          <div class="rt" id="g5type"></div>
+          <div class="rd" id="g5desc"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- GROUP 6 -->
+  <div>
+    <div class="demo-label"><span class="n">06</span>Xây dựng mô hình 3D tương tác</div>
+    <section class="demo g6">
+      <div class="g6-inner">
+        <div class="g6-text">
+          <div class="g6-title">3D Visualization</div>
+          <div class="g6-sub">Mô hình khối năng lực xoay 360°</div>
+          <div class="g6-desc">HTML/CSS có thể dựng khối 3D tương tác ngay trong trình duyệt — không cần app riêng. Ứng dụng cho mô phỏng sản phẩm, sơ đồ không gian, hoặc trực quan hoá khung năng lực nhiều lớp.</div>
+          <div class="g6-hint">Kéo chuột vào khối để xoay tự do →</div>
+        </div>
+        <div class="g6-stage">
+          <div class="g6-cube" id="g6cube">
+            <div class="g6-face front">HTML</div>
+            <div class="g6-face back">CSS</div>
+            <div class="g6-face right">JS</div>
+            <div class="g6-face left">DOM</div>
+            <div class="g6-face top">3D</div>
+            <div class="g6-face bottom">Alex</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="note">Ref mockup — dùng để tham khảo khả năng ứng dụng của HTML, không phải sản phẩm cuối cùng. <span style="color:var(--alex-navy-300)">@nhmaianh</span></footer>
+</div>
+
+<script>
+  // GROUP 2 — tabs
+  document.querySelectorAll('.g2-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.g2-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.g2-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // GROUP 3 — lookup
+  const g3data = {
+    'NV001': { name: 'Nguyễn Hoàng Mai Anh', bus: 'Xe 02', time: '06:30', room: 'Phòng 305', mate: 'Trần Thị B' },
+    'NV002': { name: 'Trần Thị B', bus: 'Xe 02', time: '06:30', room: 'Phòng 305', mate: 'Nguyễn Hoàng Mai Anh' },
+    'NV003': { name: 'Lê Văn C', bus: 'Xe 05', time: '07:00', room: 'Phòng 412', mate: 'Phạm Văn D' }
+  };
+  function g3lookup() {
+    const code = document.getElementById('g3input').value.trim().toUpperCase();
+    const r = g3data[code];
+    const result = document.getElementById('g3result');
+    const empty = document.getElementById('g3empty');
+    if (r) {
+      document.getElementById('g3name').textContent = r.name;
+      document.getElementById('g3bus').textContent = r.bus;
+      document.getElementById('g3time').textContent = r.time;
+      document.getElementById('g3room').textContent = r.room;
+      document.getElementById('g3mate').textContent = r.mate;
+      result.classList.add('show');
+      empty.style.display = 'none';
+    } else {
+      result.classList.remove('show');
+      empty.style.display = 'block';
+    }
+  }
+
+  // GROUP 4 — checklist toggle + progress
+  function g4toggle(el) {
+    el.classList.toggle('done');
+    const pill = el.querySelector('.g4-pill');
+    if (el.classList.contains('done')) { pill.textContent = 'Xong'; pill.className = 'g4-pill done-pill'; }
+    else { pill.textContent = 'Chưa xong'; pill.className = 'g4-pill later'; }
+    const total = document.querySelectorAll('.g4-item').length;
+    const done = document.querySelectorAll('.g4-item.done').length;
+    document.getElementById('g4fill').style.width = Math.round((done/total)*100) + '%';
+  }
+
+  // GROUP 5 — quiz
+  document.querySelectorAll('.g5-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const name = opt.querySelector('input').name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(i => i.closest('.g5-opt').classList.remove('picked'));
+      opt.classList.add('picked');
+    });
+  });
+  const g5results = {
+    perfect: { title: 'Người Cầu Toàn 🎯', desc: 'Bạn trì hoãn vì muốn mọi thứ thật hoàn hảo trước khi bắt đầu. Thử quy tắc "đủ tốt để nộp bản nháp" thay vì chờ hoàn hảo.' },
+    avoid: { title: 'Người Né Tránh 🌫️', desc: 'Bạn trì hoãn vì thấy ngợp hoặc chưa rõ điểm bắt đầu. Thử chia nhỏ việc thành bước đầu tiên chỉ mất 5 phút.' },
+    crisis: { title: 'Người Sống Nhờ Deadline 🔥', desc: 'Bạn cần áp lực để tập trung. Thử tạo deadline giả sớm hơn thật để có thêm thời gian đệm.' }
+  };
+  function g5calc() {
+    const counts = { perfect: 0, avoid: 0, crisis: 0 };
+    ['q1','q2','q3'].forEach(q => {
+      const checked = document.querySelector(`input[name="${q}"]:checked`);
+      if (checked) counts[checked.value]++;
+    });
+    let top = 'perfect';
+    if (counts.avoid > counts[top]) top = 'avoid';
+    if (counts.crisis > counts[top]) top = 'crisis';
+    if (counts.perfect === 0 && counts.avoid === 0 && counts.crisis === 0) { top = 'perfect'; }
+    document.getElementById('g5type').textContent = g5results[top].title;
+    document.getElementById('g5desc').textContent = g5results[top].desc;
+    document.getElementById('g5result').classList.add('show');
+  }
+
+  // GROUP 6 — 3D cube drag rotate
+  (function() {
+    const cube = document.getElementById('g6cube');
+    let dragging = false, lastX = 0, lastY = 0, rotX = -24, rotY = 35;
+    function start(x, y) { dragging = true; lastX = x; lastY = y; cube.classList.add('dragging'); }
+    function move(x, y) {
+      if (!dragging) return;
+      rotY += (x - lastX) * 0.5;
+      rotX -= (y - lastY) * 0.5;
+      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      lastX = x; lastY = y;
+    }
+    function end() { dragging = false; cube.classList.remove('dragging'); }
+    cube.addEventListener('mousedown', e => start(e.clientX, e.clientY));
+    window.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+    window.addEventListener('mouseup', end);
+    cube.addEventListener('touchstart', e => start(e.touches[0].clientX, e.touches[0].clientY));
+    window.addEventListener('touchmove', e => { if(dragging){ move(e.touches[0].clientX, e.touches[0].clientY); } });
+    window.addEventListener('touchend', end);
+  })();
+</script>
+</body>
+</html>
