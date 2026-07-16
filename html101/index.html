@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 bước xây dựng 1 landing page mà không cần biết code — by Alex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Recursive:wght@300..900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --alex-amber:#E8930A;
+    --alex-amber-golden:#F2B705;
+    --alex-amber-light:#FEF3E2;
+    --alex-amber-100:#FDDBA0;
+    --alex-amber-dark:#C4720A;
+    --alex-amber-900:#7A4200;
+
+    --alex-navy:#0C1E35;
+    --alex-navy-mid:#1A3A5C;
+    --alex-navy-300:#3A6080;
+    --alex-navy-light:#EBF0F6;
+    --alex-navy-deep:#060F1C;
+
+    --alex-teal:#2AABBB;
+    --alex-teal-light:#E1F5F7;
+    --alex-teal-600:#1A8A99;
+    --alex-teal-800:#0D6570;
+
+    --alex-warm-white:#F5F1EF;
+    --alex-white:#FFFFFF;
+
+    --alex-font:'Lexend Deca','Lexend',sans-serif;
+    --alex-font-stat:'Recursive',monospace;
+
+    --maxw:1100px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--alex-font);
+    background:var(--alex-warm-white);
+    color:var(--alex-navy);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ TOP PROGRESS BAR ============ */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--alex-navy);
+    color:var(--alex-white);
+    padding:14px 20px;
+    display:flex; align-items:center; gap:16px;
+  }
+  .topbar-inner{
+    max-width:var(--maxw); margin:0 auto; width:100%;
+    display:flex; align-items:center; gap:18px;
+  }
+  .topbar-step{
+    font-family:var(--alex-font-stat);
+    font-weight:900;
+    font-variation-settings:'slnt' -15;
+    color:var(--alex-amber-golden);
+    font-size:22px;
+    white-space:nowrap;
+  }
+  .topbar-label{
+    font-size:12px; font-weight:500; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--alex-teal); white-space:nowrap;
+  }
+  .progress-track{
+    flex:1; height:6px; background:rgba(255,255,255,.12);
+    border-radius:6px; overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:var(--alex-amber);
+    border-radius:6px; transition:width .35s ease;
+  }
+  .topbar-dots{
+    display:flex; gap:6px;
+  }
+  .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:rgba(255,255,255,.25);
+    cursor:pointer; border:none; padding:0;
+    transition:background .2s;
+  }
+  .dot.active{background:var(--alex-amber);}
+  .dot.done{background:var(--alex-teal);}
+
+  /* ============ LAYOUT ============ */
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:48px 20px 120px;}
+  .screen{display:none; animation:fadeIn .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-size:12px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.1em; color:var(--alex-teal); margin:0 0 10px;
+  }
+  h1{font-size:clamp(28px,4vw,42px); font-weight:800; color:var(--alex-amber); line-height:1.15; margin:0 0 14px;}
+  h2{font-size:clamp(22px,3vw,30px); font-weight:700; color:var(--alex-amber); margin:0 0 12px;}
+  h3{font-size:18px; font-weight:600; color:var(--alex-navy); margin:0 0 8px;}
+  p{margin:0 0 14px; color:var(--alex-navy-300); font-size:15.5px;}
+  strong{color:var(--alex-navy); font-weight:600;}
+
+  /* ============ TERM (glossary trigger) ============ */
+  .term{
+    color:var(--alex-navy);
+    background:linear-gradient(transparent 60%, var(--alex-amber-100) 60%);
+    cursor:pointer;
+    font-weight:600;
+    border-bottom:1.5px dotted var(--alex-amber-dark);
+    padding:0 1px;
+  }
+  .term:hover{background:linear-gradient(transparent 55%, var(--alex-amber-100) 55%);}
+
+  /* ============ TOOLTIP ============ */
+  #term-tooltip{
+    position:fixed; z-index:200; max-width:280px;
+    background:var(--alex-navy); color:var(--alex-white);
+    border-radius:10px; padding:14px 16px; font-size:13.5px;
+    box-shadow:0 12px 32px rgba(0,0,0,.25);
+    display:none;
+  }
+  #term-tooltip .tt-title{
+    color:var(--alex-amber-golden); font-weight:700; font-size:14px; margin-bottom:6px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  #term-tooltip .tt-close{
+    cursor:pointer; color:rgba(255,255,255,.5); font-size:16px; line-height:1;
+  }
+  #term-tooltip p{color:rgba(255,255,255,.85); margin:0; font-size:13px;}
+
+  /* ============ CARDS ============ */
+  .card-grid{display:grid; gap:20px;}
+  .card-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .card-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:720px){.card-grid.cols-2{grid-template-columns:1fr;}}
+  @media (max-width:920px){.card-grid.cols-3{grid-template-columns:1fr;}}
+
+  .card{
+    background:var(--alex-white); border-radius:14px; padding:26px;
+    border:1px solid rgba(12,30,53,.08);
+  }
+  .card.navy{background:var(--alex-navy); color:var(--alex-white);}
+  .card.navy p{color:rgba(255,255,255,.7);}
+  .card.navy h3{color:var(--alex-white);}
+  .card .icon-badge{
+    width:44px; height:44px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; margin-bottom:14px;
+  }
+  .icon-file{background:var(--alex-navy-light); }
+  .icon-live{background:var(--alex-amber-light);}
+  .icon-idea{background:var(--alex-teal-light);}
+
+  .kv-list{list-style:none; margin:0; padding:0;}
+  .kv-list li{padding:6px 0 6px 22px; position:relative; font-size:14.5px; color:var(--alex-navy-300);}
+  .kv-list li::before{content:"—"; position:absolute; left:0; color:var(--alex-amber);}
+  .card.navy .kv-list li{color:rgba(255,255,255,.8);}
+  .step-pointer{
+    margin-top:14px; padding-top:14px; border-top:1px dashed rgba(12,30,53,.12);
+    font-size:13.5px; font-weight:600; color:var(--alex-teal-600);
+  }
+
+  /* mapping diagram */
+  .mapping{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    background:var(--alex-navy); border-radius:14px; padding:24px;
+    margin-top:8px;
+  }
+  .map-box{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; padding:14px 16px; color:var(--alex-white); font-weight:600;
+    font-size:13.5px; text-align:center; flex:1; min-width:140px;
+  }
+  .mapping-3 .map-box{min-width:160px;}
+  .map-arrow{color:var(--alex-teal); font-size:13px; text-align:center; flex:0 0 auto;}
+  .map-arrow .step-tag{
+    display:block; font-weight:600; color:var(--alex-amber-golden); margin-bottom:2px;
+  }
+
+  /* domain examples */
+  .domain-examples{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .domain-chip{
+    font-family:'SFMono-Regular',Consolas,monospace;
+    background:var(--alex-navy-light); color:var(--alex-navy);
+    padding:5px 11px; border-radius:20px; font-size:12.5px;
+  }
+
+  /* ============ PROMPT BOX ============ */
+  .prompt-box{
+    background:var(--alex-navy); color:var(--alex-white);
+    border-left:3px solid var(--alex-teal);
+    border-radius:10px; padding:18px 20px; margin:14px 0;
+    font-size:14px; line-height:1.7;
+  }
+  .prompt-box .tag{
+    display:inline-block; font-size:11px; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--alex-teal); font-weight:600; margin-bottom:8px;
+  }
+  .prompt-box .highlight{color:var(--alex-amber-golden); font-weight:600;}
+  .copy-btn{
+    margin-top:12px; background:transparent; border:1.5px solid var(--alex-teal);
+    color:var(--alex-teal); padding:6px 14px; border-radius:20px; font-size:12.5px;
+    cursor:pointer; font-family:var(--alex-font); font-weight:500;
+  }
+  .copy-btn:hover{background:rgba(42,171,187,.12);}
+  .copy-btn.copied{border-color:var(--alex-amber-golden); color:var(--alex-amber-golden);}
+
+  /* numbered sub-steps */
+  .substep{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid rgba(12,30,53,.08);
+  }
+  .substep:last-child{border-bottom:none;}
+  .substep-num{
+    flex:0 0 auto; width:28px; height:28px; border-radius:8px;
+    background:var(--alex-amber-light); color:var(--alex-amber-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:13px;
+  }
+  .substep-body p{margin:0;}
+  .substep-body h4{margin:0 0 4px; font-size:15px; font-weight:600; color:var(--alex-navy);}
+
+  /* checkpoint / try-it box */
+  .checkpoint{
+    background:var(--alex-amber-light); border-radius:14px; padding:22px 24px; margin-top:26px;
+  }
+  .checkpoint .eyebrow{color:var(--alex-amber-dark);}
+  .checkpoint textarea{
+    width:100%; min-height:90px; border-radius:10px; border:1.5px solid var(--alex-amber-100);
+    padding:12px 14px; font-family:var(--alex-font); font-size:14px; resize:vertical;
+    margin-top:10px; background:var(--alex-white);
+  }
+  .checkpoint .hint{font-size:12.5px; color:var(--alex-amber-900); margin-top:8px;}
+  .btn-check{
+    margin-top:12px; background:var(--alex-amber-golden); color:var(--alex-navy);
+    border:none; padding:9px 20px; border-radius:8px; font-weight:600;
+    font-family:var(--alex-font); cursor:pointer; font-size:13.5px;
+  }
+  #prompt-feedback{margin-top:12px; font-size:13.5px; display:none;}
+  #prompt-feedback.ok{color:var(--alex-teal-800);}
+  #prompt-feedback.warn{color:var(--alex-amber-dark);}
+
+  /* ============ WORKFLOW SPLIT (Bước 2: box trái + chi tiết phải) ============ */
+  .workflow-split{
+    display:grid; grid-template-columns:240px 1fr; gap:28px; align-items:start;
+  }
+  .workflow-col{display:flex; flex-direction:column; align-items:stretch; position:relative;}
+  .wf-box{
+    background:var(--alex-white); border:1.5px solid rgba(12,30,53,.1);
+    border-radius:18px; padding:22px 24px; min-height:96px; cursor:pointer; position:relative;
+    display:flex; flex-direction:column; justify-content:center;
+    transition:border-color .18s, background .18s, transform .12s, box-shadow .18s;
+  }
+  .wf-box:hover{transform:translateX(2px); border-color:var(--alex-teal);}
+  .wf-box.active{
+    background:var(--alex-navy); border-color:var(--alex-navy);
+    box-shadow:0 10px 26px rgba(12,30,53,.22);
+  }
+  .wf-num{
+    font-family:var(--alex-font-stat); font-weight:900; font-variation-settings:'slnt' -15;
+    font-size:28px; color:var(--alex-amber); margin-bottom:8px; line-height:1;
+  }
+  .wf-box.active .wf-num{color:var(--alex-amber-golden);}
+  .wf-title{font-weight:600; font-size:15.5px; color:var(--alex-navy);}
+  .wf-box.active .wf-title{color:var(--alex-white);}
+  .wf-connector{
+    width:2px; height:22px; background:rgba(12,30,53,.15); margin:0 0 0 40px;
+  }
+  .wf-box.wf-loop{padding-bottom:20px;}
+  .wf-loop-badge{
+    margin-top:10px; display:inline-flex; align-items:center; gap:4px;
+    font-size:11.5px; font-weight:600;
+    color:var(--alex-teal-600); background:var(--alex-teal-light);
+    border-radius:20px; padding:4px 12px; width:fit-content;
+  }
+  .wf-box.wf-loop.active .wf-loop-badge{background:rgba(255,255,255,.12); color:var(--alex-teal);}
+
+  .workflow-detail{
+    background:var(--alex-white); border-radius:14px; padding:26px 28px;
+    border:1px solid rgba(12,30,53,.08); min-height:220px;
+  }
+  .wf-detail-panel{display:none; animation:fadeIn .3s ease;}
+  .wf-detail-panel.active{display:block;}
+  .wf-detail-panel h3{margin-top:0;}
+
+  @media (max-width:760px){
+    .workflow-split{grid-template-columns:1fr;}
+    .workflow-col{flex-direction:row; flex-wrap:wrap; gap:10px;}
+    .wf-connector{display:none;}
+    .wf-box{flex:1 1 auto; min-width:120px;}
+  }
+
+  /* ============ COMPARE CARDS (Step 3 provider choice) ============ */
+  .provider-card{
+    background:var(--alex-white); border:2px solid rgba(12,30,53,.08);
+    border-radius:14px; padding:24px; cursor:pointer; transition:border-color .2s, transform .15s;
+  }
+  .provider-card:hover{transform:translateY(-2px);}
+  .provider-card.selected{border-color:var(--alex-amber);}
+  .provider-card .badge{
+    display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--alex-teal); border:1px solid var(--alex-teal);
+    border-radius:20px; padding:3px 10px; margin-bottom:12px;
+  }
+  .stat-row{display:flex; gap:22px; margin-top:14px; flex-wrap:wrap;}
+  .stat-item .label{font-size:11.5px; color:var(--alex-navy-300); text-transform:uppercase; letter-spacing:.05em;}
+  .stat-item .value{font-weight:700; color:var(--alex-navy); font-size:14.5px;}
+
+  .branch-tabs{display:flex; gap:10px; margin:26px 0 18px;}
+  .branch-tab{
+    flex:1; text-align:center; padding:12px 16px; border-radius:10px;
+    background:var(--alex-navy-light); color:var(--alex-navy-300); font-weight:600;
+    cursor:pointer; font-size:14px; border:2px solid transparent;
+  }
+  .branch-tab.active{background:var(--alex-navy); color:var(--alex-white); border-color:var(--alex-amber);}
+  .branch-panel{display:none;}
+  .branch-panel.active{display:block;}
+
+  /* ============ NAV BUTTONS ============ */
+  .nav-row{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:44px; gap:12px; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--alex-font); font-weight:600; font-size:14.5px;
+    padding:12px 26px; border-radius:8px; border:none; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{background:var(--alex-amber-golden); color:var(--alex-navy);}
+  .btn-primary:hover{background:var(--alex-amber);}
+  .btn-ghost{background:transparent; color:var(--alex-navy-300); border:1.5px solid rgba(12,30,53,.15);}
+  .btn-ghost:hover{border-color:var(--alex-navy-300);}
+  .btn:disabled{opacity:.35; cursor:default;}
+
+  /* ============ WELCOME SCREEN ============ */
+  .hero{
+    background:var(--alex-navy); border-radius:20px; padding:56px 44px;
+    color:var(--alex-white); text-align:center; position:relative; overflow:hidden;
+  }
+  .hero .eyebrow{color:var(--alex-teal); justify-content:center; text-align:center;}
+  .hero h1{color:var(--alex-amber); margin:6px 0 8px;}
+  .by-alex{
+    font-family:var(--alex-font); font-weight:400; font-size:14px;
+    color:rgba(255,255,255,.55); margin-bottom:22px;
+  }
+  .hero p.lead{color:rgba(255,255,255,.72); max-width:560px; margin:0 auto 30px; font-size:16px;}
+  .before-after{
+    display:flex; align-items:center; justify-content:center; gap:18px; margin:0 auto 32px;
+    flex-wrap:wrap;
+  }
+  .ba-box{
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    border-radius:12px; padding:18px 22px; min-width:180px;
+  }
+  .ba-box .ba-label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--alex-teal); margin-bottom:10px;}
+  .ba-mock{background:rgba(255,255,255,.08); border-radius:6px; height:60px; display:flex; align-items:center; justify-content:center; font-size:22px;}
+  .ba-mock.url{
+    background:var(--alex-white); color:var(--alex-navy); font-size:11px; font-family:monospace;
+    height:auto; padding:10px; flex-direction:column; align-items:flex-start; gap:6px;
+  }
+  .ba-arrow{color:var(--alex-amber-golden); font-size:24px;}
+
+  /* ============ GLOSSARY FLOATING BUTTON + MODAL ============ */
+  #glossary-fab{
+    position:fixed; bottom:24px; right:24px; z-index:90;
+    background:var(--alex-navy); color:var(--alex-white);
+    border:none; border-radius:30px; padding:13px 20px;
+    font-family:var(--alex-font); font-weight:600; font-size:14px;
+    cursor:pointer; box-shadow:0 10px 30px rgba(12,30,53,.35);
+    display:flex; align-items:center; gap:8px;
+  }
+  #glossary-fab span.gicon{color:var(--alex-amber-golden); font-size:16px;}
+
+  #glossary-modal{
+    position:fixed; inset:0; background:rgba(6,15,28,.6); z-index:150;
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  #glossary-modal.open{display:flex;}
+  .glossary-panel{
+    background:var(--alex-white); width:100%; max-width:640px;
+    border-radius:20px 20px 0 0; max-height:80vh; display:flex; flex-direction:column;
+    animation:slideUp .25s ease;
+  }
+  @keyframes slideUp{from{transform:translateY(30px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+  .glossary-header{
+    padding:20px 24px 14px; border-bottom:1px solid rgba(12,30,53,.08);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .glossary-header h3{margin:0; color:var(--alex-navy); font-size:18px;}
+  .glossary-close{background:none; border:none; font-size:20px; cursor:pointer; color:var(--alex-navy-300);}
+  .glossary-search{
+    margin:14px 24px 0; padding:10px 14px; border-radius:10px;
+    border:1.5px solid rgba(12,30,53,.12); font-family:var(--alex-font); font-size:14px;
+    width:calc(100% - 48px);
+  }
+  .glossary-list{overflow-y:auto; padding:14px 24px 24px;}
+  .g-item{padding:12px 0; border-bottom:1px solid rgba(12,30,53,.06);}
+  .g-item .g-term{font-weight:700; color:var(--alex-amber-dark); font-size:14.5px;}
+  .g-item .g-def{font-size:13.5px; color:var(--alex-navy-300); margin-top:3px;}
+  .g-item.hidden{display:none;}
+
+  footer.page-footer{
+    text-align:center; padding:30px 20px 10px; font-size:12px; color:rgba(12,30,53,.35);
+  }
+
+  @media (max-width:640px){
+    .hero{padding:38px 24px;}
+    .topbar-dots{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-step" id="step-indicator">0/3</div>
+    <div class="topbar-label" id="step-label">Bắt đầu</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="topbar-dots" id="topbar-dots"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ SCREEN 0: WELCOME ============ -->
+  <section class="screen active" data-screen="0">
+    <div class="hero">
+      <div class="eyebrow">Hướng dẫn cho người mới bắt đầu</div>
+      <h1>3 bước xây dựng 1 landing page<br>mà không cần biết code</h1>
+      <div class="by-alex">by Alex</div>
+      <p class="lead">Từ 1 ý tưởng trong đầu, đến 1 trang web có link chia sẻ được cho bất kỳ ai — bạn không cần biết lập trình để làm điều này.</p>
+
+      <div class="before-after">
+        <div class="ba-box">
+          <div class="ba-label">Bây giờ</div>
+          <div class="ba-mock">💭</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-box">
+          <div class="ba-label">Sau khi học xong</div>
+          <div class="ba-mock url">
+            <span style="color:#8a99a8;">🔒 https://</span>
+            <span style="color:var(--alex-navy); font-weight:700;">ten-cua-ban.netlify.app</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goTo(1)">Bắt đầu →</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 1: FILE HTML vs LANDING PAGE ============ -->
+  <section class="screen" data-screen="1">
+    <div class="eyebrow">Bước 1</div>
+    <h2>3 lớp xây dựng 1 landing page</h2>
+    <p>Trước khi bắt tay vào làm, bạn cần phân biệt rõ 3 lớp này — vì cả hành trình phía sau chỉ là đi từ lớp này sang lớp kia.</p>
+
+    <div class="card-grid cols-3">
+      <div class="card">
+        <div class="icon-badge icon-idea">💭</div>
+        <h3>Lớp 1 — <span class="term" data-term="noidung">Nội dung</span></h3>
+        <ul class="kv-list">
+          <li>Là "cái muốn nói" — thông tin, câu chữ, hình ảnh bạn muốn truyền tải</li>
+          <li>Có thể tự viết sẵn, hoặc nhờ AI (Claude/ChatGPT) hỗ trợ xây dựng từ đầu</li>
+          <li>Ở lớp này, nội dung <strong>chưa gắn với định dạng trình bày nào cả</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon-badge icon-file">📄</div>
+        <h3>Lớp 2 — <span class="term" data-term="hinhthuc">Hình thức</span></h3>
+        <ul class="kv-list">
+          <li>Cùng 1 nội dung, có thể trình bày bằng nhiều định dạng: <strong>Word, PPT, PDF, hoặc <span class="term" data-term="html">HTML</span></strong></li>
+          <li>4 định dạng đều "chứa" được nội dung, nhưng chỉ <strong>HTML</strong> là định dạng <span class="term" data-term="browser">trình duyệt</span> hiểu và hiển thị trực tiếp được</li>
+        </ul>
+        <div class="step-pointer">→ Hướng dẫn chi tiết ở <strong>Bước 2</strong></div>
+      </div>
+      <div class="card">
+        <div class="icon-badge icon-live">🌐</div>
+        <h3>Lớp 3 — Mang lên online</h3>
+        <ul class="kv-list">
+          <li>Dù chọn hình thức nào, <span class="term" data-term="file">file</span> đó vẫn đang "offline" — giống như 1 file Word: lưu được, gửi qua Zalo/email được, nhưng người nhận phải tải về mới mở xem</li>
+          <li>Riêng file HTML, ta có thể "mang lên online" — gắn <span class="term" data-term="domain">tên miền</span>, có <span class="term" data-term="link">link</span> để chia sẻ — điều Word/PPT/PDF không tự làm được</li>
+        </ul>
+        <div class="domain-examples">
+          <span class="domain-chip">mai-anh-portfolio.netlify.app</span>
+          <span class="domain-chip">nhmaianh.github.io</span>
+          <span class="domain-chip">maianh.com</span>
+        </div>
+        <div class="step-pointer">→ Hướng dẫn chi tiết ở <strong>Bước 3</strong></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ SCREEN 2: TẠO FILE HTML BẰNG CLAUDE ============ -->
+  <section class="screen" data-screen="2">
+    <div class="eyebrow">Bước 2</div>
+    <h2>Tạo file HTML bằng Claude</h2>
+    <p>Bạn đã quen với việc viết <span class="term" data-term="prompt">prompt</span> rồi, nên phần này mình sẽ tập trung vào điều quan trọng nhất: đảm bảo prompt của bạn cho ra đúng loại output cần thiết để deploy dễ dàng.</p>
+
+    <div class="workflow-split">
+      <div class="workflow-col">
+        <div class="wf-box active" id="wf-1" onclick="selectWorkflow(1)">
+          <div class="wf-num">1</div>
+          <div class="wf-title">Mở Claude</div>
+        </div>
+        <div class="wf-connector"></div>
+        <div class="wf-box" id="wf-2" onclick="selectWorkflow(2)">
+          <div class="wf-num">2</div>
+          <div class="wf-title">Bắt đầu cuộc trò chuyện</div>
+        </div>
+        <div class="wf-connector"></div>
+        <div class="wf-box" id="wf-3" onclick="selectWorkflow(3)">
+          <div class="wf-num">3</div>
+          <div class="wf-title">Xem output</div>
+        </div>
+        <div class="wf-connector"></div>
+        <div class="wf-box wf-loop" id="wf-4" onclick="selectWorkflow(4)">
+          <div class="wf-num">4</div>
+          <div class="wf-title">Phản hồi</div>
+          <div class="wf-loop-badge">🔁 lặp với Bước 3</div>
+        </div>
+        <div class="wf-connector"></div>
+        <div class="wf-box" id="wf-5" onclick="selectWorkflow(5)">
+          <div class="wf-num">5</div>
+          <div class="wf-title">Tải file về</div>
+        </div>
+      </div>
+
+      <div class="workflow-detail">
+        <div class="wf-detail-panel active" id="wf-detail-1">
+          <div class="eyebrow">Bước 2.1</div>
+          <h3>Mở Claude</h3>
+          <p>Mở claude.ai hoặc app Claude — vậy là xong, không cần chuẩn bị gì thêm.</p>
+        </div>
+
+        <div class="wf-detail-panel" id="wf-detail-2">
+          <div class="eyebrow">Bước 2.2</div>
+          <h3>Bắt đầu cuộc trò chuyện</h3>
+          <p>Bạn đã quen với việc viết <span class="term" data-term="prompt">prompt</span> rồi, nên phần này mình tập trung vào điều quan trọng nhất: đảm bảo prompt cho ra đúng loại output cần thiết để deploy dễ dàng ở Bước 3.</p>
+          <p>Mô tả rõ: mục đích trang, nội dung cần có, phong cách mong muốn, và yêu cầu output ở dạng <strong>1 file HTML/interactive landing page HTML duy nhất, gồm luôn CSS và JavaScript trong cùng file</strong>.</p>
+
+          <h3 style="margin-top:24px; font-size:15px;">Prompt mẫu — copy và chỉnh lại theo ý bạn</h3>
+          <div class="prompt-box">
+            <span class="tag">Prompt mẫu #1 — Trang giới thiệu bản thân</span>
+            Hãy tạo cho tôi 1 trang landing page giới thiệu bản thân, gồm: ảnh đại diện, phần giới thiệu ngắn (2-3 câu), và danh sách liên kết mạng xã hội. Phong cách tối giản, tông màu xanh navy và cam ấm.
+            <br><strong class="highlight">Quan trọng: xuất ra 1 file HTML duy nhất, gồm luôn CSS và JavaScript trong cùng file (không tách file riêng).</strong>
+            <div><button class="copy-btn" onclick="copyPrompt(this,1)">📋 Copy prompt này</button></div>
+          </div>
+
+          <div class="prompt-box">
+            <span class="tag">Prompt mẫu #2 — Trang sự kiện / workshop</span>
+            Tạo giúp tôi 1 landing page quảng bá 1 buổi workshop, gồm: tiêu đề, thời gian - địa điểm, 3 lý do nên tham gia, và 1 nút đăng ký. Phong cách chuyên nghiệp, gọn gàng.
+            <br><strong class="highlight">Quan trọng: xuất ra 1 file HTML duy nhất, gồm luôn CSS và JavaScript trong cùng file.</strong>
+            <div><button class="copy-btn" onclick="copyPrompt(this,2)">📋 Copy prompt này</button></div>
+          </div>
+
+          <p style="margin-top:8px; font-size:13.5px;"><span class="term" data-term="css">CSS</span> giúp trang có màu sắc/bố cục đẹp, <span class="term" data-term="js">JavaScript</span> giúp trang có thể tương tác (bấm nút, hiệu ứng). Yêu cầu gộp cả 2 vào chung 1 file để ở Bước 3 bạn chỉ cần upload đúng 1 file là chạy được toàn bộ.</p>
+
+          <div class="checkpoint">
+            <div class="eyebrow">✅ Checkpoint — thử luôn</div>
+            <h3 style="margin-top:6px;">Tự viết 1 prompt của riêng bạn</h3>
+            <p style="font-size:14px; margin-bottom:0;">Landing page bạn muốn tạo là về chủ đề gì? Thử viết prompt ngay bên dưới (đừng quên yêu cầu gộp CSS/JS vào 1 file).</p>
+            <textarea id="prompt-try" placeholder="Ví dụ: Tạo cho tôi 1 landing page về..."></textarea>
+            <div class="hint">💡 Mẹo: càng mô tả cụ thể mục đích + nội dung + phong cách, Claude càng ra đúng ý bạn.</div>
+            <button class="btn-check" onclick="checkPrompt()">Kiểm tra prompt của tôi</button>
+            <div id="prompt-feedback"></div>
+          </div>
+        </div>
+
+        <div class="wf-detail-panel" id="wf-detail-3">
+          <div class="eyebrow">Bước 2.3</div>
+          <h3>Xem output</h3>
+          <p>Claude sẽ hiển thị ngay 1 khung xem trước gọi là <span class="term" data-term="artifact">Artifact</span>, ngay trong cuộc trò chuyện.</p>
+          <p>Bạn thấy ngay trang web trông ra sao mà không cần tải file xuống trước.</p>
+        </div>
+
+        <div class="wf-detail-panel" id="wf-detail-4">
+          <div class="eyebrow">Bước 2.4</div>
+          <h3>Phản hồi <span style="font-size:13px; font-weight:500; color:var(--alex-teal-600);">(vòng lặp với Bước 3)</span></h3>
+          <p>Chưa ưng ý chỗ nào — muốn đổi màu, thêm phần, đổi bố cục — chỉ cần nói đúng phần cần sửa. Không cần yêu cầu Claude làm lại từ đầu.</p>
+          <p>Claude sẽ cập nhật lại Artifact, bạn xem lại ở Bước 3, rồi tiếp tục phản hồi nếu cần. Lặp lại Bước 3 ⇄ Bước 4 cho đến khi ưng ý.</p>
+        </div>
+
+        <div class="wf-detail-panel" id="wf-detail-5">
+          <div class="eyebrow">Bước 2.5</div>
+          <h3>Tải file về</h3>
+          <p>Khi ưng ý, bấm nút tải xuống ngay trên khung Artifact.</p>
+          <p>Đây chính là <strong>"File HTML — offline"</strong> đã nhắc ở Bước 1 — sẵn sàng cho Bước 3 (đưa lên online).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: ĐƯA FILE HTML LÊN ONLINE ============ -->
+  <section class="screen" data-screen="3">
+    <div class="eyebrow">Bước 3</div>
+    <h2>Đưa file HTML lên online — cần 1 tên miền, ai cung cấp?</h2>
+    <p>File HTML ở Bước 2 vẫn đang "offline". Muốn có link để chia sẻ, bạn cần 1 nơi vừa <strong><span class="term" data-term="hosting">lưu trữ</span> file</strong>, vừa <strong>cấp cho bạn 1 tên miền</strong> để ai cũng truy cập được.</p>
+    <p>Có rất nhiều đơn vị cung cấp tên miền/hosting, nhưng 2 cái phổ biến nhất — và miễn phí — cho người mới bắt đầu là:</p>
+
+    <div class="checkpoint" style="margin-top:0; margin-bottom:26px;">
+      <div class="eyebrow">💡 Mẹo nhỏ</div>
+      <p style="margin-bottom:0; font-size:14px;">Bạn hoàn toàn có thể nhờ chính Claude hướng dẫn từng bước cụ thể để đưa file lên Netlify hoặc GitHub — chỉ cần gõ ví dụ: <em>"Hướng dẫn tôi từng bước để đưa file HTML này lên Netlify"</em>. Nếu gặp khó khăn ở bước nào, <strong>chụp màn hình màn hình đang gặp lỗi và gửi trực tiếp cho Claude</strong> — Claude sẽ xem ảnh và chỉ dẫn chính xác hơn rất nhiều so với việc chỉ mô tả bằng lời.</p>
+    </div>
+
+    <div class="card-grid cols-2">
+      <div class="provider-card" id="provider-netlify" onclick="selectProvider('netlify')">
+        <span class="badge">Dễ nhất</span>
+        <h3><span class="term" data-term="netlify">Netlify</span></h3>
+        <p style="margin-bottom:0;">Cấp tên miền dạng <code>ten-cua-ban.netlify.app</code>. Thao tác đơn giản nhất: kéo-thả file là có link ngay.</p>
+        <div class="stat-row">
+          <div class="stat-item"><div class="label">Độ khó</div><div class="value">Rất dễ</div></div>
+          <div class="stat-item"><div class="label">Thời gian</div><div class="value">~1 phút</div></div>
+        </div>
+        <div class="step-pointer">Phù hợp với: trang <strong>deploy 1 lần</strong>, ít chỉnh sửa lại — vì bản miễn phí chỉ cho khoảng <strong>13 lượt deploy/tháng</strong>. Hợp cho landing page sự kiện, trang giới thiệu ngắn hạn.</div>
+      </div>
+      <div class="provider-card" id="provider-github" onclick="selectProvider('github')">
+        <span class="badge">Học thêm 1 chút</span>
+        <h3><span class="term" data-term="github">GitHub Pages</span></h3>
+        <p style="margin-bottom:0;">Cấp tên miền dạng <code>username.github.io</code>. Cần làm quen thêm 1 chút, nhưng là cách phổ biến trong giới lập trình.</p>
+        <div class="stat-row">
+          <div class="stat-item"><div class="label">Độ khó</div><div class="value">Vừa phải</div></div>
+          <div class="stat-item"><div class="label">Thời gian</div><div class="value">~5 phút</div></div>
+        </div>
+        <div class="step-pointer">Phù hợp với: nội dung sẽ <strong>update liên tục nhiều lần</strong> — không giới hạn số lần commit/upload lại. Hợp cho portfolio cá nhân, trang cần chỉnh sửa thường xuyên.</div>
+      </div>
+    </div>
+
+    <div class="branch-tabs">
+      <div class="branch-tab active" id="tab-netlify" onclick="showBranch('netlify')">🚀 Xem hướng dẫn Netlify</div>
+      <div class="branch-tab" id="tab-github" onclick="showBranch('github')">🐙 Xem hướng dẫn GitHub Pages</div>
+    </div>
+
+    <!-- NETLIFY BRANCH -->
+    <div class="branch-panel active" id="branch-netlify">
+      <div class="card">
+        <div class="substep">
+          <div class="substep-num">1</div>
+          <div class="substep-body"><h4>Tạo tài khoản Netlify</h4><p>Vào <code>app.netlify.com/signup</code>, đăng ký bằng email hoặc bằng tài khoản Google/GitHub có sẵn. Miễn phí, không cần nhập thẻ ngân hàng.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">2</div>
+          <div class="substep-body"><h4>Vào Netlify Drop</h4><p>Truy cập <code>app.netlify.com/drop</code>, kéo-thả file HTML của bạn vào đúng khung ở giữa trang.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">3</div>
+          <div class="substep-body"><h4>Nhận link ngay lập tức</h4><p>Ngay sau khi thả file, Netlify tạo ngay 1 <span class="term" data-term="link">link public</span> dạng tên ngẫu nhiên (vd: <code>chipper-cat-123.netlify.app</code>) — click vào để mở thử.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">4</div>
+          <div class="substep-body"><h4>(Tuỳ chọn) Đổi tên subdomain</h4><p>Vào <strong>Site settings → Change site name</strong>, đổi phần <span class="term" data-term="subdomain">subdomain</span> thành tên bạn muốn, ví dụ <code>mai-anh-portfolio.netlify.app</code>.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">5</div>
+          <div class="substep-body"><h4>(Tuỳ chọn) Gắn tên miền riêng</h4><p>Vào <strong>Domain settings → Add custom domain</strong> nếu sau này muốn có 1 domain hoàn toàn riêng (không còn ".netlify.app").</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GITHUB BRANCH -->
+    <div class="branch-panel" id="branch-github">
+      <div class="card">
+        <p style="font-size:14px;"><span class="term" data-term="github">GitHub</span> có khái niệm <span class="term" data-term="repository">repository (repo)</span> — hiểu đơn giản là "1 thư mục online" chứa toàn bộ file của 1 dự án.</p>
+        <div class="substep">
+          <div class="substep-num">1</div>
+          <div class="substep-body"><h4>Tạo tài khoản GitHub</h4><p>Vào <code>github.com/join</code>, đăng ký bằng email. Miễn phí.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">2</div>
+          <div class="substep-body"><h4>Tạo 1 repository mới</h4><p>Vào <code>github.com/new</code>, đặt tên cho repo (nếu muốn dùng làm trang cá nhân chính, đặt tên đúng dạng <code>username.github.io</code>) → bấm <strong>Create repository</strong>.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">3</div>
+          <div class="substep-body"><h4>Upload file trực tiếp qua giao diện web</h4><p>Trong repo vừa tạo, bấm <strong>Add file → Upload files</strong>, kéo-thả file HTML vào, cuộn xuống bấm <strong>Commit changes</strong>. Không cần cài đặt gì, không cần dùng dòng lệnh.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">4</div>
+          <div class="substep-body"><h4>Bật GitHub Pages</h4><p>Vào tab <strong>Settings</strong> của repo → mục <strong>Pages</strong> ở thanh bên trái → chọn Branch <strong>main</strong> và thư mục <strong>/ (root)</strong> → bấm <strong>Save</strong> để bật <span class="term" data-term="githubpages">GitHub Pages</span>.</p></div>
+        </div>
+        <div class="substep">
+          <div class="substep-num">5</div>
+          <div class="substep-body"><h4>Lấy link và mở thử</h4><p>Chờ khoảng 1-2 phút, link sẽ hiện ngay trong chính mục <strong>Settings → Pages</strong>, dạng <code>username.github.io/ten-repo</code>.</p></div>
+        </div>
+        <p style="font-size:13px; margin-top:6px;">💡 Ghi chú nhỏ để không bỡ ngỡ nếu học tiếp: <span class="term" data-term="git">Git</span> là công cụ theo dõi thay đổi file, và <span class="term" data-term="commit">commit</span> là "1 lần lưu" thay đổi đó lại. Ở mức này bạn chưa cần dùng đến, chỉ cần biết tên.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4: CONGRATS ============ -->
+  <section class="screen" data-screen="4">
+    <div class="hero">
+      <div class="eyebrow">Hoàn tất</div>
+      <h1 style="font-size:32px;">🎉 Landing page của bạn đã online!</h1>
+      <p class="lead">Giờ đây bất kỳ ai có link cũng có thể mở xem trang của bạn — không cần gửi file, không cần cài gì cả.</p>
+      <div class="card-grid cols-2" style="text-align:left;">
+        <div class="card navy" style="background:rgba(255,255,255,.06);">
+          <h3>Việc nên làm ngay</h3>
+          <ul class="kv-list" style="color:rgba(255,255,255,.75);">
+            <li>Lưu lại link vào 1 nơi dễ tìm</li>
+            <li>Thử mở link bằng điện thoại</li>
+            <li>Gửi thử cho 1 người bạn để họ mở xem</li>
+          </ul>
+        </div>
+        <div class="card navy" style="background:rgba(255,255,255,.06);">
+          <h3>Những điểm có thể cải tiến hơn</h3>
+          <ul class="kv-list" style="color:rgba(255,255,255,.75);">
+            <li>Với landing page cần update nhiều lần, thay vì chỉ tạo trong 1 cuộc trò chuyện, có thể tạo trong 1 Project để giữ được bối cảnh xuyên suốt</li>
+            <li>Tìm hiểu thêm về HTML, frontend, backend để ứng dụng được nhiều tình huống hơn</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:26px; margin-bottom:0;">Bạn đã đi từ 1 ý tưởng, đến file HTML, đến 1 landing page thật sự có link — hoàn toàn không cần biết code. Bất cứ khi nào quên bước nào, quay lại xem hoặc mở bảng thuật ngữ ở góc phải bên dưới.</p>
+    </div>
+  </section>
+
+  <div class="nav-row" id="nav-row" style="display:none;">
+    <button class="btn btn-ghost" id="btn-back" onclick="prevStep()">← Quay lại</button>
+    <button class="btn btn-primary" id="btn-next" onclick="nextStep()">Tiếp tục →</button>
+  </div>
+
+  <footer class="page-footer">Built by Alex &amp; Claude</footer>
+</div>
+
+<!-- TOOLTIP -->
+<div id="term-tooltip"></div>
+
+<!-- GLOSSARY FAB + MODAL -->
+<button id="glossary-fab" onclick="openGlossary()"><span class="gicon">📖</span> Bảng thuật ngữ</button>
+
+<div id="glossary-modal">
+  <div class="glossary-panel">
+    <div class="glossary-header">
+      <h3>📖 Bảng thuật ngữ</h3>
+      <button class="glossary-close" onclick="closeGlossary()">✕</button>
+    </div>
+    <input type="text" class="glossary-search" id="glossary-search" placeholder="Tìm thuật ngữ...">
+    <div class="glossary-list" id="glossary-list"></div>
+  </div>
+</div>
+
+<script>
+// ============ GLOSSARY DATA ============
+const GLOSSARY = {
+  noidung: {term:"Nội dung", def:"'Cái muốn nói' — thông tin, câu chữ, hình ảnh bạn muốn truyền tải, chưa gắn với bất kỳ định dạng trình bày nào."},
+  hinhthuc: {term:"Hình thức", def:"Định dạng dùng để trình bày nội dung — ví dụ Word, PPT, PDF, hoặc HTML. Cùng 1 nội dung có thể có nhiều hình thức khác nhau."},
+  file: {term:"File", def:"1 đơn vị dữ liệu được lưu trên máy tính — ví dụ file Word, file ảnh, file HTML."},
+  html: {term:"HTML", def:"Ngôn ngữ dùng để dựng nội dung 1 trang web — giống như bộ khung và nội thất của một căn nhà."},
+  browser: {term:"Browser (trình duyệt)", def:"Phần mềm bạn dùng để mở và xem trang web, ví dụ Chrome, Safari, Edge."},
+  landingpage: {term:"Landing page", def:"1 trang web (thường chỉ 1 trang) đã được đưa lên internet — ai có link cũng mở xem được, không cần tải file."},
+  domain: {term:"Domain (tên miền)", def:"Địa chỉ để mọi người gõ vào trình duyệt và tìm đến trang web của bạn, ví dụ: google.com."},
+  prompt: {term:"Prompt", def:"Đoạn văn bản bạn gõ để yêu cầu Claude làm điều gì đó."},
+  artifact: {term:"Artifact", def:"Khung xem trước (preview) mà Claude hiển thị ngay trong cuộc trò chuyện khi tạo ra 1 file như HTML."},
+  css: {term:"CSS", def:"Ngôn ngữ giúp trang web có màu sắc, bố cục, kiểu chữ đẹp mắt — giống như phần trang trí nội thất."},
+  js: {term:"JavaScript (JS)", def:"Ngôn ngữ giúp trang web có thể tương tác được — ví dụ bấm nút, hiệu ứng chuyển động."},
+  hosting: {term:"Hosting", def:"Dịch vụ 'lưu trữ' file website của bạn trên 1 máy chủ luôn bật 24/7 để ai cũng vào xem được."},
+  subdomain: {term:"Subdomain", def:"Phần thêm vào trước tên miền chính, ví dụ 'ten-cua-ban' trong ten-cua-ban.netlify.app."},
+  netlify: {term:"Netlify", def:"1 dịch vụ hosting miễn phí, nổi tiếng vì thao tác cực đơn giản: kéo-thả file là có link ngay."},
+  github: {term:"GitHub", def:"Nền tảng lưu trữ code phổ biến nhất thế giới, được cả cá nhân và công ty công nghệ sử dụng."},
+  repository: {term:"Repository (repo)", def:"1 'thư mục' online trên GitHub, chứa toàn bộ file của 1 dự án."},
+  git: {term:"Git", def:"Công cụ theo dõi các thay đổi của file qua thời gian, thường dùng cùng GitHub."},
+  commit: {term:"Commit", def:"1 'lần lưu' các thay đổi vào repository, kèm ghi chú bạn đã thay đổi gì."},
+  githubpages: {term:"GitHub Pages", def:"Tính năng của GitHub cho phép biến 1 repository thành 1 trang web có thể truy cập bằng link."},
+  console: {term:"Console", def:"1 khu vực trong trình duyệt hiển thị các lỗi kỹ thuật của trang web, giúp việc tìm lỗi dễ hơn."},
+  link: {term:"Link public", def:"1 địa chỉ web bạn có thể gửi cho bất kỳ ai — họ click vào là mở được trang web ngay lập tức."}
+};
+
+// ============ STEP NAVIGATION ============
+const STEP_LABELS = ["Bắt đầu","3 lớp landing page","Tạo HTML bằng Claude","Đưa lên online","Hoàn tất"];
+let currentStep = 0;
+const totalSteps = STEP_LABELS.length - 1;
+
+function renderDots(){
+  const dotsWrap = document.getElementById('topbar-dots');
+  dotsWrap.innerHTML = "";
+  for(let i=0;i<=totalSteps;i++){
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===currentStep?' active':(i<currentStep?' done':''));
+    d.onclick = () => goTo(i);
+    dotsWrap.appendChild(d);
+  }
+}
+
+function updateTopbar(){
+  const displayStep = Math.min(currentStep, 3);
+  document.getElementById('step-indicator').textContent = displayStep + "/3";
+  document.getElementById('step-label').textContent = STEP_LABELS[currentStep];
+  document.getElementById('progress-fill').style.width = (currentStep/totalSteps*100) + "%";
+  renderDots();
+}
+
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.screen[data-screen="'+n+'"]').classList.add('active');
+  currentStep = n;
+  updateTopbar();
+  document.getElementById('nav-row').style.display = (n===0) ? 'none' : 'flex';
+  document.getElementById('btn-back').style.display = 'inline-flex';
+  document.getElementById('btn-next').style.display = (n===totalSteps) ? 'none' : 'inline-flex';
+  document.getElementById('btn-back').disabled = (n===0);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nextStep(){ if(currentStep<totalSteps) goTo(currentStep+1); }
+function prevStep(){ if(currentStep>0) goTo(currentStep-1); }
+
+// ============ TOOLTIP ============
+document.querySelectorAll('.term').forEach(el=>{
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const key = el.dataset.term;
+    const data = GLOSSARY[key];
+    if(!data) return;
+    const tip = document.getElementById('term-tooltip');
+    tip.innerHTML = '<div class="tt-title">'+data.term+'<span class="tt-close" onclick="closeTooltip(event)">✕</span></div><p>'+data.def+'</p>';
+    const rect = el.getBoundingClientRect();
+    tip.style.display = 'block';
+    let top = rect.bottom + 8;
+    let left = rect.left;
+    if(left + 280 > window.innerWidth) left = window.innerWidth - 296;
+    if(top + 120 > window.innerHeight) top = rect.top - 100;
+    tip.style.top = top + 'px';
+    tip.style.left = left + 'px';
+  });
+});
+function closeTooltip(e){ if(e) e.stopPropagation(); document.getElementById('term-tooltip').style.display='none'; }
+document.addEventListener('click', ()=>{ document.getElementById('term-tooltip').style.display='none'; });
+
+// ============ GLOSSARY MODAL ============
+function renderGlossaryList(filter){
+  const list = document.getElementById('glossary-list');
+  list.innerHTML = "";
+  const keys = Object.keys(GLOSSARY).sort((a,b)=> GLOSSARY[a].term.localeCompare(GLOSSARY[b].term));
+  keys.forEach(k=>{
+    const d = GLOSSARY[k];
+    const match = !filter || d.term.toLowerCase().includes(filter.toLowerCase()) || d.def.toLowerCase().includes(filter.toLowerCase());
+    const item = document.createElement('div');
+    item.className = 'g-item' + (match ? '' : ' hidden');
+    item.innerHTML = '<div class="g-term">'+d.term+'</div><div class="g-def">'+d.def+'</div>';
+    list.appendChild(item);
+  });
+}
+function openGlossary(){
+  renderGlossaryList("");
+  document.getElementById('glossary-modal').classList.add('open');
+}
+function closeGlossary(){ document.getElementById('glossary-modal').classList.remove('open'); }
+document.getElementById('glossary-modal').addEventListener('click', (e)=>{
+  if(e.target.id === 'glossary-modal') closeGlossary();
+});
+document.getElementById('glossary-search').addEventListener('input', (e)=>{
+  renderGlossaryList(e.target.value);
+});
+
+// ============ COPY PROMPT ============
+const PROMPTS = {
+  1: "Hãy tạo cho tôi 1 trang landing page giới thiệu bản thân, gồm: ảnh đại diện, phần giới thiệu ngắn (2-3 câu), và danh sách liên kết mạng xã hội. Phong cách tối giản, tông màu xanh navy và cam ấm.\nQuan trọng: xuất ra 1 file HTML duy nhất, gồm luôn CSS và JavaScript trong cùng file (không tách file riêng).",
+  2: "Tạo giúp tôi 1 landing page quảng bá 1 buổi workshop, gồm: tiêu đề, thời gian - địa điểm, 3 lý do nên tham gia, và 1 nút đăng ký. Phong cách chuyên nghiệp, gọn gàng.\nQuan trọng: xuất ra 1 file HTML duy nhất, gồm luôn CSS và JavaScript trong cùng file."
+};
+function copyPrompt(btn, id){
+  const text = PROMPTS[id];
+  navigator.clipboard.writeText(text).then(()=>{
+    const original = btn.textContent;
+    btn.textContent = "✓ Đã copy";
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+  }).catch(()=>{
+    btn.textContent = "Không copy được — chọn thủ công";
+  });
+}
+
+// ============ PROMPT CHECKER (Bước 2 checkpoint) ============
+function checkPrompt(){
+  const val = document.getElementById('prompt-try').value.toLowerCase();
+  const fb = document.getElementById('prompt-feedback');
+  fb.style.display = 'block';
+  if(val.trim().length < 10){
+    fb.className = 'warn';
+    fb.textContent = "⚠️ Hãy thử mô tả cụ thể hơn 1 chút về trang bạn muốn tạo.";
+    return;
+  }
+  const hasFileKeyword = /1 file|một file|gộp|duy nhất/.test(val);
+  const hasCss = /css/.test(val);
+  const hasJs = /javascript|js\b/.test(val);
+  if(hasFileKeyword && (hasCss || hasJs)){
+    fb.className = 'ok';
+    fb.textContent = "✅ Tốt! Prompt của bạn có nhắc đến việc gộp file — đây là điều quan trọng nhất để deploy dễ dàng ở Bước 3.";
+  } else {
+    fb.className = 'warn';
+    fb.textContent = "💡 Gợi ý: thêm câu 'xuất ra 1 file HTML duy nhất, gồm luôn CSS và JavaScript' vào cuối prompt để dễ deploy hơn ở bước sau.";
+  }
+}
+
+// ============ WORKFLOW SELECT (Bước 2 boxes) ============
+function selectWorkflow(n){
+  document.querySelectorAll('.wf-box').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.wf-detail-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('wf-'+n).classList.add('active');
+  document.getElementById('wf-detail-'+n).classList.add('active');
+}
+
+// ============ PROVIDER SELECT (Bước 3 cards) ============
+function selectProvider(name){
+  document.getElementById('provider-netlify').classList.toggle('selected', name==='netlify');
+  document.getElementById('provider-github').classList.toggle('selected', name==='github');
+  showBranch(name);
+}
+function showBranch(name){
+  document.querySelectorAll('.branch-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.branch-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('branch-'+name).classList.add('active');
+}
+
+// ============ INIT ============
+updateTopbar();
+</script>
+
+</body>
+</html>
